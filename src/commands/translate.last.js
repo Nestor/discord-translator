@@ -1,3 +1,5 @@
+/*eslint-disable*/
+
 const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const translate = require("../core/translate");
