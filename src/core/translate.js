@@ -56,9 +56,11 @@ module.exports = function(data)
    {
       if (data.translate.from && data.translate.from.valid.length === 1)
       {
-         from = data.translate.from.valid[0];
+         from = data.translate.from.valid[0].iso;
       }
    })();
+
+   console.log(from);
 
    //
    // Stop if there are no valid languages
@@ -73,13 +75,16 @@ module.exports = function(data)
    // Send friendly suggestion for improvement / `Did You Know` message
    //
 
-   if (Math.random() < 0.05)
+   (function()
    {
-      setStatus(data.bot, "startTyping", data.message.channel);
-      data.text = "Did you know?";
-      data.color = "info";
-      botSend(data);
-   }
+      if (Math.random() < 0.05)
+      {
+         setStatus(data.bot, "startTyping", data.message.channel);
+         data.text = "Did you know?";
+         data.color = "info";
+         botSend(data);
+      }
+   })();
 
    //
    // Multi-translate same message
@@ -87,12 +92,23 @@ module.exports = function(data)
 
    var translateBuffer = {};
 
-   //
-   // Multi-translate same message
-   //
-
    if (data.translate.multi)
    {
+      //
+      // Stop if user requested too many languages
+      //
+
+      if (data.translate.to.valid.length > 6)
+      {
+         data.text = "Too many languages specified";
+         data.color = "error";
+         return botSend(data);
+      }
+
+      //
+      // Buffer translations
+      //
+
       setStatus(data.bot, "startTyping", data.message.channel);
 
       const bufferID = data.message.createdTimestamp;
@@ -122,14 +138,15 @@ module.exports = function(data)
 
       data.translate.to.valid.forEach(lang =>
       {
-         translate(data.translate.original, {to: lang.iso}).then(res =>
+         translate(data.translate.original, {
+            to: lang.iso,
+            from: from
+         }).then(res =>
          {
             const title = `\`\`\`LESS\n ${lang.name} (${lang.native}) \`\`\`\n`;
-            const link = googleLink(data.translate.original, "auto", lang.iso);
-            translateBuffer[bufferID].update(
-               title + link + translateFix(res.text) + "\n ",
-               data
-            );
+            const link = googleLink(data.translate.original, from, lang.iso);
+            const output = title + link + translateFix(res.text) + "\n";
+            return translateBuffer[bufferID].update(output, data);
          });
       });
       return;
