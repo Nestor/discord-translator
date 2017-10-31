@@ -1,6 +1,44 @@
-/*eslint-disable*/
+const setStatus = require("../core/status");
+const botSend = require("../core/send");
+const translate = require("../core/translate");
+
 module.exports = function(data)
 {
+   //setStatus(data.bot, "startTyping", data.message.channel);
+
+   console.log("---");
+   console.log("translating last message(s)");
+   console.log("---");
+
+   const lastMsg = data.message.channel.lastMessageID;
+
+   console.log(lastMsg);
+
+   data.message.channel.fetchMessage(lastMsg).then(m =>
+   {
+      console.log({
+         id: m.id,
+         content: m.content,
+         last: m.channel.lastMessageID
+      });
+   }).catch(console.error);
+
+   //console.log();
+
+   //data.message.channel.fetchMessages({
+   //   limit: 3
+   //}).then(messages =>
+   //{
+   //   console.log(`Received ${messages.size} messages`);
+   //   console.log(messages.array);
+   //
+   //}).catch(console.error);
+
+   //  const test = data.message.channel.fetchMessages({
+   //     limit: 3
+   //  });
+   //  console.log(test);
+
 /*
    // ---------------
    // Translate last
