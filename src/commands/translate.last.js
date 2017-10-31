@@ -1,36 +1,87 @@
-/*eslint-disable*/
-
 const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const translate = require("../core/translate");
 
+//
+// Get previous message(s) in channel
+//
+
+//var maxMsgs = 5;
+//var maxCounter = 0;
+
+//function getPrevMsg(message, channel, callback)
+//{
+//   channel.fetchMessages({
+//      limit: 1,
+//      before: message
+//   }).then(messages =>
+//   {
+//      const prevMsg = messages.array()[0];
+//      if (!prevMsg.author.bot && maxCounter < maxMsgs)
+//      {
+//         maxCounter++;
+//         console.log(`i: ${maxCounter}`);
+//         callback(prevMsg.content);
+//         return getPrevMsg(prevMsg.id, prevMsg.channel, callback);
+//      }
+//   }).catch(console.error);
+//}
+
+
+
+function getChain(message, channel, callback)
+{
+   //const chainAuthor = message.author.username;
+
+   channel.fetchMessages({
+      limit: 3,
+      around: message
+   }).then(messages =>
+   {
+      //console.log(chainAuthor);
+      console.log(messages.size);
+      console.log(messages);
+
+      //const chain = messages.findAll("username", chainAuthor);
+      //callback(chain);
+   });
+}
+
 module.exports = function(data)
 {
    //setStatus(data.bot, "startTyping", data.message.channel);
-   console.log("---");
-   console.log("translating last message(s)");
-   console.log("---");
+   //console.log("---");
+   //console.log("translating last message(s)");
+   //console.log("---");
 
    const lastMsg = data.message.channel.lastMessageID;
 
-   console.log(lastMsg);
+   //getChain(lastMsg, data.message.channel, console.log);
 
-   data.message.channel.fetchMessage(lastMsg).then(m =>
-   {
-      console.log(`id: ${m.id}`);
-      console.log(`content: ${m.content}`);
+   //console.log(lastMsg);
 
-      m.channel.fetchMessages({
-         limit: 1,
-         before: m.id
-      }).then(messages =>
-      {
-         const prevMsg = messages.array[0];
+   //getPrevMsg(lastMsg, data.message.channel, console.log);
 
-         console.log(`before id: ${prevMsg.id}`);
-         console.log(`before content: ${prevMsg.content}`);
-      }).catch(console.error);
-   }).catch(console.error);
+   //data.message.channel.fetchMessage(lastMsg).then(m =>
+   //{
+   //   console.log(`id: ${m.id}`);
+   //   console.log(`content: ${m.content}`);
+   //
+   //   m.channel.fetchMessages({
+   //      limit: 1,
+   //      before: m.id
+   //   }).then(messages =>
+   //   {
+   //      //console.log(messages.size);
+   //      //console.log(messages.array());
+   //
+   //      const prevMsg = messages.array()[0];
+   //      //console.log(prevMsg);
+   //
+   //      console.log(`before id: ${prevMsg.id}`);
+   //      console.log(`before content: ${prevMsg.content}`);
+   //   }).catch(console.error);
+   //}).catch(console.error);
 
    //console.log();
 

@@ -21,6 +21,27 @@ const extractParamVal = function(key, str, allowArray = false)
    return null;
 };
 
+// --------------------
+// Extract number param
+// --------------------
+
+const extractNum = function(str)
+{
+   const rgx = new RegExp("(?:^\\s*(-?\\d))|(?:[^,]\\s*(-?\\d))", "im");
+
+   const match = rgx.exec(str);
+
+   if (match)
+   {
+      if (match[1])
+      {
+         return match[1];
+      }
+      return match[2];
+   }
+   return null;
+};
+
 // --------------------------------------
 // Analyze arguments from command string
 // --------------------------------------
@@ -59,6 +80,8 @@ module.exports = function(msg)
    output.from = langCheck(extractParamVal("from", output.params));
 
    output.for = extractParamVal("for", output.params, true);
+
+   output.num = extractNum(output.params);
 
    console.log(output);
    return output;
