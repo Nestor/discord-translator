@@ -1,6 +1,8 @@
 # Discord Translator Bot (beta)
 Translation bot built using discord.js and Google Translate API. Requires `npm` `node 8.0+` and `discord bot token`.
 
+[![Build Status](https://ci.0x09.de/job/aziz.TranslatorBot/badge/icon)](https://ci.0x09.de/job/aziz.TranslatorBot)
+
 ## Features
 * Translate custom messages
 * Translate last message(s) in channel
@@ -27,4 +29,5 @@ Use `gulp watch` for active development (auto lint, build).
 #### Credit & License
 
 Created by Aziz Natour - [@aziznatour](http://www.twitter.com/aziznatour)
+
 Released under ISC license.

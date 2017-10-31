@@ -5,7 +5,6 @@ const translate = require("../core/translate");
 module.exports = function(data)
 {
    //setStatus(data.bot, "startTyping", data.message.channel);
-
    console.log("---");
    console.log("translating last message(s)");
    console.log("---");
@@ -16,11 +15,19 @@ module.exports = function(data)
 
    data.message.channel.fetchMessage(lastMsg).then(m =>
    {
-      console.log({
-         id: m.id,
-         content: m.content,
-         last: m.channel.lastMessageID
-      });
+      console.log(`id: ${m.id}`);
+      console.log(`content: ${m.content}`);
+
+      m.channel.fetchMessages({
+         limit: 1,
+         before: m.id
+      }).then(messages =>
+      {
+         const prevMsg = messages.array[0];
+
+         console.log(`before id: ${prevMsg.id}`);
+         console.log(`before content: ${prevMsg.content}`);
+      }).catch(console.error);
    }).catch(console.error);
 
    //console.log();
