@@ -38,10 +38,23 @@ module.exports = function(data)
 
    (function()
    {
-      if (data.translate.to.invalid.length > 0)
+      if (data.translate.from && data.translate.from.invalid.length > 0)
       {
-         data.text = "Langs not supported: " + data.translate.to.invalid;
          data.color = "warn";
+         data.text =
+            "Translating from these langs is not supported: " +
+            data.translate.from.invalid;
+
+         botSend(data);
+      }
+
+      if (data.translate.to.invalid && data.translate.to.invalid.length > 0)
+      {
+         data.color = "warn";
+         data.text =
+            "Translating to these langs is not supported: " +
+            data.translate.to.invalid;
+
          botSend(data);
       }
    })();
@@ -59,8 +72,6 @@ module.exports = function(data)
          from = data.translate.from.valid[0].iso;
       }
    })();
-
-   console.log(from);
 
    //
    // Stop if there are no valid languages

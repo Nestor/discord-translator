@@ -16,8 +16,10 @@ module.exports = function(data)
 
    if (!data.cmd.content)
    {
-      return botSend.box({
-         channel: data.message.channel,
+      return botSend({
+         message: {
+            channel: data.message.channel
+         },
          color: "error",
          text: "Error: Missing content for translation",
          bot: data.bot
