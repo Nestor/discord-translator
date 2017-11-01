@@ -3,6 +3,18 @@
 // =================
 
 //
+// Buffer end checker
+//
+
+exports.bufferEnd = function(arrOriginal, arrFinal, callback, data)
+{
+   if (arrOriginal.length === arrFinal.length)
+   {
+      return callback(arrFinal, data);
+   }
+};
+
+//
 // Check user permission
 //
 

@@ -1,8 +1,6 @@
 const text = require("../i18n/en");
 const setStatus = require("./status");
 const colors = require("./colors");
-const colorThief = require("color-thief-jimp");
-const jimp = require("jimp");
 
 //
 // Send Data to Channel
@@ -73,71 +71,10 @@ module.exports = function(data)
       bot: data.bot
    };
 
-   //
-   // Use jimp and colorTheif to get color from user avatar
-   //
-
    if (data.showAuthor)
    {
-      if (data.buffer)
-      {
-         /*jimp.read(data.author.displayAvatarURL).then(function(image)
-         {
-            data.color = colors.rgb2dec(colorThief.getColor(image));
-            fn.buffer("push", data);
-
-            if (fn.buffer("len") === data.buffer)
-            {
-               var sorted = fn.sortByKey(fn.buffer("arr"), "order");
-               fn.buffer("reset");
-
-               // Send translation to channel
-
-               sorted.forEach(function(chain)
-               {
-                  channel.send({
-                     embed:
-                     {
-                        color: chain.color,
-                        author:
-                        {
-                           name: chain.author.username,
-                           //url: link,
-                           //eslint-disable-next-line camelcase
-                           icon_url: chain.author.displayAvatarURL
-                        },
-                        description: chain.text,
-                        footer: data.footer
-                     }
-                  });
-               });
-               return botStatus("online", channel);
-            }
-         }).catch(function(err)
-         {
-            console.error(err);
-         });
-         */
-
-         return;
-      }
-
-      jimp.read(data.message.author.displayAvatarURL).then(function(image)
-      {
-         sendData.color = colors.rgb2dec(colorThief.getColor(image));
-         sendData.author = data.message.author;
-         sendBox(sendData);
-      }).catch(function(err)
-      {
-         console.log(err);
-      });
-
-      return;
+      sendData.author = data.message.author;
    }
-
-   //
-   // Send Simple RichEmbed with custom color
-   //
 
    return sendBox(sendData);
 };

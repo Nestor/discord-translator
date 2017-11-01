@@ -1,7 +1,11 @@
 const translate = require("google-translate-api");
+const colorThief = require("color-thief-jimp");
+const jimp = require("jimp");
+
 const resolveID = require("./resolve.id");
 const setStatus = require("./status");
 const botSend = require("./send");
+const colors = require("./colors");
 const fn = require("./helpers");
 
 // ------------------------------------------
@@ -23,41 +27,99 @@ const googleLink = function(original, from, to)
    var resolved = resolveID.idConvert(original);
    var google = "https://translate.google.com/?ref=discord-translator#";
    var link = google + `${from}/${to}/` + encodeURIComponent(resolved);
-   return `[:heavy_check_mark:](${link})   `;
+   return `   [:heavy_check_mark:](${link})`;
+};
+
+// --------------------------
+// Translate buffered chains
+// --------------------------
+
+const bufferSend = function(arr, data)
+{
+   const sorted = fn.sortByKey(arr, "time");
+   sorted.forEach(msg =>
+   {
+      setStatus(data.bot, "startTyping", data.message.channel);
+
+      botSend({
+         message: {
+            channel: data.message.channel,
+            author: msg.author
+         },
+         text: msg.text,
+         bot: data.bot,
+         color: msg.color,
+         showAuthor: true
+      });
+   });
+};
+
+const bufferChains = function(data, from)
+{
+   var translatedChains = [];
+
+   data.bufferChains.forEach(chain =>
+   {
+      const chainMsgs = chain.msgs.join("\n");
+      const to = data.translate.to.valid[0].iso;
+
+      translate(chainMsgs, {
+         to: to,
+         from: from
+      }).then(res =>
+      {
+         const link = googleLink(chainMsgs, from, to);
+         const output = translateFix(res.text) + link;
+
+         jimp.read(chain.author.displayAvatarURL).then(function(image)
+         {
+            translatedChains.push({
+               color: colors.rgb2dec(colorThief.getColor(image)),
+               time: chain.time,
+               author: chain.author,
+               text: output
+            });
+
+            fn.bufferEnd(data.bufferChains, translatedChains, bufferSend, data);
+
+         // check for errors
+         }).catch(function(err)
+         {
+            console.log(err);
+         });
+      });
+   });
 };
 
 // ----------------
 // Run translation
 // ----------------
 
-module.exports = function(data)
+module.exports = function(data) //eslint-disable-line complexity
 {
    //
    // Report invalid languages
    //
 
-   (function()
+   if (data.translate.from && data.translate.from.invalid.length > 0)
    {
-      if (data.translate.from && data.translate.from.invalid.length > 0)
-      {
-         data.color = "warn";
-         data.text =
-            "Translating from these langs is not supported: " +
-            data.translate.from.invalid;
+      data.color = "warn";
+      data.text =
+         "Translating from these langs is not supported: " +
+         data.translate.from.invalid;
 
-         botSend(data);
-      }
+      botSend(data);
+   }
 
-      if (data.translate.to.invalid && data.translate.to.invalid.length > 0)
-      {
-         data.color = "warn";
-         data.text =
-            "Translating to these langs is not supported: " +
-            data.translate.to.invalid;
+   if (data.translate.to.invalid && data.translate.to.invalid.length > 0)
+   {
+      data.color = "warn";
+      data.text =
+         "Translating to these langs is not supported: " +
+         data.translate.to.invalid;
 
-         botSend(data);
-      }
-   })();
+      botSend(data);
+   }
 
    //
    // Set default `from` language
@@ -65,13 +127,10 @@ module.exports = function(data)
 
    var from = "auto";
 
-   (function()
+   if (data.translate.from && data.translate.from.valid.length === 1)
    {
-      if (data.translate.from && data.translate.from.valid.length === 1)
-      {
-         from = data.translate.from.valid[0].iso;
-      }
-   })();
+      from = data.translate.from.valid[0].iso;
+   }
 
    //
    // Stop if there are no valid languages
@@ -86,16 +145,22 @@ module.exports = function(data)
    // Send friendly suggestion for improvement / `Did You Know` message
    //
 
-   (function()
+   if (Math.random() < 0.05)
    {
-      if (Math.random() < 0.05)
-      {
-         setStatus(data.bot, "startTyping", data.message.channel);
-         data.text = "Did you know?";
-         data.color = "info";
-         botSend(data);
-      }
-   })();
+      setStatus(data.bot, "startTyping", data.message.channel);
+      data.text = "Did you know?";
+      data.color = "info";
+      botSend(data);
+   }
+
+   //
+   // Translate multiple chains (!translate last n)
+   //
+
+   if (data.bufferChains)
+   {
+      return bufferChains(data, from);
+   }
 
    //
    // Multi-translate same message
@@ -103,7 +168,7 @@ module.exports = function(data)
 
    var translateBuffer = {};
 
-   if (data.translate.multi)
+   if (data.translate.multi && data.translate.to.valid.length > 1)
    {
       //
       // Stop if user requested too many languages
@@ -156,7 +221,7 @@ module.exports = function(data)
          {
             const title = `\`\`\`LESS\n ${lang.name} (${lang.native}) \`\`\`\n`;
             const link = googleLink(data.translate.original, from, lang.iso);
-            const output = title + link + translateFix(res.text) + "\n";
+            const output = title + translateFix(res.text) + link + "\n";
             return translateBuffer[bufferID].update(output, data);
          });
       });
@@ -173,12 +238,13 @@ module.exports = function(data)
       from: from
    };
 
+   setStatus(data.bot, "startTyping", data.message.channel);
+
    translate(data.translate.original, opts).then(res =>
    {
-      setStatus(data.bot, "startTyping", data.message.channel);
       data.color = 0;
-      data.text = googleLink(data.translate.original, opts.from, opts.to);
-      data.text += translateFix(res.text);
+      data.text = translateFix(res.text);
+      data.text += googleLink(data.translate.original, opts.from, opts.to);
       data.showAuthor = true;
       return botSend(data);
    });

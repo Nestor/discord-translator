@@ -8,14 +8,14 @@ const translate = require("../core/translate");
 
 module.exports = function(data)
 {
-   setStatus(data.bot, "startTyping", data.message.channel);
-
    //
    // Send error for empty content
    //
 
    if (!data.cmd.content)
    {
+      setStatus(data.bot, "startTyping", data.message.channel);
+
       return botSend({
          message: {
             channel: data.message.channel
@@ -26,8 +26,10 @@ module.exports = function(data)
       });
    }
 
+   setStatus(data.bot, "startTyping", data.message.channel);
+
    //
-   // Translate to default language if none specified
+   // Set default language if none specified
    //
 
    var translateTo = {
@@ -40,7 +42,7 @@ module.exports = function(data)
    }
 
    //
-   // translate > send > status
+   // Start translation
    //
 
    data.translate = {
@@ -49,8 +51,6 @@ module.exports = function(data)
       from: data.cmd.from,
       multi: true
    };
-
-   //return data.translate;
 
    translate(data);
 };

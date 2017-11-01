@@ -2,446 +2,142 @@ const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const translate = require("../core/translate");
 
-//
-// Get previous message(s) in channel
-//
-
-//var maxMsgs = 5;
-//var maxCounter = 0;
-
-//function getPrevMsg(message, channel, callback)
-//{
-//   channel.fetchMessages({
-//      limit: 1,
-//      before: message
-//   }).then(messages =>
-//   {
-//      const prevMsg = messages.array()[0];
-//      if (!prevMsg.author.bot && maxCounter < maxMsgs)
-//      {
-//         maxCounter++;
-//         console.log(`i: ${maxCounter}`);
-//         callback(prevMsg.content);
-//         return getPrevMsg(prevMsg.id, prevMsg.channel, callback);
-//      }
-//   }).catch(console.error);
-//}
-
-
-
-function getChain(message, channel, callback)
-{
-   //const chainAuthor = message.author.username;
-
-   channel.fetchMessages({
-      limit: 3,
-      around: message
-   }).then(messages =>
-   {
-      //console.log(chainAuthor);
-      console.log(messages.size);
-      console.log(messages);
-
-      //const chain = messages.findAll("username", chainAuthor);
-      //callback(chain);
-   });
-}
-
 module.exports = function(data)
 {
-   //setStatus(data.bot, "startTyping", data.message.channel);
-   //console.log("---");
-   //console.log("translating last message(s)");
-   //console.log("---");
-
-   const lastMsg = data.message.channel.lastMessageID;
-
-   //getChain(lastMsg, data.message.channel, console.log);
-
-   //console.log(lastMsg);
-
-   //getPrevMsg(lastMsg, data.message.channel, console.log);
-
-   //data.message.channel.fetchMessage(lastMsg).then(m =>
-   //{
-   //   console.log(`id: ${m.id}`);
-   //   console.log(`content: ${m.content}`);
    //
-   //   m.channel.fetchMessages({
-   //      limit: 1,
-   //      before: m.id
-   //   }).then(messages =>
-   //   {
-   //      //console.log(messages.size);
-   //      //console.log(messages.array());
+   // Set default language if none specified
    //
-   //      const prevMsg = messages.array()[0];
-   //      //console.log(prevMsg);
-   //
-   //      console.log(`before id: ${prevMsg.id}`);
-   //      console.log(`before content: ${prevMsg.content}`);
-   //   }).catch(console.error);
-   //}).catch(console.error);
 
-   //console.log();
+   var translateTo = {
+      valid: [data.config.defaultLanguage]
+   };
 
-   //data.message.channel.fetchMessages({
-   //   limit: 3
-   //}).then(messages =>
-   //{
-   //   console.log(`Received ${messages.size} messages`);
-   //   console.log(messages.array);
-   //
-   //}).catch(console.error);
-
-   //  const test = data.message.channel.fetchMessages({
-   //     limit: 3
-   //  });
-   //  console.log(test);
-
-/*
-   // ---------------
-   // Translate last
-   // ---------------
-
-   if (translateArgs.startsWith("last"))
+   (function()
    {
-      //
-      // Get number of chains of current channel from chain cache
-      //
-
-      var chainCount = dbChains[channel.id].length;
-
-      //
-      // There are no mesasges: send error
-      //
-
-      if (chainCount < 1)
+      if (data.cmd.to)
       {
-         sendBox({
-            channel: channel.id,
-            color: colorWarn,
-            text: text.errNoMsgs
-         });
-         return;
+         translateTo = data.cmd.to;
       }
+   })();
 
-      //
-      // Set default command arguments
-      //
+   //
+   // Prepare translation data
+   //
 
-      var args = translateArgs.replace("last", "").trim();
-      toLang = defaultLanguage;
-      var multi = false;
-      var single = true;
-      var position = "-1";
-      var output = "";
+   data.translate = {
+      to: translateTo,
+      from: data.cmd.from
+   };
 
-      //
-      // Get language args through regex
-      //
+   //
+   // Get count param
+   //
 
-      toLang = (/to\s*\[?([a-z,\s]*)/i).exec(args);
+   var count = "-1";
 
-      // Switch to default language if regex fails
-
-      if (!toLang)
+   (function()
+   {
+      if (data.cmd.num)
       {
-         toLang = defaultLanguage;
+         count = data.cmd.num;
       }
+   })();
 
-      // Convert language string to array
+   //
+   // Set mode
+   //
 
-      else
+   var mode = "all";
+
+   if (count.startsWith("-"))
+   {
+      mode = "single";
+      data.translate.multi = true;
+   }
+
+   if (mode === "all" && Math.abs(count) > data.config.maxChains)
+   {
+      botSend({
+         message: {
+            channel: data.message.channel
+         },
+         color: "warn",
+         bot: data.bot,
+         text:
+            `Cannot translate more than ${data.config.maxChains}
+            message chains at once.`
+      });
+
+      count = data.config.maxChains;
+   }
+
+   //
+   // Start typing
+   //
+
+   setStatus(data.bot, "startTyping", data.message.channel);
+
+   //
+   // Get requested collection
+   //
+
+   data.message.channel.fetchMessages({
+      limit: Math.abs(count) * data.config.maxChainLen + 1
+   }).then(messages => //eslint-disable-line complexity
+   {
+      const messagesArray = messages.array().reverse();
+      var lastAuthor;
+      var chains = [];
+
+      for (var i = 0; i < messagesArray.length; i++)
       {
-         toLang = toLang[1].split(",");
-
-         // Throw error if too many languages requested
-
-         if (toLang.length > maxMulti)
+         if (
+            !messagesArray[i].author.bot &&
+            !messagesArray[i].content.startsWith(data.config.translateCmd)
+         )
          {
-            sendBox({
-               channel: channel.id,
-               color: colorErr,
-               text: text.errMaxMulti(maxMulti)
-            });
-            return;
-         }
-
-         // Convert to object `{valid, invalid}`
-
-         toLang = langCheck(toLang);
-
-         if (toLang.valid.length === 0)
-         {
-            var invErr = text.errBadLang(toLang.invalid);
-            sendBox({
-               channel: channel.id,
-               color: colorErr,
-               text: invErr
-            });
-            return;
-         }
-
-         // Convert object back to single string
-         // If there was only one valid language
-
-         if (toLang.valid.length === 1 && toLang.invalid.length === 0)
-         {
-            toLang = toLang.valid[0];
-         }
-
-         // Update lang type for multiple languages
-
-         else
-         {
-            multi = true;
-         }
-      }
-
-      //
-      // Analyze position value
-      //
-
-      position = (/-?\d+/i).exec(args);
-
-      // rest to default if regex fails
-
-      if (!position)
-      {
-         position = "-1";
-      }
-
-      position = position.toString();
-
-      // detect mode
-
-      if (!position.startsWith("-"))
-      {
-         single = false;
-      }
-
-      // convert to absolute number
-
-      position = Math.round(Math.abs(position));
-
-      // always start at 1 for loop to work properly
-
-      if (position < 1)
-      {
-         position = 1;
-      }
-
-      // prevent requests of non-existent messages in cache
-
-      if (position > chainCount)
-      {
-         position = chainCount;
-      }
-
-      //
-      // Debug command
-      //
-
-      console.log(
-         `Pos: ${position} |
-         To: ${toLang}:${multi} |
-         Single: ${single} |
-         Chains: ${chainCount}`
-      );
-
-      //
-      // Translate single chain only
-      //
-
-      if (single)
-      {
-         var chain = dbChains[channel.id][position - 1];
-         author = dbMessages[channel.id][chain[0] - 1].author;
-
-         output = "";
-         chain.forEach(function(msgID)
-         {
-            output += "\n";
-            output += dbMessages[channel.id][msgID - 1].content;
-         });
-
-         //
-         // Translate single chain to multiple languages
-         //
-
-         if (multi)
-         {
-            sendMulti({
-               channel: channel.id,
-               author: author,
-               valid: toLang.valid,
-               invalid: toLang.invalid,
-               original: output
-            });
-            return;
-         }
-
-         //
-         // Translate single chain to single language
-         //
-
-         return translate(output, {to: toLang}).then(res =>
-         {
-            sendBox({
-               channel: channel.id,
-               author: author,
-               text: fn.translateFix(res.text),
-               original: output,
-               toLang: toLang,
-               fromLang: res.from.language.iso,
-               dyk: true
-            });
-            return;
-         });
-      }
-
-      //
-      // Translate all requested chains
-      //
-
-
-      //
-      // Prevent multiple languages when translating many chains
-      //
-
-      if (multi)
-      {
-         sendBox({
-            channel: channel.id,
-            color: colorErr,
-            text: text.errMultiDisabled
-         });
-         return;
-      }
-
-      //
-      // Prevent translating chains beyond allowed number
-      //
-
-      if (position > maxChains)
-      {
-         position = maxChains;
-         sendBox({
-            channel: channel.id,
-            color: colorWarn,
-            text: text.errMaxChains(maxChains)
-         });
-      }
-
-      //
-      // Set bot to writing mode
-      //
-
-      isWriting = true;
-      //botStatus("writing", channel);
-
-      //
-      // Loop through channel chains
-      //
-
-      for (var i = position - 1; i >= 0; i--)
-      {
-         chain = dbChains[channel.id][i];
-         var chainFirst = dbMessages[channel.id][chain[0]-1];
-         author = chainFirst.author;
-         var time = chainFirst.createdTimestamp;
-
-         //
-         // Add the content of each message to output
-         // Resets on each iteration
-         //
-
-         output = "";
-
-         chain.forEach(msgID =>
-         {
-            var content = dbMessages[channel.id][msgID-1].content;
-
-            if (content === chainFirst.content)
+            if (
+               lastAuthor === messagesArray[i].author.id &&
+               chains[chains.length - 1].msgs.length < data.config.maxChainLen
+            )
             {
-               output += `[${time}]`;
-               output += content;
+               chains[chains.length - 1].msgs.push(messagesArray[i].content);
             }
 
             else
             {
-               output += "\n";
-               output += content;
-            }
-         });
-
-         //
-         // Add chain translation object to buffer queue
-         //
-
-         var opts = {
-            to: toLang,
-            raw: true
-         };
-
-         translate(output, opts).then(res =>
-         {
-            var raw = JSON.parse(`[${res.raw}]`);
-            var content = fn.translateFix(res.text);
-            var ts = fn.getTimeFromStr(content);
-            content = fn.remTimeFromStr(content, ts);
-            var original = fn.remTimeFromStr(raw[0][0][0][1], ts);
-
-            fn.buffer("push", {
-               order: ts,
-               langTo: toLang,
-               langFrom: res.from.language.iso,
-               content: content,
-               original: original,
-               author: author
-            });
-
-            //
-            // Callback once all chains resolved in buffer
-            //
-
-            if (fn.buffer("len") === position)
-            {
-               // Reorder array by timestamp key
-
-               var sorted = fn.sortByKey(fn.buffer("arr"), "order");
-
-               // Reset Buffer
-
-               fn.buffer("reset");
-
-               // Send translation to channel
-
-               sorted.forEach(function(chain)
-               {
-                  sendBox({
-                     channel: channel.id,
-                     text: chain.content,
-                     author: chain.author,
-                     original: chain.original,
-                     fromLang: chain.langFrom,
-                     toLang: chain.langTo,
-                     buffer: sorted.length,
-                     order: chain.order
-                  });
+               chains.push({
+                  author: messagesArray[i].author,
+                  msgs: [messagesArray[i].content],
+                  time: messagesArray[i].createdTimestamp
                });
-
-               // Finish writing mode
-
-               isWriting = false;
-               return;
+               lastAuthor = messagesArray[i].author.id;
             }
-         });
+         }
       }
 
-      // loop is over
-      return;
-   }
-*/
+      //
+      // Get requested chains only
+      //
+
+      const reqChains = chains.slice(-Math.abs(count));
+
+      //
+      // Translate single chain
+      //
+
+      if (mode === "single")
+      {
+         data.message.author = reqChains[0].author;
+         data.translate.original = reqChains[0].msgs.join("\n");
+         return translate(data);
+      }
+
+      //
+      // Translate multiple chains (buffer)
+      //
+
+      data.bufferChains = reqChains;
+      return translate(data);
+   }).catch(console.error);
 };

@@ -24,7 +24,6 @@ const autoTranslate = require("./core/auto");
 // Commands
 //
 
-const translateCmd = "!translate";
 const cmdArgs = require("./commands/args");
 const cmdHelp = require("./commands/help");
 const cmdList = require("./commands/list");
@@ -44,8 +43,10 @@ var config = {
       name: "English",
       native: "English"
    },
+   translateCmd: "!translate",
    maxMulti: 6,
    maxChains: 10,
+   maxChainLen: 5,
    maxEmbeds: 5
 };
 
@@ -126,13 +127,15 @@ client.on("message", message =>
    // Proccess Commands
    // ===================
 
-   if (message.content.startsWith(translateCmd))
+   if (message.content.startsWith(config.translateCmd))
    {
       //
       // Get arguments object
       //
 
-      const cmd = cmdArgs(message.content.replace(translateCmd, "").trim());
+      const cmd = cmdArgs(
+         message.content.replace(config.translateCmd, "").trim()
+      );
 
       //
       // Legal Commands
