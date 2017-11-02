@@ -49,7 +49,7 @@ module.exports = function(data)
 
    var mode = "all";
 
-   if (count.startsWith("-"))
+   if (count.startsWith("-") || count === "1")
    {
       mode = "single";
       data.translate.multi = true;

@@ -30,6 +30,23 @@ const googleLink = function(original, from, to)
    return `   [:heavy_check_mark:](${link})`;
 };
 
+// ----------------------------------------
+// Get user color with jimp and colorThief
+// ----------------------------------------
+
+function getUserColor(data, callback)
+{
+   jimp.read(data.author.displayAvatarURL).then(function(image)
+   {
+      data.color = colors.rgb2dec(colorThief.getColor(image));
+      callback(data);
+   }
+   ).catch(function(err)
+   {
+      console.log(err);
+   });
+}
+
 // --------------------------
 // Translate buffered chains
 // --------------------------
@@ -71,21 +88,16 @@ const bufferChains = function(data, from)
          const link = googleLink(chainMsgs, from, to);
          const output = translateFix(res.text) + link;
 
-         jimp.read(chain.author.displayAvatarURL).then(function(image)
+         getUserColor(chain, function()
          {
             translatedChains.push({
-               color: colors.rgb2dec(colorThief.getColor(image)),
+               color: chain.color,
                time: chain.time,
                author: chain.author,
                text: output
             });
 
             fn.bufferEnd(data.bufferChains, translatedChains, bufferSend, data);
-
-         // check for errors
-         }).catch(function(err)
-         {
-            console.log(err);
          });
       });
    });
@@ -97,6 +109,12 @@ const bufferChains = function(data, from)
 
 module.exports = function(data) //eslint-disable-line complexity
 {
+   //
+   // Get message author
+   //
+
+   data.author = data.message.author;
+
    //
    // Report invalid languages
    //
@@ -207,7 +225,7 @@ module.exports = function(data) //eslint-disable-line complexity
                data.text = this.text;
                data.color = 0;
                data.showAuthor = true;
-               botSend(data);
+               getUserColor(data, botSend);
             }
          }
       };
@@ -221,7 +239,7 @@ module.exports = function(data) //eslint-disable-line complexity
          {
             const title = `\`\`\`LESS\n ${lang.name} (${lang.native}) \`\`\`\n`;
             const link = googleLink(data.translate.original, from, lang.iso);
-            const output = title + translateFix(res.text) + link + "\n";
+            const output = "\n" + title + translateFix(res.text) + link + "\n";
             return translateBuffer[bufferID].update(output, data);
          });
       });
@@ -246,6 +264,6 @@ module.exports = function(data) //eslint-disable-line complexity
       data.text = translateFix(res.text);
       data.text += googleLink(data.translate.original, opts.from, opts.to);
       data.showAuthor = true;
-      return botSend(data);
+      return getUserColor(data, botSend);
    });
 };
