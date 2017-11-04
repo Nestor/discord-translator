@@ -1,4 +1,5 @@
 const langCheck = require("../core/lang.check");
+const fn = require("../core/helpers");
 
 // ---------------------------------------
 // Extract a parameter's value with regex
@@ -14,7 +15,7 @@ const extractParamVal = function(key, str, allowArray = false)
    {
       if (allowArray)
       {
-         return match[1].replace(/\s/igm, "").split(",");
+         return fn.removeDupes(match[1].replace(/\s/igm, "").split(","));
       }
       return match[1];
    }
@@ -87,7 +88,7 @@ module.exports = function(msg)
 
    getMainArg(output);
 
-   if (output.main.startsWith("<") || output.main.startsWith("channel"))
+   if (output.main === "channel")
    {
       output.auto = output.main;
       output.main = "auto";

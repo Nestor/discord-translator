@@ -1,6 +1,5 @@
 const setStatus = require("../core/status");
 const botSend = require("../core/send");
-const translate = require("../core/translate");
 
 // ------------------------------
 // Auto translate Channel/Author
@@ -20,31 +19,25 @@ module.exports = function(data)
       return botSend(data);
    }
 
+   setStatus(data.bot, "startTyping", data.message.channel);
+
    //
-   // Set default language if none specified
+   // Prepare task data
    //
 
-   var translateTo = {
-      valid: [data.config.defaultLanguage]
+   var task = {
+      origin: data.message.channel.id,
+      destination: data.cmd.for,
+      from: data.cmd.from,
+      to: data.cmd.to
    };
 
-   (function()
+   if (data.cmd.for === "default")
    {
-      if (data.cmd.to)
-      {
-         translateTo = data.cmd.to;
-      }
-   })();
+      task.destination = [task.origin];
+   }
 
-   //
-   // Prepare translation data
-   //
-
-   data.translate = {
-      to: translateTo,
-      from: data.cmd.from
-   };
-
+   console.log(task);
 
 
 /*
@@ -230,8 +223,7 @@ module.exports = function(data)
                + "`** channel";
 
             if (id == typeObj[id][1]) forwardTxt = "";
-         */
-         /*
+
             sendBox({
                channel: channel.id,
                color: colorInfo,
