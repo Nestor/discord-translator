@@ -29,25 +29,12 @@ module.exports = function(data)
    setStatus(data.bot, "startTyping", data.message.channel);
 
    //
-   // Set default language if none specified
-   //
-
-   var translateTo = {
-      valid: [data.config.defaultLanguage]
-   };
-
-   if (data.cmd.to)
-   {
-      translateTo = data.cmd.to;
-   }
-
-   //
    // Start translation
    //
 
    data.translate = {
       original: data.cmd.content,
-      to: translateTo,
+      to: data.cmd.to,
       from: data.cmd.from,
       multi: true
    };

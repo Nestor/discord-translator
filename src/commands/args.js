@@ -18,7 +18,7 @@ const extractParamVal = function(key, str, allowArray = false)
       }
       return match[1];
    }
-   return null;
+   return "default";
 };
 
 // --------------------
@@ -42,6 +42,36 @@ const extractNum = function(str)
    return null;
 };
 
+// ------------------
+// Check for content
+// ------------------
+
+const checkContent = function(msg, output)
+{
+   const hasContent = (/([^:]*):(.*)/).exec(msg);
+
+   if (hasContent)
+   {
+      output.main = hasContent[1].trim();
+      output.content = hasContent[2].trim();
+   }
+};
+
+// ------------------
+// Get main arg
+// ------------------
+
+const getMainArg = function(output)
+{
+   const sepIndex = output.main.indexOf(" ");
+
+   if (sepIndex > -1)
+   {
+      output.params = output.main.slice(sepIndex + 1);
+      output.main = output.main.slice(0, sepIndex);
+   }
+};
+
 // --------------------------------------
 // Analyze arguments from command string
 // --------------------------------------
@@ -53,25 +83,13 @@ module.exports = function(msg)
       params: null
    };
 
-   const hasContent = (/([^:]*):(.*)/).exec(msg);
+   checkContent(msg, output);
 
-   if (hasContent)
+   getMainArg(output);
+
+   if (output.main.startsWith("<") || output.main.startsWith("channel"))
    {
-      output.main = hasContent[1].trim();
-      output.content = hasContent[2].trim();
-   }
-
-   const sepIndex = output.main.indexOf(" ");
-
-   if (sepIndex > -1)
-   {
-      output.params = output.main.slice(sepIndex + 1);
-      output.main = output.main.slice(0, sepIndex);
-   }
-
-   if (output.main.startsWith("<"))
-   {
-      output.auto = output.main.slice(1,-1);
+      output.auto = output.main;
       output.main = "auto";
    }
 

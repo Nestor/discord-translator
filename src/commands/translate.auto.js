@@ -1,10 +1,53 @@
-/*eslint-disable*/
+const setStatus = require("../core/status");
+const botSend = require("../core/send");
+const translate = require("../core/translate");
+
+// ------------------------------
+// Auto translate Channel/Author
+// ------------------------------
+
 module.exports = function(data)
 {
+   //
+   // Disallow this command in Direct/Private messages
+   //
+
+   if (data.message.channel.type === "dm")
+   {
+      data.color = "warn";
+      data.text = "This command can only be called in server channels";
+
+      return botSend(data);
+   }
+
+   //
+   // Set default language if none specified
+   //
+
+   var translateTo = {
+      valid: [data.config.defaultLanguage]
+   };
+
+   (function()
+   {
+      if (data.cmd.to)
+      {
+         translateTo = data.cmd.to;
+      }
+   })();
+
+   //
+   // Prepare translation data
+   //
+
+   data.translate = {
+      to: translateTo,
+      from: data.cmd.from
+   };
+
+
+
 /*
-   // ------------------------------
-   // Auto translate Channel/Author
-   // ------------------------------
 
    if (
       translateArgs.startsWith("<#") ||

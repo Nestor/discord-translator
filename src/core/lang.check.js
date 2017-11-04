@@ -62,6 +62,11 @@ module.exports = function(lang)
       return null;
    }
 
+   if (lang === "default")
+   {
+      return "default";
+   }
+
    var langs = {
       unchecked: fn.arraySplit(lang, ","),
       valid: [],

@@ -5,27 +5,11 @@ const translate = require("../core/translate");
 module.exports = function(data)
 {
    //
-   // Set default language if none specified
-   //
-
-   var translateTo = {
-      valid: [data.config.defaultLanguage]
-   };
-
-   (function()
-   {
-      if (data.cmd.to)
-      {
-         translateTo = data.cmd.to;
-      }
-   })();
-
-   //
    // Prepare translation data
    //
 
    data.translate = {
-      to: translateTo,
+      to: data.cmd.to,
       from: data.cmd.from
    };
 

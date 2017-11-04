@@ -103,6 +103,18 @@ const bufferChains = function(data, from)
    });
 };
 
+// ---------------------
+// Invalid lang checker
+// ---------------------
+
+const invalidLangChecker = function(obj, callback)
+{
+   if (obj && obj.invalid && obj.invalid.length > 0)
+   {
+      return callback();
+   }
+};
+
 // ----------------
 // Run translation
 // ----------------
@@ -119,35 +131,39 @@ module.exports = function(data) //eslint-disable-line complexity
    // Report invalid languages
    //
 
-   if (data.translate.from && data.translate.from.invalid.length > 0)
+   invalidLangChecker(data.translate.from, function()
    {
       data.color = "warn";
-      data.text =
-         "Translating from these langs is not supported: " +
-         data.translate.from.invalid;
-
+      data.text = "Cannot translate from " + data.translate.from.invalid;
       botSend(data);
-   }
+   });
 
-   if (data.translate.to.invalid && data.translate.to.invalid.length > 0)
+   invalidLangChecker(data.translate.to, function()
    {
       data.color = "warn";
-      data.text =
-         "Translating to these langs is not supported: " +
-         data.translate.to.invalid;
-
+      data.text = "Cannot translate to " + data.translate.to.invalid;
       botSend(data);
-   }
+   });
 
    //
-   // Set default `from` language
+   // Set default languages
    //
+
+   if (!data.translate.from)
+   {
+      data.translate.from = "auto";
+   }
 
    var from = "auto";
 
-   if (data.translate.from && data.translate.from.valid.length === 1)
+   if (data.translate.from.valid && data.translate.from.valid.length === 1)
    {
       from = data.translate.from.valid[0].iso;
+   }
+
+   if (data.translate.to === "default")
+   {
+      data.translate.to = {valid: [data.config.defaultLanguage]};
    }
 
    //
