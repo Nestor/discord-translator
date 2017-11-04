@@ -2,6 +2,15 @@ const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const translate = require("../core/translate");
 
+const getCount = function(count)
+{
+   if (count)
+   {
+      return count;
+   }
+   return "-1";
+};
+
 module.exports = function(data)
 {
    //
@@ -17,15 +26,7 @@ module.exports = function(data)
    // Get count param
    //
 
-   var count = "-1";
-
-   (function()
-   {
-      if (data.cmd.num)
-      {
-         count = data.cmd.num;
-      }
-   })();
+   var count = getCount(data.cmd.num);
 
    //
    // Set mode

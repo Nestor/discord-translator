@@ -27,7 +27,7 @@ const extractParamVal = function(key, str, allowArray = false)
 
 const extractNum = function(str)
 {
-   const rgx = new RegExp("(?:^\\s*(-?\\d))|(?:[^,]\\s*(-?\\d))", "im");
+   const rgx = new RegExp("(?:^\\s*(-?\\d+))|(?:[^,]\\s*(-?\\d+))", "im");
 
    const match = rgx.exec(str);
 
