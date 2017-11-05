@@ -130,18 +130,3 @@ exports.arraySplit = function(input, sep)
    }
    return input.split(sep);
 };
-
-//
-// Check if channel is a Private/Direct Conversation
-//
-
-exports.isDM = function(channel)
-{
-   if (channel.type === "dm")
-   {
-      return true;
-   }
-   return false;
-};
-
-

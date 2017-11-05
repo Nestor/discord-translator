@@ -107,7 +107,7 @@ client.on("message", message =>
 
    (function()
    {
-      if (!fn.isDM(message.channel))
+      if (message.channel.type !== "dm")
       {
          message.isAdmin =
             message.member.permissions.has("ADMINISTRATOR");

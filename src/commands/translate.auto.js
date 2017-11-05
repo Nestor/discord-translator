@@ -1,5 +1,6 @@
 const setStatus = require("../core/status");
 const botSend = require("../core/send");
+const fn = require("../core/helpers");
 
 // ------------------------------
 // Auto translate Channel/Author
@@ -11,6 +12,8 @@ module.exports = function(data)
    // Disallow this command in Direct/Private messages
    //
 
+   setStatus(data.bot, "startTyping", data.message.channel);
+
    if (data.message.channel.type === "dm")
    {
       data.color = "warn";
@@ -19,25 +22,189 @@ module.exports = function(data)
       return botSend(data);
    }
 
-   setStatus(data.bot, "startTyping", data.message.channel);
+   //
+   // Language checks
+   //
+
+   if (data.cmd.to !== "default" && data.cmd.to.valid.length !== 1)
+   {
+      data.color = "error";
+      data.text = "Please specify 1 valid language only for auto translation.";
+
+      return botSend(data);
+   }
 
    //
    // Prepare task data
    //
 
-   var task = {
+   data.task = {
       origin: data.message.channel.id,
-      destination: data.cmd.for,
+      for: data.cmd.for,
+      dest: [],
+      invalid: [],
       from: data.cmd.from,
       to: data.cmd.to
    };
 
-   if (data.cmd.for === "default")
+   //
+   // Default (forward translations to user via dm)
+   //
+
+   (function()
    {
-      task.destination = [task.origin];
+      if (data.cmd.for === "default")
+      {
+         data.task.for = ["me"];
+      }
+   })();
+
+   //
+   // Error if non-manager sets channel as dest
+   //
+
+   if (
+      data.cmd.for === 1 &&
+      data.cmd.for[0] !== "me" &&
+      !data.message.isManager
+   )
+   {
+      data.color = "error";
+      data.text = "You need to be a channel manager to auto translate " +
+                  "this channel for others.";
+      return botSend(data);
    }
 
-   console.log(task);
+   //
+   // Validate Task(s) before sending to database
+   //
+
+   const validateTask = function()
+   {
+      // invalid langs
+
+      if (data.task.invalid.length > 0)
+      {
+         data.color = "error";
+         data.text = "Invalid auto translation request.";
+         return botSend(data);
+      }
+
+      // multiple dests set by non-manager
+
+      if (data.task.dest.length > 1 && !data.message.isManager)
+      {
+         data.color = "error";
+         data.text = "You need to be a channel manager to auto translate " +
+                     "this channel for others.";
+         return botSend(data);
+      }
+
+      console.log("final tasks:");
+      console.log(data.task);
+
+      // add ORIGIN ID to DB then IF not exists
+
+      // then add each dest to table IF NOT EXISTS
+      /*
+      data.task.dest.forEach(dest =>
+      {
+
+
+      });
+      */
+   };
+
+   //
+   // Task buffer
+   //
+
+   var taskBuffer = {
+      len: data.task.for.length,
+      dest: [],
+      reduce: function()
+      {
+         this.len--;
+         this.check();
+      },
+      update: function(dest)
+      {
+         this.dest.push(dest);
+         this.check();
+      },
+      check: function()
+      {
+         if (this.dest.length === this.len)
+         {
+            data.task.dest = fn.removeDupes(this.dest);
+            data.task.invalid = fn.removeDupes(data.task.invalid);
+            validateTask();
+         }
+      }
+   };
+
+   //
+   // Resolve ID of each destiantion (user dm/channel)
+   //
+
+   data.task.for.forEach(dest => //eslint-disable-line complexity
+   {
+      // resolve `me` / original message author
+
+      if (dest === "me")
+      {
+         data.message.author.createDM().then(dm =>
+         {
+            taskBuffer.update(`@${dm.id}`);
+         }).catch(console.error);
+      }
+
+      // resolve mentioned user(s)
+
+      if (dest.startsWith("<@"))
+      {
+         const user = data.client.users.get(dest.slice(2,-1));
+
+         if (user && !user.bot)
+         {
+            user.createDM().then(dm =>
+            {
+               taskBuffer.update(`@${dm.id}`);
+            }).catch(console.error);
+         }
+         else
+         {
+            data.task.invalid.push(dest);
+            taskBuffer.reduce();
+         }
+      }
+
+      // resolve mentioned channel(s)
+
+      if (dest.startsWith("<#"))
+      {
+         const channel = data.client.channels.get(dest.slice(2,-1));
+
+         if (channel)
+         {
+            taskBuffer.update(`#${channel.id}`);
+         }
+         else
+         {
+            data.task.invalid.push(dest);
+            taskBuffer.reduce();
+         }
+      }
+
+      // invalidate @everyone and @userGroups for now
+
+      if (dest.startsWith("@"))
+      {
+         data.task.invalid.push(dest);
+         taskBuffer.reduce();
+      }
+   });
+
 
 
 /*
