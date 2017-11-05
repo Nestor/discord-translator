@@ -55,7 +55,7 @@ const getLangISO = function(lang)
 // Language Code Converter and Validator
 // --------------------------------------
 
-module.exports = function(lang)
+module.exports = function(lang, single = false)
 {
    if (!lang)
    {
@@ -65,6 +65,11 @@ module.exports = function(lang)
    if (lang === "default")
    {
       return "default";
+   }
+
+   if (lang === "auto")
+   {
+      return "auto";
    }
 
    var langs = {
@@ -102,6 +107,11 @@ module.exports = function(lang)
    langs.invalid = fn.removeDupes(langs.invalid);
 
    delete langs.unchecked;
+
+   if (single)
+   {
+      return langs.unique[0];
+   }
 
    return langs;
 };

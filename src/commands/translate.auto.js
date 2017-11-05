@@ -48,18 +48,6 @@ module.exports = function(data)
    };
 
    //
-   // Default (forward translations to user via dm)
-   //
-
-   (function()
-   {
-      if (data.cmd.for === "default")
-      {
-         data.task.for = ["me"];
-      }
-   })();
-
-   //
    // Error if non-manager sets channel as dest
    //
 

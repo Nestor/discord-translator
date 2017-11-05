@@ -5,7 +5,7 @@ const fn = require("../core/helpers");
 // Extract a parameter's value with regex
 // ---------------------------------------
 
-const extractParamVal = function(key, str, allowArray = false)
+const extractParam = function(key, str, def = null, allowArray = false)
 {
    const rgx = new RegExp(`${key}\\s*((?:(?:\\S*\\s*,\\s*)+\\S*)|\\S*)`, "m");
 
@@ -19,7 +19,7 @@ const extractParamVal = function(key, str, allowArray = false)
       }
       return match[1];
    }
-   return "default";
+   return def;
 };
 
 // --------------------
@@ -94,11 +94,11 @@ module.exports = function(msg)
       output.main = "auto";
    }
 
-   output.to = langCheck(extractParamVal("to", output.params, true));
+   output.to = langCheck(extractParam("to", output.params, "default", true));
 
-   output.from = langCheck(extractParamVal("from", output.params));
+   output.from = langCheck(extractParam("from", output.params, "auto"), true);
 
-   output.for = extractParamVal("for", output.params, true);
+   output.for = extractParam("for", output.params, ["me"], true);
 
    output.num = extractNum(output.params);
 

@@ -149,7 +149,7 @@ module.exports = function(data) //eslint-disable-line complexity
    // Set default languages
    //
 
-   var from = "auto";
+   var from = data.translate.from;
 
    if (data.translate.from.valid && data.translate.from.valid.length === 1)
    {
