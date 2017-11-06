@@ -16,7 +16,6 @@ const botCreator = "@aziz#5919";
 //
 
 const fn = require("./core/helpers");
-const cache = require("./core/cache");
 const setStatus = require("./core/status");
 const autoTranslate = require("./core/auto");
 
@@ -48,21 +47,6 @@ var config = {
    maxChains: 10,
    maxChainLen: 5,
    maxEmbeds: 5
-};
-
-//
-// Internal Database
-//
-
-var db = {
-   messages: {},
-   chains: {},
-   lastAuthor: {}
-};
-
-var auto = {
-   channels: {},
-   dms: {}
 };
 
 // ==================
@@ -117,12 +101,6 @@ client.on("message", message =>
       }
    })();
 
-   //
-   // Initalize internal cache/database for current channel
-   //
-
-   cache.init(message.channel, db);
-
    // ===================
    // Proccess Commands
    // ===================
@@ -171,13 +149,7 @@ client.on("message", message =>
 
    // ADD: auto translate check
 
-   autoTranslate(message, db, auto);
-
-   //
-   // Update cache/database
-   //
-
-   return cache.update(message, db);
+   autoTranslate(message);
 });
 
 client.login(token);
