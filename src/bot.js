@@ -15,6 +15,7 @@ const botCreator = "@aziz#5919";
 // Core
 //
 
+const db = require("./core/db");
 const fn = require("./core/helpers");
 const setStatus = require("./core/status");
 const autoTranslate = require("./core/auto");
@@ -68,6 +69,8 @@ client.on("ready", () =>
    );
 
    setStatus(bot, "online");
+
+   db();
 });
 
 // ====================
