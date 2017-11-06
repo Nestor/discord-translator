@@ -8,17 +8,16 @@ const fn = require("../core/helpers");
 
 module.exports = function(data)
 {
+   setStatus(data.bot, "startTyping", data.message.channel);
+
    //
    // Disallow this command in Direct/Private messages
    //
-
-   setStatus(data.bot, "startTyping", data.message.channel);
 
    if (data.message.channel.type === "dm")
    {
       data.color = "warn";
       data.text = "This command can only be called in server channels";
-
       return botSend(data);
    }
 
@@ -30,7 +29,6 @@ module.exports = function(data)
    {
       data.color = "error";
       data.text = "Please specify 1 valid language only for auto translation.";
-
       return botSend(data);
    }
 
