@@ -69,8 +69,22 @@ client.on("ready", () =>
    );
 
    setStatus(bot, "online");
+});
 
-   db();
+// ===================
+// Initialize  Guilds
+// ===================
+
+client.on("guildCreate", guild =>
+{
+   console.log("joined the `" + guild.name + "` guild.");
+   db.addServer(guild.id, config.defaultLanguage.iso);
+});
+
+client.on("guildDelete", guild =>
+{
+   console.log("left the `" + guild.name + "` guild.");
+   db.removeServer(guild.id);
 });
 
 // ====================

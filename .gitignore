@@ -1,3 +1,4 @@
 node_modules
 build
 src/core/auth.js
+translator.db
