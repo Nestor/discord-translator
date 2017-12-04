@@ -1,6 +1,20 @@
 const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const fn = require("../core/helpers");
+const db = require("../core/db");
+
+// ------------------------------
+// Resolve language to
+// ------------------------------
+
+function resolveLangTo(to)
+{
+   if (to !== "default")
+   {
+      return to.valid[0].iso;
+   }
+   return to;
+}
 
 // ------------------------------
 // Auto translate Channel/Author
@@ -25,6 +39,13 @@ module.exports = function(data)
    // Language checks
    //
 
+   if (data.cmd.from === "auto")
+   {
+      data.color = "error";
+      data.text = "Please specify a valid language to translate from";
+      return botSend(data);
+   }
+
    if (data.cmd.to !== "default" && data.cmd.to.valid.length !== 1)
    {
       data.color = "error";
@@ -42,7 +63,8 @@ module.exports = function(data)
       dest: [],
       invalid: [],
       from: data.cmd.from,
-      to: data.cmd.to
+      to: resolveLangTo(data.cmd.to),
+      server: data.message.guild.id
    };
 
    //
@@ -86,19 +108,11 @@ module.exports = function(data)
          return botSend(data);
       }
 
-      console.log("final tasks:");
-      console.log(data.task);
+      //
+      // Add task to database
+      //
 
-      // add ORIGIN ID to DB then IF not exists
-
-      // then add each dest to table IF NOT EXISTS
-      /*
-      data.task.dest.forEach(dest =>
-      {
-
-
-      });
-      */
+      db.addTask(data.task);
    };
 
    //
@@ -141,7 +155,7 @@ module.exports = function(data)
       {
          data.message.author.createDM().then(dm =>
          {
-            taskBuffer.update(`@${dm.id}`);
+            taskBuffer.update(dm.id);
          }).catch(console.error);
       }
 
@@ -155,7 +169,7 @@ module.exports = function(data)
          {
             user.createDM().then(dm =>
             {
-               taskBuffer.update(`@${dm.id}`);
+               taskBuffer.update(dm.id);
             }).catch(console.error);
          }
          else
@@ -173,7 +187,7 @@ module.exports = function(data)
 
          if (channel)
          {
-            taskBuffer.update(`#${channel.id}`);
+            taskBuffer.update(channel.id);
          }
          else
          {
