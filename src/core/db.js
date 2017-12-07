@@ -1,5 +1,6 @@
 const sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.Database("translator.db");
+const db = new sqlite3.cached.Database("translator.db");
+const autoTranslate = require("./auto");
 
 // -------------------
 // Init/create tables
@@ -39,6 +40,7 @@ const results = function(err, res)
    {
       return console.error(err);
    }
+   //console.log("sql res:" + res);
    return res;
 };
 
@@ -70,6 +72,34 @@ exports.removeServer = function(id)
    db.serialize(function()
    {
       db.run("update `servers` set active = 0 where `id` = ?", id);
+   });
+};
+
+// ------------------
+// Get Channel Tasks
+// ------------------
+
+exports.channelTasks = function(data)
+{
+   var id = data.message.channel.id;
+
+   if (data.message.channel.type === "dm")
+   {
+      id = "@" + data.message.author.id;
+   }
+
+   db.serialize(function()
+   {
+      db.all(
+         `select dest, lang_to, lang_from from tasks` +
+         ` where origin = "${id}" and active = "1"`,
+         function(err, rows)
+         {
+            data.err = err;
+            data.rows = rows;
+            autoTranslate(data);
+         }
+      );
    });
 };
 
@@ -126,4 +156,11 @@ exports.addTask = function(task)
    });
 };
 
-//db.close();
+// ------------------
+// Close DB
+// ------------------
+
+exports.close = function()
+{
+   db.close();
+};

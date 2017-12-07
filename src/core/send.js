@@ -8,17 +8,14 @@ const colors = require("./colors");
 
 const sendBox = function(data)
 {
-   (function()
+   if (data.author)
    {
-      if (data.author)
-      {
-         data.author = {
-            name: data.author.username,
-            //eslint-disable-next-line camelcase
-            icon_url: data.author.displayAvatarURL
-         };
-      }
-   })();
+      data.author = {
+         name: data.author.username,
+         //eslint-disable-next-line camelcase
+         icon_url: data.author.displayAvatarURL
+      };
+   }
 
    data.channel.send({
       embed: {
@@ -70,6 +67,21 @@ module.exports = function(data)
       forward: data.forward,
       bot: data.bot
    };
+
+   if (data.forward)
+   {
+      const forwardChannel = data.client.channels.get(data.forward);
+
+      if (forwardChannel)
+      {
+         sendData.channel = forwardChannel;
+      }
+
+      else
+      {
+         return;
+      }
+   }
 
    if (data.showAuthor)
    {

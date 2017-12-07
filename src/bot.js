@@ -18,7 +18,6 @@ const botCreator = "@aziz#5919";
 const db = require("./core/db");
 const fn = require("./core/helpers");
 const setStatus = require("./core/status");
-const autoTranslate = require("./core/auto");
 
 //
 // Commands
@@ -106,17 +105,14 @@ client.on("message", message =>
    // Embed member permissions in message data
    //
 
-   (function()
+   if (message.channel.type !== "dm")
    {
-      if (message.channel.type !== "dm")
-      {
-         message.isAdmin =
-            message.member.permissions.has("ADMINISTRATOR");
+      message.isAdmin =
+         message.member.permissions.has("ADMINISTRATOR");
 
-         message.isManager =
-            fn.checkPerm(message.member, message.channel, "MANAGE_CHANNELS");
-      }
-   })();
+      message.isManager =
+         fn.checkPerm(message.member, message.channel, "MANAGE_CHANNELS");
+   }
 
    // ===================
    // Proccess Commands
@@ -160,13 +156,16 @@ client.on("message", message =>
       return;
    }
 
-   // ========================
-   // Proccess normal message
-   // ========================
+   // ==========================
+   // Check for automatic tasks
+   // ==========================
 
-   // ADD: auto translate check
-
-   autoTranslate(message);
+   db.channelTasks({
+      client: client,
+      config: config,
+      bot: bot,
+      message: message
+   });
 });
 
 client.login(token);

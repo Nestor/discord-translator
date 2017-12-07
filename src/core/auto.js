@@ -1,75 +1,78 @@
-/*eslint-disable*/
-module.exports = function()
+const translate = require("./translate");
+
+module.exports = function(data)
 {
-/*
-   // ----------------------------------
-   // Auto Translate Message in Channel
-   // ----------------------------------
-
-   if (`#${channel.id}` in dbAutomatic)
+   if (data.err)
    {
-      var autoChannel = dbAutomatic[`#${channel.id}`];
-
-      for (var key in autoChannel)
-      {
-         var toLang = autoChannel[key].to;
-         var fromLang = autoChannel[key].from;
-         var destination = key;
-         var footer = null;
-
-         // check if forward channel is same as origin
-
-         var forward = true;
-         if (channel.id === destination)
-         {
-            forward = false;
-         }
-
-         if (forward)
-         {
-            footer = {
-               text: `via ${channel.name}`,
-               //eslint-disable-next-line camelcase
-               icon_url: server.iconURL
-            };
-         }
-
-         sendTranslation({
-            toLang: toLang,
-            fromLang: fromLang,
-            original: message.content,
-            author: author,
-            channel: destination,
-            forwardTo: forward,
-            embeds: message.embeds,
-            dyk: true,
-            footer: footer
-         });
-      }
+      return console.error(data.err);
    }
 
-   // -----------------------------
-   // Auto Translate Message in DM
-   // -----------------------------
-
-   if (fn.isDM(channel) && `@${author.id}` in dbAutoDMs)
+   if (data.rows.length > 0)
    {
-      var data = dbAutoDMs[`@${author.id}`];
+      console.log("channel in db - rows:" + data.rows.length);
 
-      sendTranslation({
-         toLang: data.to,
-         fromLang: data.from,
-         channel: data.destination,
-         original: message.content,
-         author: author,
-         forwardTo: true,
-         embeds: message.embeds,
-         footer: {
-            text: `via direct message`,
-            //eslint-disable-next-line camelcase
-            icon_url: bot.displayAvatarURL
+      data.rows.forEach(row =>
+      {
+         console.log(row);
+
+         //
+         // Set forward channel for sender
+         //
+
+         if (row.dest !== data.message.channel.id)
+         {
+            data.forward = row.dest;
+            data.embeds = data.message.embeds;
+
+            //
+            // Add footer to forwarded messages
+            //
+
+            if (data.message.channel.type === "text")
+            {
+               data.footer = {
+                  text: `via #${data.message.channel.name}`,
+                  //eslint-disable-next-line camelcase
+                  icon_url: data.message.guild.iconURL
+               };
+            }
+
+            if (data.message.channel.type === "dm")
+            {
+               data.footer = {
+                  text: `via DM`
+               };
+            }
+         }
+
+         //
+         // Set translation options
+         //
+
+         data.translate = {
+            original: data.message.content,
+            to: { valid: [{iso: row.lang_to}] },
+            from: { valid: [{iso: row.lang_from}] }
+         };
+
+         //
+         // Start translation
+         //
+
+         if (row.dest.startsWith("@"))
+         {
+            data.client.users.get(row.dest.slice(1)).createDM().then(dm =>
+            {
+               data.forward = dm.id;
+               data.footer.text += `  ‹  ${data.message.guild.name}`;
+               translate(data);
+            }).catch(console.error);
+         }
+
+         else
+         {
+            translate(data);
          }
       });
    }
-*/
 };

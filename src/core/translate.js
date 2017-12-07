@@ -36,8 +36,13 @@ const googleLink = function(original, from, to)
 
 function getUserColor(data, callback)
 {
+   const fw = data.forward;
+   const txt = data.text;
+
    jimp.read(data.author.displayAvatarURL).then(function(image)
    {
+      data.forward = fw;
+      data.text = txt;
       data.color = colors.rgb2dec(colorThief.getColor(image));
       callback(data);
    }
@@ -176,10 +181,12 @@ module.exports = function(data) //eslint-disable-line complexity
 
    if (Math.random() < 0.05)
    {
-      setStatus(data.bot, "startTyping", data.message.channel);
+      const originalFt = data.footer;
+      data.footer = null;
       data.text = "Did you know?";
       data.color = "info";
       botSend(data);
+      data.footer = originalFt;
    }
 
    //
@@ -267,10 +274,16 @@ module.exports = function(data) //eslint-disable-line complexity
       from: from
    };
 
-   setStatus(data.bot, "startTyping", data.message.channel);
+   if (!data.forward)
+   {
+      setStatus(data.bot, "startTyping", data.message.channel);
+   }
+
+   const fw = data.forward;
 
    translate(data.translate.original, opts).then(res =>
    {
+      data.forward = fw;
       data.color = 0;
       data.text = translateFix(res.text);
       data.text += googleLink(data.translate.original, opts.from, opts.to);
