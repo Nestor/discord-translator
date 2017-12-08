@@ -65,7 +65,8 @@ module.exports = function(data)
       invalid: [],
       from: data.cmd.from,
       to: resolveLangTo(data.cmd.to),
-      server: data.message.guild.id
+      server: data.message.guild.id,
+      reply: data.message.guild.nameAcronym
    };
 
    //
@@ -171,11 +172,6 @@ module.exports = function(data)
 
       if (dest === "me")
       {
-         //data.message.author.createDM().then(dm =>
-         //{
-         //   taskBuffer.update(dm.id);
-         //}).catch(console.error);
-
          taskBuffer.update("@" + data.message.author.id);
       }
 

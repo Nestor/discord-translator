@@ -22,6 +22,7 @@ db.serialize(function()
    db.run(`create table if not exists tasks (
       origin varchar(32),
       dest varchar(32),
+      reply varchar(16),
       server varchar(32),
       active varchar,
       lang_to varchar(8),
@@ -30,9 +31,9 @@ db.serialize(function()
    )`);
 });
 
-// -------------------
+// ---------------
 // Result Checker
-// -------------------
+// ---------------
 
 const results = function(err, res)
 {
@@ -91,7 +92,7 @@ exports.channelTasks = function(data)
    db.serialize(function()
    {
       db.all(
-         `select dest, lang_to, lang_from from tasks` +
+         `select dest, reply, lang_to, lang_from from tasks` +
          ` where origin = "${id}" and active = "1"`,
          function(err, rows)
          {
@@ -103,9 +104,9 @@ exports.channelTasks = function(data)
    });
 };
 
-// ------------------
+// ---------
 // Add Task
-// ------------------
+// ---------
 
 const taskSQL = function(task, dest, flip = false)
 {
@@ -123,12 +124,15 @@ const taskSQL = function(task, dest, flip = false)
       langs.reverse();
    }
 
+   const reply = task.reply + task.origin.slice(-3);
+
    const sql =
    `insert or replace into tasks (` +
-       `origin, dest, server, active, lang_to, lang_from` +
+       `origin, dest, reply, server, active, lang_to, lang_from` +
    `) values (` +
        `"${ids[0]}",` +
        `"${ids[1]}",` +
+       `"${reply}",` +
        `"${task.server}",` +
        `"1", "${langs[0]}", "${langs[1]}"` +
    `);`;
@@ -156,9 +160,9 @@ exports.addTask = function(task)
    });
 };
 
-// ------------------
+// ---------
 // Close DB
-// ------------------
+// ---------
 
 exports.close = function()
 {

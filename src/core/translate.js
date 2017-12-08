@@ -38,11 +38,13 @@ function getUserColor(data, callback)
 {
    const fw = data.forward;
    const txt = data.text;
+   const ft = data.footer;
 
    jimp.read(data.author.displayAvatarURL).then(function(image)
    {
       data.forward = fw;
       data.text = txt;
+      data.footer = ft;
       data.color = colors.rgb2dec(colorThief.getColor(image));
       callback(data);
    }
