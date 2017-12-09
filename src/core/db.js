@@ -12,9 +12,9 @@ db.serialize(function()
 
    db.run(`create table if not exists servers (
       id varchar(32) not null primary key,
-      lang varchar(8),
-      count integer,
-      active boolean
+      lang varchar(8) default "en",
+      count integer default 0,
+      active boolean default 1
    )`);
 
    // Create tasks table (for auto translations)
@@ -24,11 +24,15 @@ db.serialize(function()
       dest varchar(32),
       reply varchar(16),
       server varchar(32),
-      active varchar,
-      lang_to varchar(8),
-      lang_from varchar(8),
+      active boolean default 1,
+      lang_to varchar(8) default "en",
+      lang_from varchar(8) default "en",
       unique(origin, dest)
    )`);
+
+   // Add global server row
+
+   db.run(`insert or replace into servers (id, lang) values ("bot", "en")`);
 });
 
 // ---------------
@@ -114,6 +118,39 @@ exports.getCount = function(table, row, val, cb)
    {
       db.get(
          `select count(${row}) from ${table} where ${row} = "${val}"`,
+         function(err, row)
+         {
+            cb(err, row);
+         }
+      );
+   });
+};
+
+// ------------
+// Update Stat
+// ------------
+
+exports.increase = function(table, key, val, stat)
+{
+   db.serialize(function()
+   {
+      db.run(
+         `update ${table} set ${stat} = ${stat} + 1 where ${key} = "${val}";`
+      );
+   });
+};
+
+// -------------
+// Get stat sum
+// -------------
+
+exports.getStats = function(cb)
+{
+   db.serialize(function()
+   {
+      db.get(
+         `select sum(count) as "totalCount",` +
+         `count(id) - 1 as "totalServers" from servers;`,
          function(err, row)
          {
             cb(err, row);

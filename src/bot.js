@@ -26,6 +26,7 @@ const setStatus = require("./core/status");
 const cmdArgs = require("./commands/args");
 const cmdHelp = require("./commands/help");
 const cmdList = require("./commands/list");
+const cmdStats = require("./commands/stats");
 const cmdSettings = require("./commands/settings");
 const cmdTranslateLast = require("./commands/translate.last");
 const cmdTranslateThis = require("./commands/translate.this");
@@ -141,6 +142,7 @@ client.on("message", message =>
          "stop": cmdTranslateStop,
          "help": cmdHelp,
          "list": cmdList,
+         "stats": cmdStats,
          "settings": cmdSettings
       };
 

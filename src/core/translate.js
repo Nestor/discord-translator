@@ -2,6 +2,7 @@ const translate = require("google-translate-api");
 const colorThief = require("color-thief-jimp");
 const jimp = require("jimp");
 
+const db = require("./db");
 const resolveID = require("./resolve.id");
 const setStatus = require("./status");
 const botSend = require("./send");
@@ -120,6 +121,22 @@ const invalidLangChecker = function(obj, callback)
    {
       return callback();
    }
+};
+
+// --------------------
+// Update server stats
+// --------------------
+
+const updateServerStats = function(message)
+{
+   var id = "bot";
+
+   if (message.channel.type === "text")
+   {
+      id = message.channel.guild.id;
+   }
+
+   db.increase("servers", "id", id, "count");
 };
 
 // ----------------
@@ -287,6 +304,7 @@ module.exports = function(data) //eslint-disable-line complexity
 
    translate(data.translate.original, opts).then(res =>
    {
+      updateServerStats(data.message);
       data.forward = fw;
       data.color = 0;
       data.text = translateFix(res.text);
