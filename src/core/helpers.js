@@ -87,24 +87,6 @@ exports.isObject = function(data)
 };
 
 //
-// Extract unixtime from string
-//
-
-exports.getTimeFromStr = function(str)
-{
-   return (/\s*?\\?n?\[(\d*)\]/i).exec(str)[1];
-};
-
-//
-// Remove unixtime from string
-//
-
-exports.remTimeFromStr = function(str, timestamp)
-{
-   return str.replace(`[${timestamp}]`, "");
-};
-
-//
 // Sort array by specific key
 //
 
