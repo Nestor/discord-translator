@@ -104,6 +104,24 @@ exports.channelTasks = function(data)
    });
 };
 
+// --------------
+// Get Row Count
+// --------------
+
+exports.getCount = function(table, row, val, cb)
+{
+   db.serialize(function()
+   {
+      db.get(
+         `select count(${row}) from ${table} where ${row} = "${val}"`,
+         function(err, row)
+         {
+            cb(err, row);
+         }
+      );
+   });
+};
+
 // ---------
 // Add Task
 // ---------

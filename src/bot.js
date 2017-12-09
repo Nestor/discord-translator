@@ -46,7 +46,8 @@ var config = {
    maxMulti: 6,
    maxChains: 10,
    maxChainLen: 5,
-   maxEmbeds: 5
+   maxEmbeds: 5,
+   maxTasksPerChannel: 10
 };
 
 // ==================

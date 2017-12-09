@@ -86,6 +86,122 @@ module.exports = function(data)
    }
 
    //
+   // Error if channel exceeds maximum allowed tasks
+   //
+
+   db.getCount("tasks", "origin", data.task.origin, function(err, res)
+   {
+      if (err)
+      {
+         console.error(err);
+      }
+
+      const taskCount = res[Object.keys(res)[0]];
+
+      if (data.task.for.length + taskCount >= data.config.maxTasksPerChannel)
+      {
+         data.color = "error";
+         data.text = "Cannot add more auto-translation tasks for this channel" +
+                     ` (${data.config.maxTasksPerChannel} max)`;
+         return botSend(data);
+      }
+
+      taskLoop();
+   });
+
+   //
+   // Resolve ID of each destiantion (user dm/channel)
+   //
+
+   const taskLoop = function()
+   {
+      data.task.for.forEach(dest => //eslint-disable-line complexity
+      {
+         // resolve `me` / original message author
+
+         if (dest === "me")
+         {
+            taskBuffer.update("@" + data.message.author.id);
+         }
+
+         // resolve mentioned user(s)
+
+         if (dest.startsWith("<@"))
+         {
+            const user = data.client.users.get(dest.slice(2,-1));
+
+            if (user && !user.bot)
+            {
+               user.createDM().then(dm =>
+               {
+                  taskBuffer.update(dm.id);
+               }).catch(console.error);
+
+               taskBuffer.update("@" + user.id);
+            }
+            else
+            {
+               data.task.invalid.push(dest);
+               taskBuffer.reduce();
+            }
+         }
+
+         // resolve mentioned channel(s)
+
+         if (dest.startsWith("<#"))
+         {
+            const channel = data.client.channels.get(dest.slice(2,-1));
+
+            if (channel)
+            {
+               taskBuffer.update(channel.id);
+            }
+            else
+            {
+               data.task.invalid.push(dest);
+               taskBuffer.reduce();
+            }
+         }
+
+         // invalidate @everyone and @userGroups for now
+
+         if (dest.startsWith("@"))
+         {
+            data.task.invalid.push(dest);
+            taskBuffer.reduce();
+         }
+      });
+   };
+
+   //
+   // Task buffer
+   //
+
+   var taskBuffer = {
+      len: data.task.for.length,
+      dest: [],
+      reduce: function()
+      {
+         this.len--;
+         this.check();
+      },
+      update: function(dest)
+      {
+         this.dest.push(dest);
+         this.check();
+      },
+      check: function()
+      {
+         if (this.dest.length === this.len)
+         {
+            data.task.dest = fn.removeDupes(this.dest);
+            data.task.invalid = fn.removeDupes(data.task.invalid);
+            validateTask();
+         }
+      }
+   };
+
+   //
    // Validate Task(s) before sending to database
    //
 
@@ -133,93 +249,4 @@ module.exports = function(data)
 
       return botSend(data);
    };
-
-   //
-   // Task buffer
-   //
-
-   var taskBuffer = {
-      len: data.task.for.length,
-      dest: [],
-      reduce: function()
-      {
-         this.len--;
-         this.check();
-      },
-      update: function(dest)
-      {
-         this.dest.push(dest);
-         this.check();
-      },
-      check: function()
-      {
-         if (this.dest.length === this.len)
-         {
-            data.task.dest = fn.removeDupes(this.dest);
-            data.task.invalid = fn.removeDupes(data.task.invalid);
-            validateTask();
-         }
-      }
-   };
-
-   //
-   // Resolve ID of each destiantion (user dm/channel)
-   //
-
-   data.task.for.forEach(dest => //eslint-disable-line complexity
-   {
-      // resolve `me` / original message author
-
-      if (dest === "me")
-      {
-         taskBuffer.update("@" + data.message.author.id);
-      }
-
-      // resolve mentioned user(s)
-
-      if (dest.startsWith("<@"))
-      {
-         const user = data.client.users.get(dest.slice(2,-1));
-
-         if (user && !user.bot)
-         {
-            user.createDM().then(dm =>
-            {
-               taskBuffer.update(dm.id);
-            }).catch(console.error);
-
-            taskBuffer.update("@" + user.id);
-         }
-         else
-         {
-            data.task.invalid.push(dest);
-            taskBuffer.reduce();
-         }
-      }
-
-      // resolve mentioned channel(s)
-
-      if (dest.startsWith("<#"))
-      {
-         const channel = data.client.channels.get(dest.slice(2,-1));
-
-         if (channel)
-         {
-            taskBuffer.update(channel.id);
-         }
-         else
-         {
-            data.task.invalid.push(dest);
-            taskBuffer.reduce();
-         }
-      }
-
-      // invalidate @everyone and @userGroups for now
-
-      if (dest.startsWith("@"))
-      {
-         data.task.invalid.push(dest);
-         taskBuffer.reduce();
-      }
-   });
 };
