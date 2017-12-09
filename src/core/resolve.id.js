@@ -35,12 +35,12 @@ exports.getChName = function(channel)
 // Convert IDs to prefixed names (for google-translate link)
 // ----------------------------------------------------------
 
-exports.idConvert = function(string)
+exports.idConvert = function(string, client)
 {
    var regex = (/<([@#]\d*)>/gm);
    var output = string.replace(regex, function(match, contents)
    {
-      return module.exports.main(contents, "prefixed");
+      return module.exports.main(client, contents, "prefixedName");
    });
    return output;
 };
@@ -93,6 +93,10 @@ exports.main = function(client, id, output = null)
       "prefixed": function()
       {
          return resolved.prefix + resolved.pure;
+      },
+      "prefixedName": function()
+      {
+         return resolved.prefix + resolved.name;
       },
       "type": function()
       {

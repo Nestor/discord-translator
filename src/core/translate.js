@@ -22,9 +22,9 @@ const translateFix = function(string)
 // Generate Google Translate URL (for suggestion)
 // -----------------------------------------------
 
-const googleLink = function(original, from, to)
+const googleLink = function(original, from, to, client)
 {
-   var resolved = resolveID.idConvert(original);
+   var resolved = resolveID.idConvert(original, client);
    var google = "https://translate.google.com/?ref=discord-translator#";
    var link = google + `${from}/${to}/` + encodeURIComponent(resolved);
    return `   [:heavy_check_mark:](${link})`;
@@ -92,7 +92,7 @@ const bufferChains = function(data, from)
          from: from
       }).then(res =>
       {
-         const link = googleLink(chainMsgs, from, to);
+         const link = googleLink(chainMsgs, from, to, data.client);
          const output = translateFix(res.text) + link;
 
          getUserColor(chain, function()
@@ -258,7 +258,9 @@ module.exports = function(data) //eslint-disable-line complexity
          }).then(res =>
          {
             const title = `\`\`\`LESS\n ${lang.name} (${lang.native}) \`\`\`\n`;
-            const link = googleLink(data.translate.original, from, lang.iso);
+            const link = googleLink(
+               data.translate.original, from, lang.iso, data.client
+            );
             const output = "\n" + title + translateFix(res.text) + link + "\n";
             return translateBuffer[bufferID].update(output, data);
          });
@@ -288,7 +290,9 @@ module.exports = function(data) //eslint-disable-line complexity
       data.forward = fw;
       data.color = 0;
       data.text = translateFix(res.text);
-      data.text += googleLink(data.translate.original, opts.from, opts.to);
+      data.text += googleLink(
+         data.translate.original, opts.from, opts.to, data.client
+      );
       data.showAuthor = true;
       return getUserColor(data, botSend);
    });
