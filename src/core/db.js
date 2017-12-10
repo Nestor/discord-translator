@@ -159,39 +159,6 @@ exports.getCount = function(table, row, val, cb)
    });
 };
 
-// ------------
-// Update stat
-// ------------
-
-exports.increase = function(table, key, val, stat)
-{
-   return db.serialize(function()
-   {
-      db.run(
-         `update ${table} set ${stat} = ${stat} + 1 where ${key} = "${val}";`
-      );
-   });
-};
-
-// --------------
-// Get bot stats
-// --------------
-
-exports.getStats = function(cb)
-{
-   return db.serialize(function()
-   {
-      db.get(
-         `select sum(count) as "totalCount",` +
-         `count(id) - 1 as "totalServers" from servers;`,
-         function(err, row)
-         {
-            cb(err, row);
-         }
-      );
-   });
-};
-
 // ---------
 // Add Task
 // ---------
@@ -245,6 +212,57 @@ exports.addTask = function(task)
          });
       });
       db.run("end");
+   });
+};
+
+// ------------
+// Update stat
+// ------------
+
+exports.increase = function(table, key, val, stat)
+{
+   return db.serialize(function()
+   {
+      db.run(
+         `update ${table} set ${stat} = ${stat} + 1 where ${key} = "${val}";`
+      );
+   });
+};
+
+// --------------
+// Get bot stats
+// --------------
+
+exports.getStats = function(cb)
+{
+   return db.serialize(function()
+   {
+      db.get(
+         `select sum(count) as "totalCount",` +
+         `count(id) - 1 as "totalServers" from servers;`,
+         function(err, row)
+         {
+            cb(err, row);
+         }
+      );
+   });
+};
+
+// ----------------
+// Get server info
+// ----------------
+
+exports.getServerInfo = function(id, cb)
+{
+   return db.serialize(function()
+   {
+      db.get(
+         `select lang, count, active from servers where id = "${id}";`,
+         function(err, row)
+         {
+            cb(err, row);
+         }
+      );
    });
 };
 

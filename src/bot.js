@@ -18,20 +18,7 @@ const botCreator = "@aziz#5919";
 const db = require("./core/db");
 const fn = require("./core/helpers");
 const setStatus = require("./core/status");
-
-//
-// Commands
-//
-
 const cmdArgs = require("./commands/args");
-const cmdHelp = require("./commands/help");
-const cmdList = require("./commands/list");
-const cmdStats = require("./commands/stats");
-const cmdSettings = require("./commands/settings");
-const cmdTranslateLast = require("./commands/translate.last");
-const cmdTranslateThis = require("./commands/translate.this");
-const cmdTranslateAuto = require("./commands/translate.auto");
-const cmdTranslateStop = require("./commands/translate.stop");
 
 //
 // Default Settings
@@ -116,59 +103,31 @@ client.on("message", message =>
          fn.checkPerm(message.member, message.channel, "MANAGE_CHANNELS");
    }
 
+   //
+   // Data object
+   //
+
+   const data = {
+      client: client,
+      config: config,
+      bot: bot,
+      message: message
+   };
+
    // ===================
    // Proccess Commands
    // ===================
 
    if (message.content.startsWith(config.translateCmd))
    {
-      //
-      // Get arguments object
-      //
-
-      const cmd = cmdArgs(
-         message.content.replace(config.translateCmd, "").trim()
-      );
-
-      //
-      // Legal Commands
-      //
-
-      const cmdMap =
-      {
-         "this": cmdTranslateThis,
-         "last": cmdTranslateLast,
-         "auto": cmdTranslateAuto,
-         "stop": cmdTranslateStop,
-         "help": cmdHelp,
-         "list": cmdList,
-         "stats": cmdStats,
-         "settings": cmdSettings
-      };
-
-      if (cmdMap.hasOwnProperty(cmd.main))
-      {
-         cmdMap[cmd.main]({
-            client: client,
-            config: config,
-            bot: bot,
-            cmd: cmd,
-            message: message
-         });
-      }
-      return;
+      return cmdArgs(data);
    }
 
    // ==========================
    // Check for automatic tasks
    // ==========================
 
-   db.channelTasks({
-      client: client,
-      config: config,
-      bot: bot,
-      message: message
-   });
+   return db.channelTasks(data);
 });
 
 client.login(token);

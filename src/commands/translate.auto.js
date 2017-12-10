@@ -5,19 +5,6 @@ const fn = require("../core/helpers");
 const db = require("../core/db");
 
 // ------------------------------
-// Resolve language to
-// ------------------------------
-
-function resolveLangTo(to)
-{
-   if (to !== "default")
-   {
-      return to.valid[0].iso;
-   }
-   return to;
-}
-
-// ------------------------------
 // Auto translate Channel/Author
 // ------------------------------
 
@@ -47,7 +34,7 @@ module.exports = function(data)
       return botSend(data);
    }
 
-   if (data.cmd.to !== "default" && data.cmd.to.valid.length !== 1)
+   if (data.cmd.to.valid.length !== 1)
    {
       data.color = "error";
       data.text = "Please specify 1 valid language only for auto translation.";
@@ -64,17 +51,19 @@ module.exports = function(data)
       dest: [],
       invalid: [],
       from: data.cmd.from,
-      to: resolveLangTo(data.cmd.to),
+      to: data.cmd.to.valid[0].iso,
       server: data.message.guild.id,
       reply: data.message.guild.nameAcronym
    };
+
+   console.log(data.task);
 
    //
    // Error if non-manager sets channel as dest
    //
 
    if (
-      data.cmd.for === 1 &&
+      //data.cmd.for === 1 &&
       data.cmd.for[0] !== "me" &&
       !data.message.isManager
    )
@@ -207,7 +196,9 @@ module.exports = function(data)
 
    const validateTask = function()
    {
-      // invalid langs
+      //
+      // Invalid dests
+      //
 
       if (data.task.invalid.length > 0)
       {
@@ -216,7 +207,9 @@ module.exports = function(data)
          return botSend(data);
       }
 
-      // multiple dests set by non-manager
+      //
+      // Multiple dests set by non-manager
+      //
 
       if (data.task.dest.length > 1 && !data.message.isManager)
       {
@@ -237,7 +230,7 @@ module.exports = function(data)
       //
 
       const langFrom = langCheck(data.task.from).valid[0].name;
-      const langTo = langCheck(data.task.to).valid[0].name;
+      const langTo = data.cmd.to.valid[0].name;
       const forNames = data.cmd.for.join(",  ").replace(
          "me", `<@${data.message.author.id}>`
       );

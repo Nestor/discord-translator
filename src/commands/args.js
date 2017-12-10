@@ -1,5 +1,19 @@
 const langCheck = require("../core/lang.check");
+const db = require("../core/db");
 const fn = require("../core/helpers");
+
+//
+// Commands
+//
+
+const cmdHelp = require("./help");
+const cmdList = require("./list");
+const cmdStats = require("./stats");
+const cmdSettings = require("./settings");
+const cmdTranslateLast = require("./translate.last");
+const cmdTranslateThis = require("./translate.this");
+const cmdTranslateAuto = require("./translate.auto");
+const cmdTranslateStop = require("./translate.stop");
 
 // ---------------------------------------
 // Extract a parameter's value with regex
@@ -77,14 +91,14 @@ const getMainArg = function(output)
 // Analyze arguments from command string
 // --------------------------------------
 
-module.exports = function(msg)
+module.exports = function(data)
 {
    var output = {
-      main: msg,
+      main: data.message.content.replace(data.config.translateCmd, "").trim(),
       params: null
    };
 
-   checkContent(msg, output);
+   checkContent(output.main, output);
 
    getMainArg(output);
 
@@ -102,6 +116,64 @@ module.exports = function(msg)
 
    output.num = extractNum(output.params);
 
-   console.log(output);
-   return output;
+   //
+   // Get server/bot info/settings
+   //
+
+   if (output.to === "default")
+   {
+      var id = "bot";
+
+      if (data.message.channel.type === "text")
+      {
+         id = data.message.channel.guild.id;
+      }
+
+      db.getServerInfo(id, function(err, server)
+      {
+         if (err)
+         {
+            console.error(err);
+            output.to = "en";
+         }
+
+         else
+         {
+            output.to = langCheck(server.lang);
+            output.server = server;
+         }
+
+         //
+         // Add command info to main data var
+         //
+
+         data.cmd = output;
+         console.log(data.cmd);
+
+         //
+         // Legal Commands
+         //
+
+         const cmdMap =
+         {
+            "this": cmdTranslateThis,
+            "last": cmdTranslateLast,
+            "auto": cmdTranslateAuto,
+            "stop": cmdTranslateStop,
+            "help": cmdHelp,
+            "list": cmdList,
+            "stats": cmdStats,
+            "settings": cmdSettings
+         };
+
+         //
+         // Execute command if exists
+         //
+
+         if (cmdMap.hasOwnProperty(output.main))
+         {
+            cmdMap[output.main](data);
+         }
+      });
+   }
 };
