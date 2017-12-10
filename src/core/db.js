@@ -255,8 +255,14 @@ exports.getStats = function(cb)
    return db.serialize(function()
    {
       db.get(
-         `select sum(count) as "totalCount",` +
-         `count(id) - 1 as "totalServers" from servers;`,
+         `select * from (select sum(count) as "totalCount",` +
+         `count(id)-1 as "totalServers" from servers),` +
+         `(select count(id)-1 as "activeSrv" from servers where active = 1),` +
+         `(select lang as "botLang" from servers where id = "bot"),` +
+         `(select count(distinct origin) as "activeTasks"` +
+         `from tasks where active = 1),` +
+         `(select count(distinct origin) as "activeUserTasks"` +
+         `from tasks where active = 1 and origin like "@%");`,
          function(err, row)
          {
             cb(err, row);
@@ -274,7 +280,12 @@ exports.getServerInfo = function(id, cb)
    return db.serialize(function()
    {
       db.get(
-         `select lang, count, active from servers where id = "${id}";`,
+         `select * from (select count as "count",` +
+         `lang as "lang" from servers where id = "${id}"),` +
+         `(select count(distinct origin) as "activeTasks"` +
+         `from tasks where server = "${id}"),` +
+         `(select count(distinct origin) as "activeUserTasks"` +
+         `from tasks where origin like "@%" and server = "${id}");`,
          function(err, row)
          {
             cb(err, row);
