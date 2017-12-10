@@ -8,14 +8,14 @@ const translate = require("../core/translate");
 
 module.exports = function(data)
 {
+   setStatus(data.bot, "startTyping", data.message.channel);
+
    //
    // Send error for empty content
    //
 
    if (!data.cmd.content)
    {
-      setStatus(data.bot, "startTyping", data.message.channel);
-
       return botSend({
          message: {
             channel: data.message.channel
@@ -25,8 +25,6 @@ module.exports = function(data)
          bot: data.bot
       });
    }
-
-   setStatus(data.bot, "startTyping", data.message.channel);
 
    //
    // Start translation

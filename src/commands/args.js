@@ -120,60 +120,69 @@ module.exports = function(data)
    // Get server/bot info/settings
    //
 
-   if (output.to === "default")
-   {
-      var id = "bot";
+   var id = "bot";
 
-      if (data.message.channel.type === "text")
+   if (data.message.channel.type === "text")
+   {
+      id = data.message.channel.guild.id;
+   }
+
+   db.getServerInfo(id, function(err, server)
+   {
+      if (err)
       {
-         id = data.message.channel.guild.id;
+         console.error(err);
       }
 
-      db.getServerInfo(id, function(err, server)
+      else
       {
-         if (err)
+         output.server = server;
+      }
+
+      //
+      // Get default language of server/bot
+      //
+
+      if (output.to === "default")
+      {
+         output.to = langCheck(server.lang);
+
+         if (id === "bot")
          {
-            console.error(err);
-            output.to = "en";
+            output.to = langCheck(data.config.defaultLanguage);
          }
+      }
 
-         else
-         {
-            output.to = langCheck(server.lang);
-            output.server = server;
-         }
+      //
+      // Add command info to main data var
+      //
 
-         //
-         // Add command info to main data var
-         //
+      data.cmd = output;
+      console.log(data.cmd);
 
-         data.cmd = output;
-         console.log(data.cmd);
+      //
+      // Legal Commands
+      //
 
-         //
-         // Legal Commands
-         //
+      const cmdMap =
+      {
+         "this": cmdTranslateThis,
+         "last": cmdTranslateLast,
+         "auto": cmdTranslateAuto,
+         "stop": cmdTranslateStop,
+         "help": cmdHelp,
+         "list": cmdList,
+         "stats": cmdStats,
+         "settings": cmdSettings
+      };
 
-         const cmdMap =
-         {
-            "this": cmdTranslateThis,
-            "last": cmdTranslateLast,
-            "auto": cmdTranslateAuto,
-            "stop": cmdTranslateStop,
-            "help": cmdHelp,
-            "list": cmdList,
-            "stats": cmdStats,
-            "settings": cmdSettings
-         };
+      //
+      // Execute command if exists
+      //
 
-         //
-         // Execute command if exists
-         //
-
-         if (cmdMap.hasOwnProperty(output.main))
-         {
-            cmdMap[output.main](data);
-         }
-      });
-   }
+      if (cmdMap.hasOwnProperty(output.main))
+      {
+         cmdMap[output.main](data);
+      }
+   });
 };

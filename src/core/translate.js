@@ -180,11 +180,6 @@ module.exports = function(data) //eslint-disable-line complexity
       from = data.translate.from.valid[0].iso;
    }
 
-   if (data.translate.to === "default")
-   {
-      data.translate.to = {valid: [data.config.defaultLanguage]};
-   }
-
    //
    // Stop if there are no valid languages
    //

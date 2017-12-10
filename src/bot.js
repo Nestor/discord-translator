@@ -25,11 +25,7 @@ const cmdArgs = require("./commands/args");
 //
 
 var config = {
-   defaultLanguage: {
-      iso: "en",
-      name: "English",
-      native: "English"
-   },
+   defaultLanguage: "en",
    translateCmd: "!translate",
    maxMulti: 6,
    maxChains: 10,
@@ -66,7 +62,7 @@ client.on("ready", () =>
 client.on("guildCreate", guild =>
 {
    console.log("joined the `" + guild.name + "` guild.");
-   db.addServer(guild.id, config.defaultLanguage.iso);
+   db.addServer(guild.id, config.defaultLanguage);
 });
 
 client.on("guildDelete", guild =>
