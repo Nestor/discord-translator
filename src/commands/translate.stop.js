@@ -1,113 +1,103 @@
-/*eslint-disable*/
+const setStatus = require("../core/status");
+const botSend = require("../core/send");
+const db = require("../core/db");
+
+// --------------------
+// Handle stop command
+// --------------------
+
 module.exports = function(data)
 {
-/*
-   // -------------------------
-   // Auto Translation Stopper
-   // -------------------------
+   setStatus(data.bot, "startTyping", data.message.channel);
 
-   if (translateArgs.startsWith("stop for"))
+   //
+   // Disallow this command in Direct/Private messages
+   //
+
+   if (data.message.channel.type === "dm")
    {
-      var stopFor = translateArgs.replace("stop for", "").trim();
-      key = `#${channel.id}`;
-      id = key.slice(1);
-
-      //
-      // Check if channel is being translated at all
-      //
-
-      if (!dbAutomatic[key])
-      {
-         sendBox({
-            channel: channel.id,
-            color: colorErr,
-            text: text.errNoAuto
-         });
-         return;
-      }
-
-      //
-      // Stop translation for author
-      //
-
-      if (stopFor === "me")
-      {
-         if (dbAutomatic[key][`@${author.id}`])
-         {
-            sendBox({
-               channel: channel.id,
-               color: colorErr,
-               text: "Stopped translating messages in this channel for you."
-            });
-            delete dbAutomatic[key][`@${author.id}`];
-            delete dbAutoDMs[`@${author.id}`];
-            return;
-         }
-      }
-
-      //
-      // Stop all channel translations
-      //
-
-      if (stopFor === "all")
-      {
-         if (isAdmin)
-         {
-            sendBox({
-               channel: channel.id,
-               color: colorInfo,
-               text:
-                  ":negative_squared_cross_mark:  " +
-                  "All " + Object.keys(dbAutomatic[key]).length +
-                  " automatic translations of  **`" +
-                  channel.name +"`**  have been stopped."
-            });
-            delete dbAutomatic[key];
-            return;
-         }
-
-         sendBox({
-            channel: channel.id,
-            color: colorInfo,
-            text: text.errAdminOnly
-         });
-         return;
-      }
-
-      //
-      // Stop forwarding to other channel or user
-      //
-
-      if (stopFor.startsWith("<"))
-      {
-         if (isManager)
-         {
-            if (dbAutomatic[key][stopFor.slice(1,-1)])
-            {
-               sendBox({
-                  channel: channel.id,
-                  color: colorInfo,
-                  text:
-                     ":negative_squared_cross_mark:  " +
-                     "Automatic translation of  **`" +
-                     channel.name +"`**  has been stopped " +
-                     "for " + resolveID(stopFor, "name")
-               });
-               delete dbAutomatic[key][stopFor.slice(1,-1)];
-               return;
-            }
-         }
-
-         else
-         {
-            sendBox({
-               channel: channel.id,
-               color: colorInfo,
-               text: text.errManagerOnly
-            });
-            return;
-         }
-      }
+      data.color = "warn";
+      data.text = "This command can only be called in server channels";
+      return botSend(data);
    }
-*/
+
+   //
+   // Disallow multiple destinations
+   //
+
+   if (data.cmd.for.length > 1)
+   {
+      data.color = "error";
+      data.text = "Please specify only one `for` value.";
+      return botSend(data);
+   }
+
+   //
+   // Disallow non-managers to stop for others
+   //
+
+   if (data.cmd.for[0] !== "me" && !data.message.isManager)
+   {
+      data.color = "error";
+      data.text = "You need to be a channel manager to stop auto translating " +
+                  "this channel for others.";
+      return botSend(data);
+   }
+
+   //
+   // Prepare task data
+   //
+
+   const origin = data.message.channel.id;
+   const dest = destID(data.cmd.for[0], data.message.author.id);
+   const destDisplay = destResolver(data.cmd.for[0], data.message.author.id);
+
+   db.removeTask(origin, dest, function(err)
+   {
+      if (err)
+      {
+         data.color = "error";
+         data.text = "Could not handle request. Make sure you entered the " +
+                     "correct information and that the current channel has " +
+                     "active translation tasks.";
+         botSend(data);
+         return console.error(err);
+      }
+
+      data.color = "ok";
+      data.text = "Auto translation of this channel has been stopped for **" +
+                  destDisplay + "**.";
+
+      return botSend(data);
+   });
+};
+
+// -----------------------
+// Destination ID handler
+// -----------------------
+
+const destID = function(dest, author)
+{
+   if (dest.startsWith("<#"))
+   {
+      return dest.slice(2,-1);
+   }
+   if (dest.startsWith("<@"))
+   {
+      return dest.slice(1,-1);
+   }
+   if (dest === "me")
+   {
+      return "@" + author;
+   }
+   return dest;
+};
+
+const destResolver = function(dest, author)
+{
+   if (dest === "me")
+   {
+      return "<@" + author + ">";
+   }
+   return dest;
 };

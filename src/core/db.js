@@ -45,7 +45,6 @@ const results = function(err, res)
    {
       return console.error(err);
    }
-   //console.log("sql res:" + res);
    return res;
 };
 
@@ -62,7 +61,7 @@ exports.addServer = function(id, lang)
       `coalesce((select count from servers where id = "${id}"), 0),` +
       `1 );`;
 
-   db.serialize(function()
+   return db.serialize(function()
    {
       db.run(sql);
    });
@@ -74,7 +73,7 @@ exports.addServer = function(id, lang)
 
 exports.removeServer = function(id)
 {
-   db.serialize(function()
+   return db.serialize(function()
    {
       db.run("update `servers` set active = 0 where `id` = ?", id);
    });
@@ -93,7 +92,7 @@ exports.channelTasks = function(data)
       id = "@" + data.message.author.id;
    }
 
-   db.serialize(function()
+   return db.serialize(function()
    {
       db.all(
          `select dest, reply, lang_to, lang_from from tasks` +
@@ -108,13 +107,47 @@ exports.channelTasks = function(data)
    });
 };
 
+// --------------------
+// Remove Channel Task
+// --------------------
+
+exports.removeTask = function(origin, dest, cb)
+{
+   if (dest === "all")
+   {
+      return db.serialize(function()
+      {
+         db.run(
+            `delete from tasks where (origin = "${origin}") or` +
+            `(dest = "${origin}");`,
+            function(err)
+            {
+               cb(err);
+            }
+         );
+      });
+   }
+
+   return db.serialize(function()
+   {
+      db.run(
+         `delete from tasks where (origin = "${origin}" and dest = "${dest}")` +
+         `or (origin = "${dest}" and dest = "${origin}");`,
+         function(err)
+         {
+            cb(err);
+         }
+      );
+   });
+};
+
 // --------------
 // Get Row Count
 // --------------
 
 exports.getCount = function(table, row, val, cb)
 {
-   db.serialize(function()
+   return db.serialize(function()
    {
       db.get(
          `select count(${row}) from ${table} where ${row} = "${val}"`,
@@ -127,12 +160,12 @@ exports.getCount = function(table, row, val, cb)
 };
 
 // ------------
-// Update Stat
+// Update stat
 // ------------
 
 exports.increase = function(table, key, val, stat)
 {
-   db.serialize(function()
+   return db.serialize(function()
    {
       db.run(
          `update ${table} set ${stat} = ${stat} + 1 where ${key} = "${val}";`
@@ -140,13 +173,13 @@ exports.increase = function(table, key, val, stat)
    });
 };
 
-// -------------
-// Get stat sum
-// -------------
+// --------------
+// Get bot stats
+// --------------
 
 exports.getStats = function(cb)
 {
-   db.serialize(function()
+   return db.serialize(function()
    {
       db.get(
          `select sum(count) as "totalCount",` +
@@ -197,7 +230,7 @@ const taskSQL = function(task, dest, flip = false)
 
 exports.addTask = function(task)
 {
-   db.serialize(function()
+   return db.serialize(function()
    {
       db.run("begin transaction");
       task.dest.forEach(dest =>
@@ -221,5 +254,5 @@ exports.addTask = function(task)
 
 exports.close = function()
 {
-   db.close();
+   return db.close();
 };
