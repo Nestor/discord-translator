@@ -36,3 +36,20 @@ module.exports = function(data)
       return botSend(data);
    });
 };
+
+/*
+
+const serverLang = langCheck(data.cmd.server.lang);
+
+data.color = "info";
+data.text =
+   `__**${data.message.channel.guild.name}** - Server Info__\n\n` +
+   `:earth_africa:  Default server language:  ` +
+   `**\`${serverLang.valid[0].name} (${serverLang.valid[0].native})\`` +
+   `**\n\n:bar_chart:  Translated messages:  ` +
+   `**\`${data.cmd.server.count}\`**\n\n` +
+   `:repeat:  Automatic translation:  ` +
+   `**\`X\`**  channels and  **\`X\`**  users`;
+return botSend(data);
+
+*/

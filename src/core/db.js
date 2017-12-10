@@ -75,7 +75,24 @@ exports.removeServer = function(id)
 {
    return db.serialize(function()
    {
-      db.run("update `servers` set active = 0 where `id` = ?", id);
+      db.run("update servers set active = 0 where id = ?", id);
+   });
+};
+// -------------------
+// Update Server Lang
+// -------------------
+
+exports.updateServerLang = function(id, lang, cb)
+{
+   return db.serialize(function()
+   {
+      db.run(
+         `update servers set lang = "${lang}" where id = "${id}"`,
+         function(err)
+         {
+            cb(err);
+         }
+      );
    });
 };
 
