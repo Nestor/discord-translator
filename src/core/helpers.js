@@ -24,30 +24,12 @@ exports.checkPerm = function(member, channel, perm)
 };
 
 //
-// Check if item is inside array
-//
-
-exports.inArray = function(item, array)
-{
-   return array.indexOf(item) > -1;
-};
-
-//
 // Get key name of object by its value
 //
 
 exports.getKeyByValue = function (object, value)
 {
    return Object.keys(object).find(key => object[key] === value);
-};
-
-//
-// Push to array as callback
-//
-
-exports.pushToArray = function(data, array)
-{
-   array.push(data);
 };
 
 //
@@ -60,30 +42,12 @@ exports.removeDupes = function (array)
 };
 
 //
-// Convert first letter in string to uppercase
-//
-
-exports.capitalize = function(string)
-{
-   return string.charAt(0).toUpperCase() + string.slice(1);
-};
-
-//
 // Replace all matches in string
 //
 
 exports.replaceAll = function(str, search, replacement)
 {
    return str.replace(new RegExp(search, "g"), replacement);
-};
-
-//
-// Check for object type
-//
-
-exports.isObject = function(data)
-{
-   return !!data && data.constructor === Object;
 };
 
 //
