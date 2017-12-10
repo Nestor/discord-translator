@@ -54,6 +54,9 @@ module.exports = function(data)
 
    if (data.cmd.params.toLowerCase().includes("disconnect"))
    {
-      console.log("disconnect bot from server");
+      data.color = "info";
+      data.text = data.bot.username + " is now disconnected from the server.";
+      botSend(data);
+      return data.message.channel.guild.leave();
    }
 };
