@@ -296,11 +296,13 @@ module.exports = function(data) //eslint-disable-line complexity
    }
 
    const fw = data.forward;
+   const ft = data.footer;
 
    translate(data.translate.original, opts).then(res =>
    {
       updateServerStats(data.message);
       data.forward = fw;
+      data.footer = ft;
       data.color = 0;
       data.text = translateFix(res.text);
       data.text += googleLink(

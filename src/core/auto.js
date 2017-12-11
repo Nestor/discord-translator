@@ -103,19 +103,19 @@ const startTranslation = function(data, i, row)
 
    const footerOriginal = data.footer;
 
-   const footerExtra = {
-      text: data.footer.text +
-      ` ‹ ${data.message.guild.name} | reply with ${replyID}:`,
-      //eslint-disable-next-line camelcase
-      icon_url: data.message.guild.iconURL
-   };
-
    //
    // Sending to user/DM
    //
 
    if (row.dest.startsWith("@"))
    {
+      const footerExtra = {
+         text: data.footer.text +
+         ` ‹ ${data.message.guild.name} | reply with ${replyID}:`,
+         //eslint-disable-next-line camelcase
+         icon_url: data.message.guild.iconURL
+      };
+
       data.client.users.get(row.dest.slice(1)).createDM().then(dm =>
       {
          data.footer = footerExtra;
