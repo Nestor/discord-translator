@@ -196,12 +196,15 @@ const helpMessage = function(config, botname, param)
 
    `# Help\n` +
    `> ${config.translateCmd} help\n` +
-   `> ${config.translateCmd} help [command]\n` +
+   `> ${config.translateCmd} help [command]\n\n` +
 
    `# Statistics\n` +
    `> ${config.translateCmd} stats \n` +
    `> ${config.translateCmd} stats global \n` +
-   `> ${config.translateCmd} stats server \n` +
+   `> ${config.translateCmd} stats server \n\n` +
+
+   `# Supported Languages\n` +
+   `> ${config.translateCmd} list\n` +
    "```";
 
    //
