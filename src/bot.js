@@ -25,6 +25,7 @@ const cmdArgs = require("./commands/args");
 //
 
 var config = {
+   version: botVersion,
    defaultLanguage: "en",
    translateCmd: "!translate",
    maxMulti: 6,
