@@ -75,7 +75,9 @@ const helpMessage = function(config, botname, param)
    `* ${config.translateCmd} help settings\n` +
    `> ${config.translateCmd} settings setLang\n` +
    `> ${config.translateCmd} settings disconnect\n` +
-   "```";
+   "```" +
+   "\n Please report any bugs or requests to the **[official developement " +
+   `server](${config.botServer})**.`;
 
    //
    // Last Message (last)

@@ -8,8 +8,8 @@
 const discord = require("discord.js");
 const token = require("./core/auth").token;
 const client = new discord.Client();
-const botVersion = "0.2.0 beta";
-const botCreator = "@aziz#5919";
+const botVersion = "0.3.0 Beta";
+const botCreator = "Aziz Natour (@aziz#5919)";
 
 //
 // Core
@@ -26,6 +26,7 @@ const cmdArgs = require("./commands/args");
 
 var config = {
    version: botVersion,
+   botServer: "https://discord.gg/uekTNPj",
    defaultLanguage: "en",
    translateCmd: "!translate",
    maxMulti: 6,
@@ -48,8 +49,9 @@ client.on("ready", () =>
    console.log(
       `\x1b[90m-------------------------------------------------\x1b[39m\n` +
       `\x1b[32m Discord Translator is online (@${bot.username}) \x1b[39m\n` +
-      `\x1b[90m Bot Version:  ${botVersion} | Bot ID: ${bot.id} \x1b[39m\n` +
-      `\x1b[90m Created by:  ${botCreator} | License: ISC       \x1b[39m\n` +
+      `\x1b[90m Bot Version: ${botVersion} | Bot ID: ${bot.id}  \x1b[39m\n` +
+      `\x1b[90m Created by: ${botCreator} | License: ISC        \x1b[39m\n` +
+      `\x1b[90m Official dev server: ${config.botServer}        \x1b[39m\n` +
       `\x1b[90m-------------------------------------------------\x1b[39m\n`
    );
 
