@@ -63,7 +63,10 @@ exports.addServer = function(id, lang)
 
    return db.serialize(function()
    {
+      db.run("begin transaction");
       db.run(sql);
+      db.run("update tasks set active = 1 where server = ?", id);
+      db.run("end");
    });
 };
 
@@ -75,7 +78,10 @@ exports.removeServer = function(id)
 {
    return db.serialize(function()
    {
+      db.run("begin transaction");
       db.run("update servers set active = 0 where id = ?", id);
+      db.run("update tasks set active = 0 where server = ?", id);
+      db.run("end");
    });
 };
 // -------------------
