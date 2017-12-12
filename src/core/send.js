@@ -1,5 +1,6 @@
 const setStatus = require("./status");
 const colors = require("./colors");
+const fn = require("./helpers");
 
 //
 // Send Data to Channel
@@ -32,7 +33,7 @@ const sendBox = function(data)
 
    const maxEmbeds = data.config.maxEmbeds;
 
-   if (data.forward && data.embeds.length > 0)
+   if (data.forward && data.embeds && data.embeds.length > 0)
    {
       if (data.embeds.length > maxEmbeds)
       {
@@ -77,12 +78,47 @@ module.exports = function(data)
 
       if (forwardChannel)
       {
-         sendData.channel = forwardChannel;
+         //
+         // Check if bot can write to destination channel
+         //
+
+         const canWrite = fn.checkPerm(
+            sendData.channel.guild.me, forwardChannel, "SEND_MESSAGES"
+         );
+
+         if (canWrite)
+         {
+            sendData.channel = forwardChannel;
+         }
+
+         //
+         // Error if bot cannot write to dest
+         //
+
+         else
+         {
+            sendData.footer = null;
+            sendData.embeds = null;
+            sendData.color = "error";
+            sendData.text =
+               ":no_entry:  Bot does not have permission to write at the " +
+               `<#${forwardChannel.id}> channel.`;
+
+            return sendBox(sendData);
+         }
       }
+
+      //
+      // Error on invalid forward channel
+      //
 
       else
       {
-         return;
+         sendData.footer = null;
+         sendData.embeds = null;
+         sendData.color = "error";
+         sendData.text = ":warning:  Invalid channel.";
+         return sendBox(sendData);
       }
    }
 
