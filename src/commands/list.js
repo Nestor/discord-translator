@@ -32,7 +32,7 @@ module.exports = function(data)
 
    var output = "**```Supported Languages```**\n";
 
-   langList.forEach(function(lang)
+   langList.forEach(lang =>
    {
       var end = ",  ";
       if (lang === "Zulu")

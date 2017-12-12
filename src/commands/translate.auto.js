@@ -1,4 +1,3 @@
-const langCheck = require("../core/lang.check");
 const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const fn = require("../core/helpers");
@@ -18,8 +17,10 @@ module.exports = function(data)
 
    if (data.message.channel.type === "dm")
    {
-      data.color = "warn";
-      data.text = "This command can only be called in server channels";
+      data.color = "error";
+      data.text =
+         ":no_entry:  This command can only be called in server channels.";
+
       return botSend(data);
    }
 
@@ -27,17 +28,21 @@ module.exports = function(data)
    // Language checks
    //
 
-   if (data.cmd.from === "auto")
+   if (data.cmd.from === "auto" || data.cmd.from.valid.length !== 1)
    {
       data.color = "error";
-      data.text = "Please specify a valid language to translate from";
+      data.text =
+         ":warning:  Please specify a valid language to translate from.";
+
       return botSend(data);
    }
 
    if (data.cmd.to.valid.length !== 1)
    {
       data.color = "error";
-      data.text = "Please specify 1 valid language only for auto translation.";
+      data.text =
+         ":warning:  Please specify one valid language for auto translation.";
+
       return botSend(data);
    }
 
@@ -50,7 +55,7 @@ module.exports = function(data)
       for: data.cmd.for,
       dest: [],
       invalid: [],
-      from: data.cmd.from,
+      from: data.cmd.from.valid[0].iso,
       to: data.cmd.to.valid[0].iso,
       server: data.message.guild.id,
       reply: data.message.guild.nameAcronym
@@ -62,15 +67,13 @@ module.exports = function(data)
    // Error if non-manager sets channel as dest
    //
 
-   if (
-      //data.cmd.for === 1 &&
-      data.cmd.for[0] !== "me" &&
-      !data.message.isManager
-   )
+   if (data.cmd.for[0] !== "me" && !data.message.isManager)
    {
       data.color = "error";
-      data.text = "You need to be a channel manager to auto translate " +
-                  "this channel for others.";
+      data.text =
+         ":cop:  You need to be a channel manager to auto translate " +
+         "this channel for others.";
+
       return botSend(data);
    }
 
@@ -90,8 +93,10 @@ module.exports = function(data)
       if (data.task.for.length + taskCount >= data.config.maxTasksPerChannel)
       {
          data.color = "error";
-         data.text = "Cannot add more auto-translation tasks for this channel" +
-                     ` (${data.config.maxTasksPerChannel} max)`;
+         data.text =
+            ":no_entry:  Cannot add more auto-translation tasks for this " +
+            `channel (${data.config.maxTasksPerChannel} max)`;
+
          return botSend(data);
       }
 
@@ -152,9 +157,12 @@ module.exports = function(data)
             }
          }
 
-         // invalidate @everyone and @userGroups for now
+         // invalidate @everyone/@here/@roles/non-mentions
 
-         if (dest.startsWith("@"))
+         if (
+            dest.startsWith("@") ||
+            !dest.startsWith("<") && dest !== "me"
+         )
          {
             data.task.invalid.push(dest);
             taskBuffer.reduce();
@@ -203,7 +211,7 @@ module.exports = function(data)
       if (data.task.invalid.length > 0)
       {
          data.color = "error";
-         data.text = "Invalid auto translation request.";
+         data.text = ":warning:  Invalid auto translation request.";
          return botSend(data);
       }
 
@@ -214,8 +222,10 @@ module.exports = function(data)
       if (data.task.dest.length > 1 && !data.message.isManager)
       {
          data.color = "error";
-         data.text = "You need to be a channel manager to auto translate " +
-                     "this channel for others.";
+         data.text =
+            ":cop::skin-tone-3:  You need to be a channel manager " +
+            "to auto translate this channel for others.";
+
          return botSend(data);
       }
 
@@ -229,16 +239,17 @@ module.exports = function(data)
       // Send out success message
       //
 
-      const langFrom = langCheck(data.task.from).valid[0].name;
+      const langFrom = data.cmd.from.valid[0].name;
       const langTo = data.cmd.to.valid[0].name;
       const forNames = data.cmd.for.join(",  ").replace(
          "me", `<@${data.message.author.id}>`
       );
 
       data.color = "ok";
-      data.text = "This channel is now being automatically translated " +
-                  `from  **\`${langFrom}\`**  to  **\`${langTo}\`**` +
-                  `  for  ${forNames}.`;
+      data.text =
+         ":white_check_mark:  Automatically translating messages " +
+         `from **\`${langFrom}\`** to **\`${langTo}\`** ` +
+         `for ${forNames}.`;
 
       return botSend(data);
    };

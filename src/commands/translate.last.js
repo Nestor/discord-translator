@@ -49,8 +49,8 @@ module.exports = function(data)
          color: "warn",
          bot: data.bot,
          text:
-            `Cannot translate more than ${data.config.maxChains}
-            message chains at once.`
+            ":warning:  Cannot translate more than __**`" +
+            data.config.maxChains + "`**__ message chains at once."
       });
 
       count = data.config.maxChains;
@@ -66,8 +66,15 @@ module.exports = function(data)
    // Get requested collection
    //
 
+   var limit = Math.abs(count) * data.config.maxChainLen + 1;
+
+   if (limit > 100)
+   {
+      limit = 100;
+   }
+
    data.message.channel.fetchMessages({
-      limit: Math.abs(count) * data.config.maxChainLen + 1
+      limit: limit
    }).then(messages => //eslint-disable-line complexity
    {
       const messagesArray = messages.array().reverse();
@@ -106,6 +113,20 @@ module.exports = function(data)
       //
 
       const reqChains = chains.slice(-Math.abs(count));
+
+      //
+      // Error - No messages found
+      //
+
+      if (reqChains.length < 1)
+      {
+         data.color = "warn";
+         data.text =
+            ":warning:  Could not find any valid messages to " +
+            "translate. Bots and commands are ignored.";
+
+         return botSend(data);
+      }
 
       //
       // Translate single chain

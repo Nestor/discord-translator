@@ -21,7 +21,7 @@ module.exports = function(data)
             channel: data.message.channel
          },
          color: "error",
-         text: "Error: Missing content for translation",
+         text: ":warning:  Missing content for translation.",
          bot: data.bot
       });
    }

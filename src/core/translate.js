@@ -49,10 +49,7 @@ function getUserColor(data, callback)
       data.color = colors.rgb2dec(colorThief.getColor(image));
       callback(data);
    }
-   ).catch(function(err)
-   {
-      console.log(err);
-   });
+   ).catch(console.error);
 }
 
 // --------------------------
@@ -158,35 +155,40 @@ module.exports = function(data) //eslint-disable-line complexity
    invalidLangChecker(data.translate.from, function()
    {
       data.color = "warn";
-      data.text = "Cannot translate from " + data.translate.from.invalid;
+      data.text = ":warning:  Cannot translate from `" +
+                  data.translate.from.invalid.join("`, `") + "`.";
       botSend(data);
    });
 
    invalidLangChecker(data.translate.to, function()
    {
       data.color = "warn";
-      data.text = "Cannot translate to " + data.translate.to.invalid;
+      data.text = ":warning:  Cannot translate to `" +
+                  data.translate.to.invalid.join("`, `") + "`.";
       botSend(data);
    });
-
-   //
-   // Set default languages
-   //
-
-   var from = data.translate.from;
-
-   if (data.translate.from.valid && data.translate.from.valid.length === 1)
-   {
-      from = data.translate.from.valid[0].iso;
-   }
 
    //
    // Stop if there are no valid languages
    //
 
-   if (data.translate.to.valid.length < 1)
+   if (
+      data.translate.to.valid.length < 1 ||
+      data.translate.from.valid && data.translate.from.valid.length < 1
+   )
    {
       return setStatus(data.bot, "stopTyping", data.message.channel);
+   }
+
+   //
+   // Handle value of `from` language
+   //
+
+   var from = data.translate.from;
+
+   if (from !== "auto")
+   {
+      from = data.translate.from.valid[0].iso;
    }
 
    //
@@ -197,8 +199,15 @@ module.exports = function(data) //eslint-disable-line complexity
    {
       const originalFt = data.footer;
       data.footer = null;
-      data.text = "Did you know?";
       data.color = "info";
+
+      data.text =
+         ":bulb:  **Did you know?**\n" +
+         "You can suggest translation improvements by " +
+         "clicking on the check mark icon (:heavy_check_mark:) in translated " +
+         "messages. You may also join the [Google Translate Community]" +
+         "(https://translate.google.com/community).";
+
       botSend(data);
       data.footer = originalFt;
    }

@@ -1,4 +1,3 @@
-const text = require("../i18n/en");
 const setStatus = require("./status");
 const colors = require("./colors");
 
@@ -29,21 +28,24 @@ const sendBox = function(data)
    //
    // Resend embeds from original message
    // Only if content is forwared to another channel
-   // Limited to 5 embeds
    //
+
+   const maxEmbeds = data.config.maxEmbeds;
 
    if (data.forward && data.embeds.length > 0)
    {
-      if (data.embeds.length > 5)
+      if (data.embeds.length > maxEmbeds)
       {
          sendBox({
             channel: data.channel,
-            text: text.errMaxEmbeds(5),
+            text: `:warning:  Cannot embed more than ${maxEmbeds} links.`,
             color: "warn"
          });
+
+         data.embeds = data.embeds.slice(0, maxEmbeds);
       }
 
-      for (var i = 0; i < 5; i++)
+      for (var i = 0; i < data.embeds.length; i++)
       {
          data.channel.send(data.embeds[i].url);
       }
@@ -59,6 +61,7 @@ const sendBox = function(data)
 module.exports = function(data)
 {
    var sendData = {
+      config: data.config,
       channel: data.message.channel,
       color: data.color,
       text: data.text,

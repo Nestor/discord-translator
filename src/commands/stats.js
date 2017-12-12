@@ -54,14 +54,11 @@ module.exports = function(data)
       {
          data.text = serverStats;
 
-         (function()
+         if (data.message.channel.type === "dm")
          {
-            if (data.message.channel.type === "dm")
-            {
-               data.color = "warn";
-               data.text = "You must call server stats from a server channel.";
-            }
-         })();
+            data.color = "warn";
+            data.text = "You must call server stats from a server channel.";
+         }
 
          return botSend(data);
       }

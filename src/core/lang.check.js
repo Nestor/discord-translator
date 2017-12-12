@@ -79,7 +79,7 @@ module.exports = function(lang, single = false)
       invalid: []
    };
 
-   langs.unchecked.forEach(function(language)
+   langs.unchecked.forEach(language =>
    {
       const langISO = getLangISO(language.trim());
 
