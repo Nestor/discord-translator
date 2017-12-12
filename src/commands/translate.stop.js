@@ -17,7 +17,9 @@ module.exports = function(data)
    if (data.message.channel.type === "dm")
    {
       data.color = "warn";
-      data.text = "This command can only be called in server channels";
+      data.text =
+         ":no_entry:  This command can only be called in server channels.";
+
       return botSend(data);
    }
 
@@ -28,7 +30,7 @@ module.exports = function(data)
    if (data.cmd.for.length > 1)
    {
       data.color = "error";
-      data.text = "Please specify only one `for` value.";
+      data.text = ":warning:  Please specify only one `for` value.";
       return botSend(data);
    }
 
@@ -39,8 +41,10 @@ module.exports = function(data)
    if (data.cmd.for[0] !== "me" && !data.message.isManager)
    {
       data.color = "error";
-      data.text = "You need to be a channel manager to stop auto translating " +
-                  "this channel for others.";
+      data.text =
+         ":cop:  You need to be a channel manager to stop auto translating " +
+         "this channel for others.";
+
       return botSend(data);
    }
 
@@ -52,22 +56,72 @@ module.exports = function(data)
    const dest = destID(data.cmd.for[0], data.message.author.id);
    const destDisplay = destResolver(data.cmd.for[0], data.message.author.id);
 
+   //
+   // Check if task actually exists
+   //
+
+   db.checkTask(origin, dest, function(err, res)
+   {
+      if (err)
+      {
+         return dbError(err, data);
+      }
+
+      //
+      // Error if task does not exist
+      //
+
+      if (res.length < 1 || !res)
+      {
+         data.color = "error";
+         data.text =
+            ":warning:  This channel is __**not**__ being translated for " +
+            `**${destDisplay}**.`;
+
+         if (dest === "all")
+         {
+            data.text =
+               ":warning:  This channel is not being automatically " +
+               "translated for anyone.";
+         }
+
+         return botSend(data);
+      }
+
+      //
+      // Otherwise, proceed to remove task from database
+      //
+
+      removeTask(res, data, origin, dest, destDisplay);
+   });
+};
+
+// ---------------------
+// Remove from database
+// ---------------------
+
+const removeTask = function(res, data, origin, dest, destDisplay)
+{
+   console.log(res);
+
    db.removeTask(origin, dest, function(err)
    {
       if (err)
       {
-         data.color = "error";
-         data.text = "Could not handle request. Make sure you entered the " +
-                     "correct information and that the current channel has " +
-                     "active translation tasks.";
-         botSend(data);
-         return console.error(err);
+         return dbError(err, data);
       }
 
       data.color = "ok";
-      data.text = "Auto translation of this channel has been stopped for **" +
-                  destDisplay + "**.";
+      data.text =
+         ":negative_squared_cross_mark:  Auto translation of this " +
+         "channel has been stopped for **" + destDisplay + "**";
 
+      if (dest === "all")
+      {
+         data.text += ` (${res.length})`;
+      }
+
+      data.text += ".";
       return botSend(data);
    });
 };
@@ -100,4 +154,19 @@ const destResolver = function(dest, author)
       return "<@" + author + ">";
    }
    return dest;
+};
+
+// --------------------
+// Database error
+// --------------------
+
+const dbError = function(err, data)
+{
+   data.color = "error";
+   data.text =
+      ":warning:  Could not retrieve information from database. Try again " +
+      "later or report this issue to an admin if problem continues.";
+
+   botSend(data);
+   return console.error(err);
 };

@@ -124,6 +124,32 @@ exports.channelTasks = function(data)
    });
 };
 
+// --------------------------------
+// Check if dest is found in tasks
+// --------------------------------
+
+exports.checkTask = function(origin, dest, cb)
+{
+   var destWhere = ` and dest = "${dest}";`;
+
+   if (dest === "all")
+   {
+      destWhere = ";";
+   }
+
+   return db.serialize(function()
+   {
+      db.all(
+         `select active from tasks where ` +
+         `origin = "${origin}"` + destWhere,
+         function(err, rows)
+         {
+            cb(err, rows);
+         }
+      );
+   });
+};
+
 // --------------------
 // Remove Channel Task
 // --------------------
