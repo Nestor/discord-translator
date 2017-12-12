@@ -71,8 +71,8 @@ module.exports = function(data)
    {
       data.color = "error";
       data.text =
-         ":cop:  You need to be a channel manager to auto translate " +
-         "this channel for others.";
+         ":cop:  You need to be a channel manager to " +
+         "auto translate for others.";
 
       return botSend(data);
    }

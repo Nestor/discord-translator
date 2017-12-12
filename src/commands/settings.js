@@ -17,7 +17,7 @@ module.exports = function(data)
    if (!data.message.isAdmin)
    {
       data.color = "warn";
-      data.text = "This command is reserved for server administrators.";
+      data.text = ":cop:  This command is reserved for server administrators.";
       return botSend(data);
    }
 
