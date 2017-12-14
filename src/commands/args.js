@@ -162,7 +162,12 @@ module.exports = function(data)
       //
 
       data.cmd = output;
-      console.log(data.cmd);
+
+      //
+      // log command data (dev)
+      //
+
+      //console.log(data.cmd);
 
       //
       // Legal Commands

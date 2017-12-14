@@ -102,8 +102,6 @@ module.exports = function(data)
 
 const removeTask = function(res, data, origin, dest, destDisplay)
 {
-   console.log(res);
-
    db.removeTask(origin, dest, function(err)
    {
       if (err)

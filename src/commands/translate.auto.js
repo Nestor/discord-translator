@@ -61,7 +61,11 @@ module.exports = function(data)
       reply: data.message.guild.nameAcronym
    };
 
-   console.log(data.task);
+   //
+   // log task data (dev)
+   //
+
+   //console.log(data.task);
 
    //
    // Error if non-manager sets channel as dest
