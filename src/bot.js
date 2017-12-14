@@ -50,7 +50,7 @@ client.on("ready", () =>
       `\x1b[90m-------------------------------------------------\x1b[39m\n` +
       `\x1b[32m Discord Translator is online (@${bot.username}) \x1b[39m\n` +
       `\x1b[90m Bot Version: ${botVersion} | Bot ID: ${bot.id}  \x1b[39m\n` +
-      `\x1b[90m Created by: ${botCreator} | License: ISC        \x1b[39m\n` +
+      `\x1b[90m Created by: ${botCreator} | License: MIT        \x1b[39m\n` +
       `\x1b[90m Official dev server: ${config.botServer}        \x1b[39m\n` +
       `\x1b[90m-------------------------------------------------\x1b[39m\n`
    );
