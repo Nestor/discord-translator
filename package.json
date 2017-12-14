@@ -1,6 +1,6 @@
 {
    "name": "discord-translator",
-   "version": "0.3.0",
+   "version": "0.3.2",
    "description": "Translation bot built using discord.js and Google Translate API.",
    "main": "src/bot.js",
    "license": "MIT",
@@ -38,7 +38,7 @@
       "gulp-watch": "^4.3.11"
    },
    "scripts": {
-      "run": "node build/bot",
+      "start": "node build/bot",
       "build": "gulp build",
       "dev": "gulp watch",
       "lint": "gulp lint",

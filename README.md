@@ -17,15 +17,15 @@ Translation bot built using `discord.js` and `Google Translate API.`
 ### Running Bot
 Requires `npm`, `node 8.0+` and a `discord bot token`.
 
-1. Clone repo from git or get npm package `npm install discord-translator`
+1. Clone repo from git or get npm package `npm install discord-translator --save`
 2. Run `npm install`
 3. Update `src/core/auth.js` with your discord bot token
-4. Run `gulp` or `npm build` to build 
-5. Run `node build/bot` or `npm run` to start bot
+4. Run `gulp` or `npm run build` to build
+5. Run `node build/bot` or `npm run start` to start bot
 6. Add bot to your server through `OAuth2` (https://discordapp.com/developers/docs/topics/oauth2)
 
 ### Development
-Use `gulp watch` or `npm dev` for active development (auto lint, build).
+Use `gulp watch` or `npm run dev` for active development (auto lint, build).
 
 ### Future plans
 * Translating images through OCR
@@ -34,6 +34,6 @@ Use `gulp watch` or `npm dev` for active development (auto lint, build).
 
 #### Credits & License
 
-Created by Aziz Natour - [@aziznatour](http://www.twitter.com/aziznatour)
+Created by Aziz Natour - [@aziznatour](http://www.twitter.com/aziznatour).
 
 Released under MIT license.
