@@ -61,7 +61,7 @@ const bufferSend = function(arr, data)
    const sorted = fn.sortByKey(arr, "time");
    sorted.forEach(msg =>
    {
-      setStatus(data.bot, "startTyping", data.message.channel);
+      setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
 
       botSend({
          message: {
@@ -177,7 +177,9 @@ module.exports = function(data) //eslint-disable-line complexity
       data.translate.from.valid && data.translate.from.valid.length < 1
    )
    {
-      return setStatus(data.bot, "stopTyping", data.message.channel);
+      return setStatus(
+         data.bot, "stopTyping", data.message.channel, data.canWrite
+      );
    }
 
    //
@@ -195,7 +197,7 @@ module.exports = function(data) //eslint-disable-line complexity
    // Send friendly suggestion for improvement / `Did You Know` message
    //
 
-   if (Math.random() < 0.05)
+   if (Math.random() < 0.01)
    {
       const originalFt = data.footer;
       data.footer = null;
@@ -244,7 +246,7 @@ module.exports = function(data) //eslint-disable-line complexity
       // Buffer translations
       //
 
-      setStatus(data.bot, "startTyping", data.message.channel);
+      setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
 
       const bufferID = data.message.createdTimestamp;
 
@@ -301,7 +303,7 @@ module.exports = function(data) //eslint-disable-line complexity
 
    if (!data.forward)
    {
-      setStatus(data.bot, "startTyping", data.message.channel);
+      setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
    }
 
    const fw = data.forward;
