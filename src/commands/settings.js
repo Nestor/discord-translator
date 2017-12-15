@@ -8,7 +8,7 @@ const db = require("../core/db");
 
 module.exports = function(data)
 {
-   setStatus(data.bot, "startTyping", data.message.channel);
+   setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
 
    //
    // Command allowed by admins only
@@ -52,7 +52,7 @@ const getSettings = function(data)
    // Set default server language
    // ----------------------------
 
-   if (data.cmd.params.toLowerCase().includes("setlang"))
+   const setLang = function(data)
    {
       //
       // Error for invalid language
@@ -101,13 +101,13 @@ const getSettings = function(data)
             return botSend(data);
          }
       );
-   }
+   };
 
    // ---------------
    // Disconnect bot
    // ---------------
 
-   if (data.cmd.params.toLowerCase().includes("disconnect"))
+   const disconnect = function(data)
    {
       data.color = "info";
       data.text = data.bot.username + " is now disconnected from the server.";
@@ -117,6 +117,48 @@ const getSettings = function(data)
       {
          data.message.channel.guild.leave();
       }, 3000);
+   };
+
+   // ---------------
+   // List Servers
+   // ---------------
+
+   const listServers = function(data)
+   {
+      if (data.message.author.id === data.config.owner)
+      {
+         data.color = "info";
+         data.text = "__**Active Servers**__\n\n";
+
+         const activeGuilds = data.client.guilds.array();
+
+         activeGuilds.forEach(guild =>
+         {
+            data.text += `**${guild.name}** (${guild.id}):\n`;
+            data.text += `@${guild.owner.user.username}#`;
+            data.text += `${guild.owner.user.discriminator} / <@`;
+            data.text += `${guild.ownerID}>\n\n`;
+         });
+
+         botSend(data);
+      }
+   };
+
+   // --------------------------
+   // Execute command if exists
+   // --------------------------
+
+   const validSettings = {
+      "setlang": setLang,
+      "disconnect": disconnect,
+      "listservers": listServers
+   };
+
+   const settingParam = data.cmd.params.split(" ")[0].toLowerCase();
+
+   if (validSettings.hasOwnProperty(settingParam))
+   {
+      return validSettings[settingParam](data);
    }
 
    // ------------------------
