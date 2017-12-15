@@ -8,7 +8,7 @@
 const discord = require("discord.js");
 const auth = require("./core/auth");
 const client = new discord.Client();
-const botVersion = "0.3.0 Beta";
+const botVersion = "0.3.3 Beta";
 const botCreator = "Aziz Natour (@aziz#5919)";
 
 //
@@ -138,7 +138,5 @@ client.on("error", err =>
 {
    console.error(err);
 });
-
-process.on("unhandledRejection", console.error);
 
 client.login(auth.token);
