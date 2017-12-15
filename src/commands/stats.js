@@ -5,7 +5,7 @@ const db = require("../core/db");
 
 module.exports = function(data)
 {
-   setStatus(data.bot, "startTyping", data.message.channel);
+   setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
 
    db.getStats(function(err, stats)
    {

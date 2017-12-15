@@ -7,7 +7,7 @@ const botSend = require("../core/send");
 
 module.exports = function(data)
 {
-   setStatus(data.bot, "startTyping", data.message.channel);
+   setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
 
    data.color = "info";
 

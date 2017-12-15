@@ -60,7 +60,7 @@ module.exports = function(data)
    // Start typing
    //
 
-   setStatus(data.bot, "startTyping", data.message.channel);
+   setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
 
    //
    // Get requested collection

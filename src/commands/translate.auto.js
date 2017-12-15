@@ -9,7 +9,7 @@ const db = require("../core/db");
 
 module.exports = function(data)
 {
-   setStatus(data.bot, "startTyping", data.message.channel);
+   setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
 
    //
    // Disallow this command in Direct/Private messages

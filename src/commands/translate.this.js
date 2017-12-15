@@ -8,7 +8,7 @@ const translate = require("../core/translate");
 
 module.exports = function(data)
 {
-   setStatus(data.bot, "startTyping", data.message.channel);
+   setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
 
    //
    // Send error for empty content

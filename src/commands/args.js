@@ -149,9 +149,11 @@ module.exports = function(data)
 
       if (output.to === "default")
       {
-         output.to = langCheck(server.lang);
-
-         if (id === "bot")
+         if (server && server.lang)
+         {
+            output.to = langCheck(server.lang);
+         }
+         else
          {
             output.to = langCheck(data.config.defaultLanguage);
          }
@@ -163,10 +165,27 @@ module.exports = function(data)
 
       data.cmd = output;
 
+
+      //
+      // check if channel is writable
+      //
+
+      data.canWrite = true;
+
+      if (data.message.channel.type === "text")
+      {
+         data.canWrite = fn.checkPerm(
+            data.message.channel.guild.me,
+            data.message.channel,
+            "SEND_MESSAGES"
+         );
+      }
+
       //
       // log command data (dev)
       //
 
+      //console.log(data.canWrite);
       //console.log(data.cmd);
 
       //
