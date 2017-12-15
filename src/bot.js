@@ -6,7 +6,7 @@
 //
 
 const discord = require("discord.js");
-const token = require("./core/auth").token;
+const auth = require("./core/auth");
 const client = new discord.Client();
 const botVersion = "0.3.0 Beta";
 const botCreator = "Aziz Natour (@aziz#5919)";
@@ -27,6 +27,7 @@ const cmdArgs = require("./commands/args");
 var config = {
    version: botVersion,
    botServer: "https://discord.gg/uekTNPj",
+   owner: auth.botOwner,
    defaultLanguage: "en",
    translateCmd: "!translate",
    maxMulti: 6,
@@ -93,7 +94,7 @@ client.on("message", message =>
    // Embed member permissions in message data
    //
 
-   if (message.channel.type !== "dm")
+   if (message.channel.type === "text" && message.member)
    {
       message.isAdmin =
          message.member.permissions.has("ADMINISTRATOR");
@@ -129,4 +130,15 @@ client.on("message", message =>
    return db.channelTasks(data);
 });
 
-client.login(token);
+// ==========================
+// Catch client errors
+// ==========================
+
+client.on("error", err =>
+{
+   console.error(err);
+});
+
+process.on("unhandledRejection", console.error);
+
+client.login(auth.token);
