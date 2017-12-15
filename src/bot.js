@@ -111,7 +111,8 @@ client.on("message", message =>
       client: client,
       config: config,
       bot: bot,
-      message: message
+      message: message,
+      canWrite: true
    };
 
    // ===================
