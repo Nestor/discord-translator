@@ -2,7 +2,7 @@
 // Update Bot Status
 // ------------------
 
-module.exports = function(bot, status, channel)
+module.exports = function(bot, status, channel, writable = true)
 {
    const statusMap =
    {
@@ -41,7 +41,7 @@ module.exports = function(bot, status, channel)
       }
    };
 
-   if (status && statusMap.hasOwnProperty(status))
+   if (status && statusMap.hasOwnProperty(status) && writable)
    {
       return statusMap[status]();
    }

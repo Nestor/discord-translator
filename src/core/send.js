@@ -24,17 +24,17 @@ const sendBox = function(data)
          description: data.text,
          footer: data.footer
       }
-   });
+   }).catch(console.error);
 
    //
    // Resend embeds from original message
    // Only if content is forwared to another channel
    //
 
-   const maxEmbeds = data.config.maxEmbeds;
-
    if (data.forward && data.embeds && data.embeds.length > 0)
    {
+      const maxEmbeds = data.config.maxEmbeds;
+
       if (data.embeds.length > maxEmbeds)
       {
          sendBox({
@@ -59,6 +59,7 @@ const sendBox = function(data)
 // Analyze Data and determine sending style (system message or author box)
 //
 
+//eslint-disable-next-line complexity
 module.exports = function(data)
 {
    var sendData = {
@@ -72,6 +73,20 @@ module.exports = function(data)
       bot: data.bot
    };
 
+   //
+   // Notify server owner if bot cannot write to channel
+   //
+
+   if (!data.canWrite)
+   {
+      const writeErr =
+         ":no_entry:  **Translate bot** does not have permission to write at " +
+         `the **${sendData.channel.name}** channel on your server **` +
+         `${sendData.channel.guild.name}**. Please fix.`;
+
+      return sendData.channel.guild.owner.send(writeErr).catch(console.error);
+   }
+
    if (data.forward)
    {
       const forwardChannel = data.client.channels.get(data.forward);
@@ -82,11 +97,16 @@ module.exports = function(data)
          // Check if bot can write to destination channel
          //
 
-         const canWrite = fn.checkPerm(
-            sendData.channel.guild.me, forwardChannel, "SEND_MESSAGES"
-         );
+         var canWriteDest = true;
 
-         if (canWrite)
+         if (forwardChannel.type === "text")
+         {
+            canWriteDest = fn.checkPerm(
+               forwardChannel.guild.me, forwardChannel, "SEND_MESSAGES"
+            );
+         }
+
+         if (canWriteDest)
          {
             sendData.channel = forwardChannel;
          }
