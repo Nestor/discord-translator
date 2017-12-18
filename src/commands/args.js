@@ -1,4 +1,5 @@
 const langCheck = require("../core/lang.check");
+const logger = require("../core/logger");
 const db = require("../core/db");
 const fn = require("../core/helpers");
 
@@ -186,7 +187,8 @@ module.exports = function(data)
       //
 
       //console.log(data.canWrite);
-      //console.log(data.cmd);
+      console.log(data.cmd);
+      logger("cmd", data);
 
       //
       // Legal Commands
@@ -199,6 +201,7 @@ module.exports = function(data)
          "auto": cmdTranslateAuto,
          "stop": cmdTranslateStop,
          "help": cmdHelp,
+         "info": cmdHelp,
          "list": cmdList,
          "stats": cmdStats,
          "settings": cmdSettings

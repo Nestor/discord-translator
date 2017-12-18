@@ -8,7 +8,7 @@
 const discord = require("discord.js");
 const auth = require("./core/auth");
 const client = new discord.Client();
-const botVersion = "0.3.3 Beta";
+const botVersion = "0.3.4 Beta";
 const botCreator = "Aziz Natour (@aziz#5919)";
 
 //
@@ -17,6 +17,7 @@ const botCreator = "Aziz Natour (@aziz#5919)";
 
 const db = require("./core/db");
 const fn = require("./core/helpers");
+const logger = require("./core/logger");
 const setStatus = require("./core/status");
 const cmdArgs = require("./commands/args");
 
@@ -27,6 +28,7 @@ const cmdArgs = require("./commands/args");
 var config = {
    version: botVersion,
    botServer: "https://discord.gg/uekTNPj",
+   inviteURL: auth.invite,
    owner: auth.botOwner,
    defaultLanguage: "en",
    translateCmd: "!translate",
@@ -65,13 +67,13 @@ client.on("ready", () =>
 
 client.on("guildCreate", guild =>
 {
-   console.log("joined the `" + guild.name + "` guild.");
+   logger("guildJoin", guild);
    db.addServer(guild.id, config.defaultLanguage);
 });
 
 client.on("guildDelete", guild =>
 {
-   console.log("left the `" + guild.name + "` guild.");
+   logger("guildLeave", guild);
    db.removeServer(guild.id);
 });
 
@@ -137,7 +139,7 @@ client.on("message", message =>
 
 client.on("error", err =>
 {
-   console.error(err);
+   logger("error", err);
 });
 
 client.login(auth.token);
