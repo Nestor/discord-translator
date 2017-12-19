@@ -122,6 +122,13 @@ module.exports = function(data)
             taskBuffer.update("@" + data.message.author.id);
          }
 
+         // resolve @everyone/@here
+
+         if (dest === "@everyone" || dest === "@here")
+         {
+            taskBuffer.update(data.message.channel.id);
+         }
+
          // resolve mentioned user(s)
 
          if (dest.startsWith("<@"))
