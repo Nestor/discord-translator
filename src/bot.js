@@ -121,7 +121,10 @@ client.on("message", message =>
    // Proccess Commands
    // ===================
 
-   if (message.content.startsWith(config.translateCmd))
+   if (
+      message.content.startsWith(config.translateCmd) ||
+      message.isMentioned(bot)
+   )
    {
       return cmdArgs(data);
    }

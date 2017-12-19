@@ -113,6 +113,11 @@ module.exports = function(data)
       output.main = "auto";
    }
 
+   if (output.main === `${data.bot}`)
+   {
+      output.main = "help";
+   }
+
    output.to = langCheck(extractParam("to", output.params, "default", true));
 
    output.from = langCheck(extractParam("from", output.params, "auto", true));
