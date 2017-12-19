@@ -63,6 +63,20 @@ const logError = function(err)
    );
 };
 
+// ------------
+// Warning log
+// ------------
+
+const logWarn = function(info)
+{
+   hook.custom(
+      "Bot Logger",
+      "```prolog\n" + info + "\n```",
+      `Discord Warning`,
+      "#fff497"
+   );
+};
+
 // ---------------
 // Guild Join Log
 // ---------------
@@ -132,6 +146,7 @@ module.exports = function(type, data)
    const logEvents = {
       "cmd": logCmd,
       "error": logError,
+      "warning": logWarn,
       "guildJoin": logJoin,
       "guildLeave": logLeave,
       "channelDel": channelDelete

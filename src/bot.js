@@ -161,6 +161,24 @@ client.on("channelDelete", channel =>
    });
 });
 
+// ===============================
+// Disconnect event
+// ===============================
+
+client.on("disconnect", event =>
+{
+   return logger("error", event);
+});
+
+// ===============================
+// Discord warning
+// ===============================
+
+client.on("warning", info =>
+{
+   return logger("warn", info);
+});
+
 // ==========================
 
 client.login(auth.token);
