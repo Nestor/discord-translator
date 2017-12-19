@@ -69,7 +69,8 @@ const helpMessage = function(config, botname, param)
    `# Misc & stats \n` +
    `* ${config.translateCmd} help misc\n` +
    `> ${config.translateCmd} help\n` +
-   `> ${config.translateCmd} stats\n\n` +
+   `> ${config.translateCmd} stats\n` +
+   `> ${config.translateCmd} list\n\n` +
 
    `# Settings (server-admins) \n` +
    `* ${config.translateCmd} help settings\n` +
