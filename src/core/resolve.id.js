@@ -4,11 +4,12 @@
 
 exports.idPrefix = function(id)
 {
-   const prefix = id.charAt(0);
+   const regex = (/[@&#]+/gm);
+   var prefix = regex.exec(id);
 
-   if (isNaN(prefix))
+   if (prefix)
    {
-      return prefix;
+      return prefix[0];
    }
    return null;
 };
@@ -17,7 +18,8 @@ exports.idPure = function(id)
 {
    if (module.exports.idPrefix(id))
    {
-      return id.substring(1);
+      const prefixLen = module.exports.idPrefix(id).length;
+      return id.substring(prefixLen);
    }
    return id;
 };
@@ -35,12 +37,12 @@ exports.getChName = function(channel)
 // Convert IDs to prefixed names (for google-translate link)
 // ----------------------------------------------------------
 
-exports.idConvert = function(string, client)
+exports.idConvert = function(string, client, guild)
 {
-   var regex = (/<([@#]\d*)>/gm);
-   var output = string.replace(regex, function(match, contents)
+   const regex = (/<([@#]&?\d*)>/gm);
+   const output = string.replace(regex, function(match, contents)
    {
-      return module.exports.main(client, contents, "prefixedName");
+      return module.exports.main(client, contents, "prefixedName", guild);
    });
    return output;
 };
@@ -49,7 +51,7 @@ exports.idConvert = function(string, client)
 // ID Resolver
 // ------------
 
-exports.main = function(client, id, output = null)
+exports.main = function(client, id, output = null, guild)
 {
    var resolved = {
       id: id,
@@ -65,6 +67,15 @@ exports.main = function(client, id, output = null)
       {
          resolved.obj = client.users.get(resolved.pure);
          resolved.name = resolved.obj.username;
+      },
+      "@&": function()
+      {
+         resolved.name = "@group";
+         if (guild)
+         {
+            resolved.obj = guild.roles.get(resolved.pure);
+            resolved.name = resolved.obj.name;
+         }
       },
       "#": function()
       {

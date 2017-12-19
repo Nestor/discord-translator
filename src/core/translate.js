@@ -17,16 +17,18 @@ const logger = require("./logger");
 
 const translateFix = function(string)
 {
-   return fn.replaceAll(string, /(<[:@#])\s?(\w+:?)\s?(\w+>)/igm, "$1$2$3");
+   return fn.replaceAll(
+      string, /(<[:@#])\s?(&)?\s?(\w+:?)\s?(\w+>)/igm, "$1$2$3$4"
+   );
 };
 
 // -----------------------------------------------
 // Generate Google Translate URL (for suggestion)
 // -----------------------------------------------
 
-const googleLink = function(original, from, to, client)
+const googleLink = function(original, from, to, client, guild)
 {
-   var resolved = resolveID.idConvert(original, client);
+   var resolved = resolveID.idConvert(original, client, guild);
    var google = "https://translate.google.com/?ref=discord-translator#";
    var link = google + `${from}/${to}/` + encodeURIComponent(resolved);
    return `   [:heavy_check_mark:](${link})`;
@@ -72,7 +74,7 @@ const bufferSend = function(arr, data)
    });
 };
 
-const bufferChains = function(data, from)
+const bufferChains = function(data, from, guild)
 {
    var translatedChains = [];
 
@@ -86,7 +88,9 @@ const bufferChains = function(data, from)
          from: from
       }).then(res =>
       {
-         const link = googleLink(chainMsgs, from, to, data.client);
+         const link = googleLink(
+            chainMsgs, from, to, data.client, guild
+         );
          const output = translateFix(res.text) + link;
 
          getUserColor(chain, function()
@@ -211,12 +215,23 @@ module.exports = function(data) //eslint-disable-line complexity
    }
 
    //
+   // Get guild data
+   //
+
+   var guild = null;
+
+   if (data.message.channel.type === "text")
+   {
+      guild = data.message.channel.guild;
+   }
+
+   //
    // Translate multiple chains (!translate last n)
    //
 
    if (data.bufferChains)
    {
-      return bufferChains(data, from);
+      return bufferChains(data, from, guild);
    }
 
    //
@@ -278,7 +293,7 @@ module.exports = function(data) //eslint-disable-line complexity
          {
             const title = `\`\`\`LESS\n ${lang.name} (${lang.native}) \`\`\`\n`;
             const link = googleLink(
-               data.translate.original, from, lang.iso, data.client
+               data.translate.original, from, lang.iso, data.client, guild
             );
             const output = "\n" + title + translateFix(res.text) + link + "\n";
             return translateBuffer[bufferID].update(output, data);
@@ -313,7 +328,7 @@ module.exports = function(data) //eslint-disable-line complexity
       data.color = 0;
       data.text = translateFix(res.text);
       data.text += googleLink(
-         data.translate.original, opts.from, opts.to, data.client
+         data.translate.original, opts.from, opts.to, data.client, guild
       );
       data.showAuthor = true;
       return getUserColor(data, botSend);
