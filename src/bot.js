@@ -8,7 +8,7 @@
 const discord = require("discord.js");
 const auth = require("./core/auth");
 const client = new discord.Client();
-const botVersion = "0.3.5 Beta";
+const botVersion = "0.3.6 Beta";
 const botCreator = "Aziz Natour (@aziz#5919)";
 
 //

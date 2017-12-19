@@ -1,5 +1,6 @@
 const setStatus = require("../core/status");
 const botSend = require("../core/send");
+const auth = require("../core/auth");
 
 // ------------------------
 // Bot Help / Command List
@@ -42,6 +43,14 @@ const helpMessage = function(config, botname, param)
    `**${botname} Bot - v.${config.version}**\n` +
    `Translates Discord messages (based on \`Google API\`).\n\n`;
 
+   var donation = "";
+
+   if (auth.donation.length > 5)
+   {
+      donation =
+         "\nLike this bot? [Support the developer!](" + auth.donation + ")";
+   }
+
    //
    // Help Basics
    //
@@ -77,8 +86,8 @@ const helpMessage = function(config, botname, param)
    `> ${config.translateCmd} settings setLang\n` +
    `> ${config.translateCmd} settings disconnect\n` +
    "```" +
-   "\n Please report any bugs or requests to the **[official developement " +
-   `server](${config.botServer})**.`;
+   "\nPlease report any bugs or requests to the **[official developement " +
+   `server](${config.botServer})**.${donation}`;
 
    //
    // Last Message (last)

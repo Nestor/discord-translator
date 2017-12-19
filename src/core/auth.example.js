@@ -26,5 +26,11 @@ exports.invite = "";
 exports.loggerWebhook = "";
 
 //
+// Add donation URL (optional)
+//
+
+exports.donation = "";
+
+//
 // Remember to rename this file to "auth.js" after you're done
 //
