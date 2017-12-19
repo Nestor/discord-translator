@@ -1,6 +1,7 @@
 const setStatus = require("./status");
 const colors = require("./colors");
 const fn = require("./helpers");
+const logger = require("./logger");
 
 //
 // Send Data to Channel
@@ -24,7 +25,7 @@ const sendBox = function(data)
          description: data.text,
          footer: data.footer
       }
-   }).catch(console.error);
+   }).catch(err => logger("error", err));
 
    //
    // Resend embeds from original message
@@ -84,7 +85,9 @@ module.exports = function(data)
          `the **${sendData.channel.name}** channel on your server **` +
          `${sendData.channel.guild.name}**. Please fix.`;
 
-      return sendData.channel.guild.owner.send(writeErr).catch(console.error);
+      return sendData.channel.guild.owner.send(writeErr).catch(err =>
+         logger("error", err)
+      );
    }
 
    if (data.forward)

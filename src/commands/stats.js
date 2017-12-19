@@ -2,6 +2,7 @@ const langCheck = require("../core/lang.check");
 const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const db = require("../core/db");
+const logger = require("../core/logger");
 
 module.exports = function(data)
 {
@@ -11,7 +12,7 @@ module.exports = function(data)
    {
       if (err)
       {
-         return console.error(err);
+         return logger("error", err);
       }
 
       const botLang = langCheck(stats.botLang).valid[0];

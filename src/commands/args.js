@@ -141,7 +141,7 @@ module.exports = function(data)
    {
       if (err)
       {
-         console.error(err);
+         logger("error", err);
       }
 
       else
@@ -192,7 +192,7 @@ module.exports = function(data)
       //
 
       //console.log(data.canWrite);
-      console.log(data.cmd);
+      //console.log(data.cmd);
       logger("cmd", data);
 
       //

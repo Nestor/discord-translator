@@ -2,6 +2,7 @@ const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const fn = require("../core/helpers");
 const db = require("../core/db");
+const logger = require("../core/logger");
 
 // ------------------------------
 // Auto translate Channel/Author
@@ -89,7 +90,7 @@ module.exports = function(data)
    {
       if (err)
       {
-         console.error(err);
+         logger("error", err);
       }
 
       const taskCount = res[Object.keys(res)[0]];
@@ -140,7 +141,7 @@ module.exports = function(data)
                user.createDM().then(dm =>
                {
                   taskBuffer.update(dm.id);
-               }).catch(console.error);
+               }).catch(err => logger("error", err));
 
                taskBuffer.update("@" + user.id);
             }

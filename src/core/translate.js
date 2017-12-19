@@ -8,6 +8,7 @@ const setStatus = require("./status");
 const botSend = require("./send");
 const colors = require("./colors");
 const fn = require("./helpers");
+const logger = require("./logger");
 
 // ------------------------------------------
 // Fix broken Discord tags after translation
@@ -49,7 +50,7 @@ function getUserColor(data, callback)
       data.color = colors.rgb2dec(colorThief.getColor(image));
       callback(data);
    }
-   ).catch(console.error);
+   ).catch(err => logger("error", err));
 }
 
 // --------------------------

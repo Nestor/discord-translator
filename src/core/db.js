@@ -1,6 +1,7 @@
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.cached.Database("translator.db");
 const autoTranslate = require("./auto");
+const logger = require("./logger");
 
 // -------------------
 // Init/create tables
@@ -43,7 +44,7 @@ const results = function(err, res)
 {
    if (err)
    {
-      return console.error(err);
+      return logger("error", err);
    }
    return res;
 };

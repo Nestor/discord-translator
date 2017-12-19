@@ -1,4 +1,5 @@
 const translate = require("./translate");
+const logger = require("./logger");
 
 // -----------------
 // Get data from db
@@ -8,7 +9,7 @@ module.exports = function(data)
 {
    if (data.err)
    {
-      return console.error(data.err);
+      return logger("error", data.err);
    }
 
    if (data.rows.length > 0)
@@ -121,7 +122,7 @@ const startTranslation = function(data, i, row)
          data.footer = footerExtra;
          data.forward = dm.id;
          sendTranslation(data);
-      }).catch(console.error);
+      }).catch(err => logger("error", err));
    }
 
    //

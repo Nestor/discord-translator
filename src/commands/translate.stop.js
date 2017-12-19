@@ -1,6 +1,7 @@
 const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const db = require("../core/db");
+const logger = require("../core/logger");
 
 // --------------------
 // Handle stop command
@@ -166,5 +167,5 @@ const dbError = function(err, data)
       "later or report this issue to an admin if problem continues.";
 
    botSend(data);
-   return console.error(err);
+   return logger("error", err);
 };

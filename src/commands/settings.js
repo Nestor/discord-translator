@@ -1,6 +1,7 @@
 const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const db = require("../core/db");
+const logger = require("../core/logger");
 
 // -------------------------
 // Proccess settings params
@@ -92,7 +93,7 @@ const getSettings = function(data)
          {
             if (err)
             {
-               return console.error(err);
+               return logger("error", err);
             }
             data.color = "ok";
             data.text =
@@ -176,7 +177,7 @@ const getSettings = function(data)
             ).then(m => //eslint-disable-line no-unused-vars
             {
                guild.leave();
-            }).catch(console.error);
+            }).catch(err => logger("error", err));
          });
       }
    };

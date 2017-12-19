@@ -1,6 +1,7 @@
 const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const translate = require("../core/translate");
+const logger = require("../core/logger");
 
 const getCount = function(count)
 {
@@ -140,5 +141,5 @@ module.exports = function(data)
 
       data.bufferChains = reqChains;
       return translate(data);
-   }).catch(console.error);
+   }).catch(err => logger("error", err));
 };
