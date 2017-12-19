@@ -16,14 +16,18 @@ module.exports = function(data)
 
    if (!data.cmd.content)
    {
-      return botSend({
-         message: {
-            channel: data.message.channel
-         },
-         color: "error",
-         text: ":warning:  Missing content for translation.",
-         bot: data.bot
-      });
+      data.color = "error";
+      data.text =
+         ":warning:  Missing content for translation.\n ```md\n" +
+         "# Valid examples\n" +
+         data.config.translateCmd + " this to french: Hello world\n" +
+         data.config.translateCmd + " this to en from de: Wie geht's?\n" +
+         data.config.translateCmd + " this to hebrew, arabic: I love you\n\n" +
+         "# More help with this command\n> " +
+         data.config.translateCmd + " help custom" +
+         "```";
+
+      return botSend(data);
    }
 
    //
