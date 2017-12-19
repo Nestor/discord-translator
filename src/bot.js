@@ -8,7 +8,7 @@
 const discord = require("discord.js");
 const auth = require("./core/auth");
 const client = new discord.Client();
-const botVersion = "0.3.4 Beta";
+const botVersion = "0.3.5 Beta";
 const botCreator = "Aziz Natour (@aziz#5919)";
 
 //
@@ -144,5 +144,23 @@ client.on("error", err =>
 {
    logger("error", err);
 });
+
+// ===============================
+// Remove channel tasks on delete
+// ===============================
+
+client.on("channelDelete", channel =>
+{
+   db.removeTask(channel.id, "all", function(err)
+   {
+      if (err)
+      {
+         return logger("error", err);
+      }
+      return logger("channelDel", channel);
+   });
+});
+
+// ==========================
 
 client.login(auth.token);

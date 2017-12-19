@@ -168,7 +168,7 @@ module.exports = function(data)
             }
          }
 
-         // invalidate @everyone/@here/@roles/non-mentions
+         // invalid dests
 
          if (
             dest.startsWith("@") ||

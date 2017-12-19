@@ -49,9 +49,9 @@ const logCmd = function(data)
    );
 };
 
-// ------------
-// Command log
-// ------------
+// ----------
+// Error log
+// ----------
 
 const logError = function(err)
 {
@@ -95,6 +95,21 @@ const logLeave = function(guild)
    );
 };
 
+// ----------------
+// Channel Deleted
+// ----------------
+
+const channelDelete = function(channel)
+{
+   hook.custom(
+      "Bot Logger",
+      `__#${channel.name}__ in __${channel.guild.name}__ has been deleted ` +
+      "along with any auto tasks.",
+      "Channel Delete Event",
+      "#be7865"
+   );
+};
+
 // ====================
 // Analyze log request
 // ====================
@@ -118,7 +133,8 @@ module.exports = function(type, data)
       "cmd": logCmd,
       "error": logError,
       "guildJoin": logJoin,
-      "guildLeave": logLeave
+      "guildLeave": logLeave,
+      "channelDel": channelDelete
    };
 
    if (logEvents.hasOwnProperty(type))
