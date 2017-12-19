@@ -71,11 +71,12 @@ const getSettings = function(data)
 
       if (data.cmd.to.valid[0].iso === data.cmd.server.lang)
       {
-         data.color = "warn";
+         data.color = "info";
          data.text =
-            ":warning: **`" +
-            data.cmd.to.valid[0].name + "`** is already the default " +
-            "languange of this server.";
+            ":information_source:  **`" +
+            data.cmd.to.valid[0].name + "`** is the current default " +
+            "languange of this server. To change:\n```md\n# Example\n" +
+            data.config.translateCmd + " settings setLang to french\n```";
 
          return botSend(data);
       }
