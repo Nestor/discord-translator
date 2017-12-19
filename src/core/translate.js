@@ -63,16 +63,11 @@ const bufferSend = function(arr, data)
    {
       setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
 
-      botSend({
-         message: {
-            channel: data.message.channel,
-            author: msg.author
-         },
-         text: msg.text,
-         bot: data.bot,
-         color: msg.color,
-         showAuthor: true
-      });
+      data.text = msg.text;
+      data.color = msg.color;
+      data.showAuthor = true;
+
+      botSend(data);
    });
 };
 

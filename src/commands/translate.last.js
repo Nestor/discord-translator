@@ -42,17 +42,12 @@ module.exports = function(data)
 
    if (mode === "all" && Math.abs(count) > data.config.maxChains)
    {
-      botSend({
-         message: {
-            channel: data.message.channel
-         },
-         color: "warn",
-         bot: data.bot,
-         text:
+      data.color = "warn";
+      data.text =
             ":warning:  Cannot translate more than __**`" +
-            data.config.maxChains + "`**__ message chains at once."
-      });
+            data.config.maxChains + "`**__ message chains at once.";
 
+      botSend(data);
       count = data.config.maxChains;
    }
 
