@@ -1,6 +1,7 @@
 const setStatus = require("./status");
 const colors = require("./colors");
 const fn = require("./helpers");
+const db = require("./db");
 const logger = require("./logger");
 
 //
@@ -25,7 +26,41 @@ const sendBox = function(data)
          description: data.text,
          footer: data.footer
       }
-   }).catch(err => logger("error", err));
+   }).catch(err =>
+   {
+      var errMsg = err;
+
+      //
+      // Handle error for users who cannot recieve private messages
+      //
+
+      if (err.code && err.code === 50007 && data.origin)
+      {
+         const badUser = data.channel.recipient;
+         errMsg = `@${badUser.username}#${badUser.discriminator}\n` + err;
+
+         db.removeTask(data.origin.id, `@${badUser.id}`, function(er)
+         {
+            if (er)
+            {
+               return logger("error", er);
+            }
+
+            return data.origin.send(
+               `:no_entry: User ${badUser} cannot recieve direct messages by ` +
+               `bot because of **privacy settings**.\n\n__Auto translation ` +
+               `has been stopped. To fix this:__\n` +
+               "```prolog\nServer > Privacy Settings > " +
+               "'Allow direct messages from server members'\n```"
+            );
+         });
+
+         //console.log(`tell them ${badUser.username} has privacy enabled!`);
+         //console.log(`origin: ${data.origin.id}`);
+      }
+
+      logger("error", errMsg);
+   });
 
    //
    // Resend embeds from original message
@@ -71,6 +106,7 @@ module.exports = function(data)
       footer: data.footer,
       embeds: data.message.embeds,
       forward: data.forward,
+      origin: null,
       bot: data.bot
    };
 
@@ -111,6 +147,7 @@ module.exports = function(data)
 
          if (canWriteDest)
          {
+            sendData.origin = sendData.channel;
             sendData.channel = forwardChannel;
          }
 

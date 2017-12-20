@@ -57,7 +57,7 @@ const logError = function(err)
 {
    hook.custom(
       "Bot Logger",
-      "```prolog\n" + err + "\n```",
+      "```prolog\n" + err + "\n```" + spacer + spacer,
       `Error log`,
       "#ff4747"
    );
