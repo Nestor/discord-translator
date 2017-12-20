@@ -1,5 +1,5 @@
 const sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.cached.Database("translator.db");
+const db = new sqlite3.cached.Database("./translator.db");
 const autoTranslate = require("./auto");
 const logger = require("./logger");
 
