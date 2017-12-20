@@ -124,6 +124,15 @@ const channelDelete = function(channel)
    );
 };
 
+// --------------
+// Custom Logger
+// --------------
+
+const logCustom = function(data)
+{
+   hook.custom("Bot Logger", data.msg, data.title, data.color);
+};
+
 // ====================
 // Analyze log request
 // ====================
@@ -149,7 +158,8 @@ module.exports = function(type, data)
       "warning": logWarn,
       "guildJoin": logJoin,
       "guildLeave": logLeave,
-      "channelDel": channelDelete
+      "channelDel": channelDelete,
+      "custom": logCustom
    };
 
    if (logEvents.hasOwnProperty(type))

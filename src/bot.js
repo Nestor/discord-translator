@@ -57,8 +57,13 @@ client.on("ready", () =>
       `\x1b[90m Official dev server: ${config.botServer}        \x1b[39m\n` +
       `\x1b[90m-------------------------------------------------\x1b[39m\n`
    );
-
    setStatus(bot, "online");
+
+   logger("custom", {
+      title: "Client Connection",
+      msg: `:wave:  **${bot.username}** is now online - v${botVersion}`,
+      color: "#98ffc1"
+   });
 });
 
 // ===================

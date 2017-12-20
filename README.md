@@ -1,5 +1,5 @@
 # Discord Translator Bot (beta)
-Translation bot built using `discord.js` and `Google Translate API.`.
+Translation bot built using `discord.js` and `Google Translate API`.
 
 [![Discord](https://discordapp.com/api/guilds/377112375372808193/embed.png)](https://discord.gg/uekTNPj)
 [![invite](https://img.shields.io/badge/invite-Translator%20Bot-7289DA.svg)](https://discordapp.com/oauth2/authorize?client_id=360081866461806595&scope=bot&permissions=248960)
