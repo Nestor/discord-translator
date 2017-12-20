@@ -8,6 +8,7 @@ module.exports = function(data)
 {
    setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
 
+   //eslint-disable-next-line complexity
    db.getStats(function(err, stats)
    {
       if (err)
@@ -33,7 +34,7 @@ module.exports = function(data)
          `**\`${activeTasks}\`**  channels and  ` +
          `**\`${stats.activeUserTasks}\`**  users`;
 
-      if (data.message.channel.type === "text")
+      if (data.message.channel.type === "text" && data.cmd.server)
       {
          const serverLang = langCheck(data.cmd.server.lang).valid[0];
 
@@ -55,10 +56,30 @@ module.exports = function(data)
       {
          data.text = serverStats;
 
+         //
+         // Calling via DM
+         //
+
          if (data.message.channel.type === "dm")
          {
             data.color = "warn";
             data.text = "You must call server stats from a server channel.";
+         }
+
+         //
+         // Unregistered server
+         //
+
+         if (!data.cmd.server)
+         {
+            data.color = "error";
+            data.text = "This server is not registered in the database.";
+            logger(
+               "error",
+               "'UNREGISTERED'\n" +
+               data.message.channel.guild.name + "\n" +
+               data.message.channel.guild.id
+            );
          }
 
          return botSend(data);

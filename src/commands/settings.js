@@ -70,7 +70,7 @@ const getSettings = function(data)
       // Error for same language
       //
 
-      if (data.cmd.to.valid[0].iso === data.cmd.server.lang)
+      if (data.cmd.server && data.cmd.to.valid[0].iso === data.cmd.server.lang)
       {
          data.color = "info";
          data.text =
