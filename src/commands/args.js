@@ -171,7 +171,6 @@ module.exports = function(data)
 
       data.cmd = output;
 
-
       //
       // check if channel is writable
       //
@@ -214,6 +213,8 @@ module.exports = function(data)
       //
       // Execute command if exists
       //
+
+      output.main = output.main.toLowerCase();
 
       if (cmdMap.hasOwnProperty(output.main))
       {
