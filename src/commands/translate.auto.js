@@ -66,7 +66,7 @@ module.exports = function(data)
    // log task data (dev)
    //
 
-   //console.log(data.task);
+   logger("dev", data.task);
 
    //
    // Error if non-manager sets channel as dest

@@ -32,5 +32,11 @@ exports.loggerWebhook = "";
 exports.donation = "";
 
 //
+// Developer Mode
+//
+
+exports.dev = false;
+
+//
 // Remember to rename this file to "auth.js" after you're done
 //

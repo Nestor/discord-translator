@@ -191,8 +191,6 @@ module.exports = function(data)
       // log command data (dev)
       //
 
-      //console.log(data.canWrite);
-      //console.log(data.cmd);
       logger("cmd", data);
 
       //

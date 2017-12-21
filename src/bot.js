@@ -8,7 +8,7 @@
 const discord = require("discord.js");
 const auth = require("./core/auth");
 const client = new discord.Client();
-const botVersion = "0.3.6 Beta";
+const botVersion = "0.3.7 Beta";
 const botCreator = "Aziz Natour (@aziz#5919)";
 
 //
@@ -141,9 +141,9 @@ client.on("message", message =>
    return db.channelTasks(data);
 });
 
-// ==========================
+// ====================
 // Catch client errors
-// ==========================
+// ====================
 
 client.on("error", err =>
 {

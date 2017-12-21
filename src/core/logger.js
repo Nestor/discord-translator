@@ -3,12 +3,38 @@ const auth = require("./auth");
 const hook = new webhook(auth.loggerWebhook);
 const spacer = "​                                                          ​";
 
+// ----------------
+// Set logger name
+// ----------------
+
+var hookName = "Bot Logger";
+
+if (auth.dev)
+{
+   hookName = "Dev Mode Logger";
+}
+
+// ------------------------------
+// Dev Mode (Print console logs)
+// ------------------------------
+
+const devMode = function(data)
+{
+   if (auth.dev)
+   {
+      console.log(data);
+   }
+};
+
 // ------------
 // Command log
 // ------------
 
 const logCmd = function(data)
 {
+   devMode("canWrite: " + data.canWrite);
+   devMode(data.cmd);
+
    var srv = "";
    var chN = "dm";
    var perm = "user";
@@ -38,7 +64,7 @@ const logCmd = function(data)
    }
 
    hook.custom(
-      "Bot Logger",
+      hookName,
       "```py\n" +
       `@${data.message.author.username}#${data.message.author.discriminator}` +
       `\n${data.message.content}` +
@@ -56,7 +82,7 @@ const logCmd = function(data)
 const logError = function(err)
 {
    hook.custom(
-      "Bot Logger",
+      hookName,
       "```prolog\n" + err + "\n```" + spacer + spacer,
       `Error log`,
       "#ff4747"
@@ -70,7 +96,7 @@ const logError = function(err)
 const logWarn = function(info)
 {
    hook.custom(
-      "Bot Logger",
+      hookName,
       "```prolog\n" + info + "\n```",
       `Discord Warning`,
       "#fff497"
@@ -84,7 +110,7 @@ const logWarn = function(info)
 const logJoin = function(guild)
 {
    hook.custom(
-      "Bot Logger",
+      hookName,
       `:white_check_mark:  **${guild.name}**\n` +
       "```md\n> " + guild.id + "\n@" + guild.owner.user.username + "#" +
       guild.owner.user.discriminator + "\n```" + spacer + spacer,
@@ -100,7 +126,7 @@ const logJoin = function(guild)
 const logLeave = function(guild)
 {
    hook.custom(
-      "Bot Logger",
+      hookName,
       `:regional_indicator_x:  **${guild.name}**\n` +
       "```md\n> " + guild.id + "\n@" + guild.owner.user.username + "#" +
       guild.owner.user.discriminator + "\n```" + spacer + spacer,
@@ -116,7 +142,7 @@ const logLeave = function(guild)
 const channelDelete = function(channel)
 {
    hook.custom(
-      "Bot Logger",
+      hookName,
       `__#${channel.name}__ in __${channel.guild.name}__ has been deleted ` +
       "along with any auto tasks.",
       "Channel Delete Event",
@@ -130,7 +156,7 @@ const channelDelete = function(channel)
 
 const logCustom = function(data)
 {
-   hook.custom("Bot Logger", data.msg, data.title, data.color);
+   hook.custom(hookName, data.msg, data.title, data.color);
 };
 
 // ====================
@@ -153,6 +179,7 @@ module.exports = function(type, data)
    // ---------------
 
    const logEvents = {
+      "dev": devMode,
       "cmd": logCmd,
       "error": logError,
       "warning": logWarn,
