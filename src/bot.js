@@ -122,9 +122,9 @@ client.on("message", message =>
       canWrite: true
    };
 
-   // ===================
+   // ==================
    // Proccess Commands
-   // ===================
+   // ==================
 
    if (
       message.content.startsWith(config.translateCmd) ||
@@ -166,24 +166,26 @@ client.on("channelDelete", channel =>
    });
 });
 
-// ===============================
+// =================
 // Disconnect event
-// ===============================
+// =================
 
 client.on("disconnect", event =>
 {
    return logger("error", event);
 });
 
-// ===============================
+// ================
 // Discord warning
-// ===============================
+// ================
 
 client.on("warning", info =>
 {
    return logger("warn", info);
 });
 
-// ==========================
+// ============
+// Init client
+// ============
 
 client.login(auth.token);

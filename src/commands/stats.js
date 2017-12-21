@@ -2,11 +2,34 @@ const langCheck = require("../core/lang.check");
 const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const db = require("../core/db");
+const auth = require("../core/auth");
 const logger = require("../core/logger");
 
 module.exports = function(data)
 {
    setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
+
+   //
+   // Version Info
+   //
+
+   if (data.cmd.main === "version")
+   {
+      data.color = "info";
+      data.text =
+         `:robot:  Current bot version is **\`${data.config.version}\`**`;
+
+      if (auth.changelog)
+      {
+         data.text += ` ([changelog](${auth.changelog}))`;
+      }
+
+      return botSend(data);
+   }
+
+   //
+   // Get Stats from Database
+   //
 
    //eslint-disable-next-line complexity
    db.getStats(function(err, stats)

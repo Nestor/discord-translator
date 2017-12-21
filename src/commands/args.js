@@ -207,6 +207,7 @@ module.exports = function(data)
          "info": cmdHelp,
          "list": cmdList,
          "stats": cmdStats,
+         "version": cmdStats,
          "settings": cmdSettings
       };
 

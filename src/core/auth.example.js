@@ -1,7 +1,9 @@
+/*eslint-disable*/
 //
 // Add Your Discord Bot Token here
 // Discord Dev > My Apps > Bot > App Bot User > Token > Reveal
 // https://discordapp.com/developers/applications/me
+//
 
 exports.token = "";
 
@@ -23,13 +25,19 @@ exports.invite = "";
 // Add Webhook URL for logging (optional)
 //
 
-exports.loggerWebhook = "";
+exports.loggerWebhook = null;
 
 //
 // Add donation URL (optional)
 //
 
-exports.donation = "";
+exports.donation = null;
+
+//
+// Changelog URL (optional)
+//
+
+exports.changelog = null;
 
 //
 // Developer Mode
