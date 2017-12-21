@@ -30,6 +30,27 @@ module.exports = function(data)
 };
 
 // ------------------------
+// Help Section
+// ------------------------
+
+const helpSection = function(data)
+{
+   var section =
+      `**[${data.title}](${data.link})**  ` +
+      `\`${data.config.translateCmd} help ${data.help}\`\n` +
+      "\n```cpp\n" +
+      `Command: "` +
+      `${data.config.translateCmd} ${data.cmd} ${data.args}"\n\n` +
+      `Example: "` +
+      `${data.config.translateCmd} ${data.cmd} ${data.example}"\n` +
+      //`Help: "` +
+      //`${data.config.translateCmd} help ${data.help}"` +
+      "\n```\n";
+
+   return section;
+};
+
+// ------------------------
 // Help Text
 // ------------------------
 
@@ -56,37 +77,52 @@ const helpMessage = function(config, botname, param)
    //
 
    const basics =
-   `The bot has many commands, please write the command name after ` +
-   `\`help\` as shown below to learn more.\n` +
-   "```md\n" +
-   `# Translate custom message \n` +
-   `* ${config.translateCmd} help custom\n` +
-   `> ${config.translateCmd} this\n\n` +
-
-   `# Translate last message(s) \n` +
-   `* ${config.translateCmd} help last\n` +
-   `> ${config.translateCmd} last\n\n` +
-
-   `# Auto translate channels \n` +
-   `* ${config.translateCmd} help auto\n` +
-   `> ${config.translateCmd} channel\n\n` +
-
-   `# Stop Auto-Translation \n` +
-   `* ${config.translateCmd} help stop\n` +
-   `> ${config.translateCmd} stop\n\n` +
-
-   `# Misc & stats \n` +
-   `* ${config.translateCmd} help misc\n` +
-   `> ${config.translateCmd} help\n` +
-   `> ${config.translateCmd} stats\n` +
-   `> ${config.translateCmd} list\n\n` +
-
-   `# Settings (server-admins) \n` +
-   `* ${config.translateCmd} help settings\n` +
-   `> ${config.translateCmd} settings setLang\n` +
-   `> ${config.translateCmd} settings disconnect\n` +
-   "```" +
-   "\nPlease report any bugs or requests to the **[official developement " +
+   helpSection({
+      config: config,
+      title: "Translate Custom Text",
+      link: "https://git.io/vbSLB",
+      cmd: "this",
+      help: "custom",
+      args: "to [lang] from [lang]: [msg]",
+      example: "to french from english: hello"
+   }) +
+   helpSection({
+      config: config,
+      title: "Translate Last Message",
+      link: "https://git.io/vbSgl",
+      cmd: "last",
+      help: "last",
+      args: "[count] from [lang] to [lang]",
+      example: "3 from german to spanish"
+   }) +
+   helpSection({
+      config: config,
+      title: "Translate Channel (Automatic)",
+      link: "https://git.io/vbSgB",
+      cmd: "channel",
+      help: "auto",
+      args: "from [lang] to [lang] for [@/#]",
+      example: "from hebrew to arabic for me"
+   }) +
+   helpSection({
+      config: config,
+      title: "Stats",
+      link: "https://git.io/vbSg0",
+      cmd: "stats",
+      help: "misc",
+      args: "stats [server/global]",
+      example: ""
+   }) +
+   helpSection({
+      config: config,
+      title: "Settings",
+      link: "https://git.io/vbSga",
+      cmd: "settings",
+      help: "settings",
+      args: "setLang to [lang]",
+      example: "setLang to italian"
+   }) +
+   "Please report any bugs or requests to the **[official developement " +
    `server](${config.botServer})**.${donation}`;
 
    //
@@ -104,17 +140,17 @@ const helpMessage = function(config, botname, param)
    `> ${config.translateCmd} last [n] to [lang] from [lang] \n\n` +
 
    `# Parameters\n` +
-   `* to [lang] - defaults to server default language\n` +
-   `* to [lang, lang, ...] - translates to multiple languages\n` +
-   `* from [lang] - defaults to automatic detection\n` +
-   `* [n] - number of chains to translate, default is 1\n` +
-   `* [-n] - negative number means only one chain is translated\n\n` +
+   `> to [lang] - defaults to server default language\n` +
+   `> to [lang, lang, ...] - translates to multiple languages\n` +
+   `> from [lang] - defaults to automatic detection\n` +
+   `> [n] - number of chains to translate, default is 1\n` +
+   `> [-n] - negative number means only one chain is translated\n\n` +
 
    `# Examples\n` +
-   `> ${config.translateCmd} last 2 \n` +
-   `> ${config.translateCmd} last to english \n` +
-   `> ${config.translateCmd} last to english, german, french \n` +
-   `> ${config.translateCmd} last -6 to english from german` +
+   `* ${config.translateCmd} last 2 \n` +
+   `* ${config.translateCmd} last to english \n` +
+   `* ${config.translateCmd} last to english, german, french \n` +
+   `* ${config.translateCmd} last -6 to english from german` +
    "```";
 
    //
@@ -131,15 +167,15 @@ const helpMessage = function(config, botname, param)
    `> ${config.translateCmd} this to [lang] from [lang]: [msg] \n\n` +
 
    `# Parameters\n` +
-   `* to [lang] - defaults to server default language\n` +
-   `* to [lang, lang, ...] - translates to multiple languages\n` +
-   `* from [lang] - defaults to automatic detection\n\n` +
+   `> to [lang] - defaults to server default language\n` +
+   `> to [lang, lang, ...] - translates to multiple languages\n` +
+   `> from [lang] - defaults to automatic detection\n\n` +
 
    `# Examples\n` +
-   `> ${config.translateCmd} this: bonjour \n` +
-   `> ${config.translateCmd} this to spanish: hello world \n` +
-   `> ${config.translateCmd} this to arabic, hebrew: I love you \n` +
-   `> ${config.translateCmd} this to de from en: how are you? \n` +
+   `* ${config.translateCmd} this: bonjour \n` +
+   `* ${config.translateCmd} this to spanish: hello world \n` +
+   `* ${config.translateCmd} this to arabic, hebrew: I love you \n` +
+   `* ${config.translateCmd} this to de from en: how are you? \n` +
    "```";
 
    //
@@ -159,15 +195,15 @@ const helpMessage = function(config, botname, param)
    `> ${config.translateCmd} stop for [me/@/#] \n\n` +
 
    `# Parameters\n` +
-   `* to [lang] - defaults to server default language\n` +
-   `* from [lang] -  language to translate from \n` +
-   `* for [me/@/#] - defaults to "me", admins can use mentions \n\n` +
+   `> to [lang] - defaults to server default language\n` +
+   `> from [lang] -  language to translate from \n` +
+   `> for [me/@/#] - defaults to "me", admins can use mentions \n\n` +
 
    `# Examples\n` +
-   `> ${config.translateCmd} channel to english from chinese \n` +
-   `> ${config.translateCmd} channel to en from de for #englishChannel \n` +
-   `> ${config.translateCmd} channel to de from en for @steve \n` +
-   `> ${config.translateCmd} channel to en from ru for #ch1, #ch2, #usr1 \n` +
+   `* ${config.translateCmd} channel to english from chinese \n` +
+   `* ${config.translateCmd} channel to en from de for #englishChannel \n` +
+   `* ${config.translateCmd} channel to de from en for @steve \n` +
+   `* ${config.translateCmd} channel to en from ru for #ch1, #ch2, #usr1 \n` +
    "```" +
    "\n* Translated messages that are forwarded to users include a special id " +
    "for replying. Simply copy the code and paste into DM window before your " +
@@ -188,14 +224,14 @@ const helpMessage = function(config, botname, param)
    `> ${config.translateCmd} stop for [me/@/#/all] \n\n` +
 
    `# Parameters\n` +
-   `* for [me/@/#/all] - defaults to "me" \n\n` +
+   `> for [me/@/#/all] - defaults to "me" \n\n` +
 
    `# Examples\n` +
-   `> ${config.translateCmd} stop \n` +
-   `> ${config.translateCmd} stop for me \n` +
-   `> ${config.translateCmd} stop for @usr1 \n` +
-   `> ${config.translateCmd} stop for #ch1 \n` +
-   `> ${config.translateCmd} stop for all \n` +
+   `* ${config.translateCmd} stop \n` +
+   `* ${config.translateCmd} stop for me \n` +
+   `* ${config.translateCmd} stop for @usr1 \n` +
+   `* ${config.translateCmd} stop for #ch1 \n` +
+   `* ${config.translateCmd} stop for all \n` +
    "```";
 
    //
@@ -211,6 +247,7 @@ const helpMessage = function(config, botname, param)
    `> ${config.translateCmd} help [command]\n\n` +
 
    `# Statistics\n` +
+   `> ${config.translateCmd} version \n` +
    `> ${config.translateCmd} stats \n` +
    `> ${config.translateCmd} stats global \n` +
    `> ${config.translateCmd} stats server \n\n` +
