@@ -43,12 +43,14 @@ function getUserColor(data, callback)
    const fw = data.forward;
    const txt = data.text;
    const ft = data.footer;
+   const usr = data.author;
 
-   jimp.read(data.author.displayAvatarURL).then(function(image)
+   jimp.read(usr.displayAvatarURL).then(function(image)
    {
       data.forward = fw;
       data.text = txt;
       data.footer = ft;
+      data.author = usr;
       data.color = colors.rgb2dec(colorThief.getColor(image));
       callback(data);
    }
@@ -65,11 +67,10 @@ const bufferSend = function(arr, data)
    sorted.forEach(msg =>
    {
       setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
-
       data.text = msg.text;
       data.color = msg.color;
+      data.author = msg.author;
       data.showAuthor = true;
-
       botSend(data);
    });
 };
@@ -93,16 +94,19 @@ const bufferChains = function(data, from, guild)
          );
          const output = translateFix(res.text) + link;
 
-         getUserColor(chain, function()
+         getUserColor(chain, function(gotData)
          {
             translatedChains.push({
-               color: chain.color,
                time: chain.time,
-               author: chain.author,
+               color: gotData.color,
+               author: gotData.author,
                text: output
             });
 
-            fn.bufferEnd(data.bufferChains, translatedChains, bufferSend, data);
+            if (fn.bufferEnd(data.bufferChains, translatedChains))
+            {
+               bufferSend(translatedChains, data);
+            }
          });
       });
    });

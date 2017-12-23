@@ -6,12 +6,13 @@
 // Buffer end checker
 //
 
-exports.bufferEnd = function(arrOriginal, arrFinal, callback, data)
+exports.bufferEnd = function(arrOriginal, arrFinal)
 {
    if (arrOriginal.length === arrFinal.length)
    {
-      return callback(arrFinal, data);
+      return true;
    }
+   return false;
 };
 
 //

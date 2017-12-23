@@ -192,6 +192,11 @@ module.exports = function(data)
    if (data.showAuthor)
    {
       sendData.author = data.message.author;
+
+      if (data.author)
+      {
+         sendData.author = data.author;
+      }
    }
 
    return sendBox(sendData);
