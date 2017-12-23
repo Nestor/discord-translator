@@ -29,6 +29,16 @@ const sendBox = function(data)
    }).catch(err =>
    {
       var errMsg = err;
+      logger("dev", err);
+
+      //
+      // Error for long messages
+      //
+
+      if (err.code && err.code === 50035)
+      {
+         data.channel.send(":warning:  Message is too long.");
+      }
 
       //
       // Handle error for users who cannot recieve private messages
@@ -54,9 +64,6 @@ const sendBox = function(data)
                "'Allow direct messages from server members'\n```"
             );
          });
-
-         //console.log(`tell them ${badUser.username} has privacy enabled!`);
-         //console.log(`origin: ${data.origin.id}`);
       }
 
       logger("error", errMsg);

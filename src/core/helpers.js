@@ -76,3 +76,22 @@ exports.arraySplit = function(input, sep)
    }
    return input.split(sep);
 };
+
+//
+// Split string to chunks
+//
+
+exports.chunkString = function(str, len)
+{
+   var _size = Math.ceil(str.length/len);
+   var _ret = new Array(_size);
+   var _offset;
+
+   for (var _i=0; _i<_size; _i++)
+   {
+      _offset = _i * len;
+      _ret[_i] = str.substring(_offset, _offset + len);
+   }
+
+   return _ret;
+};

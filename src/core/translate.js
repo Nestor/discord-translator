@@ -320,17 +320,27 @@ module.exports = function(data) //eslint-disable-line complexity
    const fw = data.forward;
    const ft = data.footer;
 
-   translate(data.translate.original, opts).then(res =>
+   //
+   // Split long messages
+   //
+
+   const textArray = fn.chunkString(data.translate.original, 500);
+
+   textArray.forEach(chunk =>
    {
-      updateServerStats(data.message);
-      data.forward = fw;
-      data.footer = ft;
-      data.color = 0;
-      data.text = translateFix(res.text);
-      data.text += googleLink(
-         data.translate.original, opts.from, opts.to, data.client, guild
-      );
-      data.showAuthor = true;
-      return getUserColor(data, botSend);
+      translate(chunk, opts).then(res =>
+      {
+         updateServerStats(data.message);
+         data.forward = fw;
+         data.footer = ft;
+         data.color = 0;
+         data.text = translateFix(res.text);
+         data.text += googleLink(
+            chunk, opts.from, opts.to, data.client, guild
+         );
+         data.showAuthor = true;
+         return getUserColor(data, botSend);
+      });
    });
+   return;
 };
