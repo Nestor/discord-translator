@@ -36,16 +36,17 @@ module.exports = function(data)
 const helpSection = function(data)
 {
    var section =
-      `**[${data.title}](${data.link})**  ` +
-      `\`${data.config.translateCmd} help ${data.help}\`\n` +
-      "\n```cpp\n" +
-      `Command: "` +
-      `${data.config.translateCmd} ${data.cmd} ${data.args}"\n\n` +
-      `Example: "` +
-      `${data.config.translateCmd} ${data.cmd} ${data.example}"\n` +
+      `${data.icon}  **[${data.title}](${data.link})**\n\n`
+      //`\`${data.config.translateCmd} help ${data.help}\`\n\n`
+      //"\n```cpp\n" +
+      //`Command: "` +
+      //`${data.config.translateCmd} ${data.cmd} ${data.args}"\n\n` +
+      //`Example: "` +
+      //`${data.config.translateCmd} ${data.cmd} ${data.example}"\n` +
       //`Help: "` +
       //`${data.config.translateCmd} help ${data.help}"` +
-      "\n```\n";
+      //"\n```\n"
+   ;
 
    return section;
 };
@@ -69,7 +70,7 @@ const helpMessage = function(config, botname, param)
    if (auth.donation.length > 5)
    {
       donation =
-         "\nLike this bot? [Support the developer!](" + auth.donation + ")";
+         "Like this bot? [Support the developer!](" + auth.donation + ")";
    }
 
    //
@@ -79,8 +80,19 @@ const helpMessage = function(config, botname, param)
    const basics =
    helpSection({
       config: config,
+      title: "Translate by Reacting `new`",
+      link: "https://git.io/vb7IH",
+      icon: ":flag_white:",
+      cmd: null,
+      help: "react",
+      args: null,
+      example: null
+   }) +
+   helpSection({
+      config: config,
       title: "Translate Custom Text",
       link: "https://git.io/vbSLB",
+      icon: ":abc:",
       cmd: "this",
       help: "custom",
       args: "to [lang] from [lang]: [msg]",
@@ -90,6 +102,7 @@ const helpMessage = function(config, botname, param)
       config: config,
       title: "Translate Last Message",
       link: "https://git.io/vbSgl",
+      icon: ":arrow_double_up:",
       cmd: "last",
       help: "last",
       args: "[count] from [lang] to [lang]",
@@ -99,6 +112,7 @@ const helpMessage = function(config, botname, param)
       config: config,
       title: "Translate Channel (Automatic)",
       link: "https://git.io/vbSgB",
+      icon: ":hash:",
       cmd: "channel",
       help: "auto",
       args: "from [lang] to [lang] for [@/#]",
@@ -108,6 +122,7 @@ const helpMessage = function(config, botname, param)
       config: config,
       title: "Stats",
       link: "https://git.io/vbSg0",
+      icon: ":bar_chart:",
       cmd: "stats",
       help: "misc",
       args: "stats [server/global]",
@@ -117,13 +132,19 @@ const helpMessage = function(config, botname, param)
       config: config,
       title: "Settings",
       link: "https://git.io/vbSga",
+      icon: ":gear:",
       cmd: "settings",
       help: "settings",
       args: "setLang to [lang]",
       example: "setLang to italian"
    }) +
-   "Please report any bugs or requests to the **[official developement " +
-   `server](${config.botServer})**.${donation}`;
+   helpSection({
+      config: config,
+      title: "Report Bugs / Request Features",
+      link: config.botServer,
+      icon: ":raising_hand::skin-tone-3:"
+   }) +
+   donation;
 
    //
    // Last Message (last)
@@ -152,6 +173,15 @@ const helpMessage = function(config, botname, param)
    `* ${config.translateCmd} last to english, german, french \n` +
    `* ${config.translateCmd} last -6 to english from german` +
    "```";
+
+   //
+   // Flag Emoji Reaction
+   //
+
+   const react =
+   `__**Translate by reaction**__\n\n` +
+   `Translates a message in the server when you react to it with a ` +
+   `flag emoji. For example: :flag_ca:, :flag_it:, :flag_eg:, :flag_jp:`;
 
    //
    // Custom message (this)
@@ -280,6 +310,7 @@ const helpMessage = function(config, botname, param)
    {
       "basics": info + basics,
       "custom": custom,
+      "react": react,
       "last": last,
       "auto": auto,
       "stop": stop,

@@ -8,7 +8,7 @@
 const discord = require("discord.js");
 const auth = require("./core/auth");
 const client = new discord.Client();
-const botVersion = "0.3.7 Beta";
+const botVersion = "0.3.8 Beta";
 const botCreator = "Aziz Natour (@aziz#5919)";
 
 //
@@ -20,6 +20,7 @@ const fn = require("./core/helpers");
 const logger = require("./core/logger");
 const setStatus = require("./core/status");
 const cmdArgs = require("./commands/args");
+const react = require("./commands/translate.react");
 
 //
 // Default Settings
@@ -139,6 +140,22 @@ client.on("message", message =>
    // ==========================
 
    return db.channelTasks(data);
+});
+
+// =====================
+// Listen for reactions
+// =====================
+
+client.on("messageReactionAdd", reaction =>
+{
+   react({
+      client: client,
+      config: config,
+      bot: bot,
+      canWrite: true,
+      message: reaction.message,
+      emoji: reaction.emoji
+   });
 });
 
 // ====================
