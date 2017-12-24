@@ -1,5 +1,6 @@
 const translate = require("./translate");
 const logger = require("./logger");
+const botSend = require("./send");
 
 // -----------------
 // Get data from db
@@ -39,6 +40,7 @@ const analyzeRows = function(data, i)
    {
       data.forward = row.dest;
       data.embeds = data.message.embeds;
+      data.attachments = data.message.attachments;
 
       if (data.message.channel.type === "dm")
       {
@@ -144,6 +146,14 @@ const sendTranslation = function(data)
 {
    if (data.proccess)
    {
+      if (
+         data.message.content === "" &&
+         data.message.attachments.array().length > 0
+      )
+      {
+         return botSend(data);
+      }
+
       return translate(data);
    }
 };

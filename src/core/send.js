@@ -3,6 +3,7 @@ const colors = require("./colors");
 const fn = require("./helpers");
 const db = require("./db");
 const logger = require("./logger");
+const discord = require("discord.js");
 
 //
 // Send Data to Channel
@@ -19,61 +20,73 @@ const sendBox = function(data)
       };
    }
 
-   data.channel.send({
-      embed: {
-         author: data.author,
-         color: colors.get(data.color),
-         description: data.text,
-         footer: data.footer
-      }
-   }).catch(err =>
+   if (data.text && data.text.length > 1)
    {
-      var errMsg = err;
-      logger("dev", err);
-
-      //
-      // Error for long messages
-      //
-
-      if (err.code && err.code === 50035)
+      data.channel.send({
+         embed: {
+            author: data.author,
+            color: colors.get(data.color),
+            description: data.text,
+            footer: data.footer
+         }
+      }).catch(err =>
       {
-         data.channel.send(":warning:  Message is too long.");
-      }
+         var errMsg = err;
+         logger("dev", err);
 
-      //
-      // Handle error for users who cannot recieve private messages
-      //
+         //
+         // Error for long messages
+         //
 
-      if (err.code && err.code === 50007 && data.origin)
-      {
-         const badUser = data.channel.recipient;
-         errMsg = `@${badUser.username}#${badUser.discriminator}\n` + err;
-
-         db.removeTask(data.origin.id, `@${badUser.id}`, function(er)
+         if (err.code && err.code === 50035)
          {
-            if (er)
+            data.channel.send(":warning:  Message is too long.");
+         }
+
+         //
+         // Handle error for users who cannot recieve private messages
+         //
+
+         if (err.code && err.code === 50007 && data.origin)
+         {
+            const badUser = data.channel.recipient;
+            errMsg = `@${badUser.username}#${badUser.discriminator}\n` + err;
+
+            db.removeTask(data.origin.id, `@${badUser.id}`, function(er)
             {
-               return logger("error", er);
-            }
+               if (er)
+               {
+                  return logger("error", er);
+               }
 
-            return data.origin.send(
-               `:no_entry: User ${badUser} cannot recieve direct messages by ` +
-               `bot because of **privacy settings**.\n\n__Auto translation ` +
-               `has been stopped. To fix this:__\n` +
-               "```prolog\nServer > Privacy Settings > " +
-               "'Allow direct messages from server members'\n```"
-            );
-         });
-      }
+               return data.origin.send(
+                  `:no_entry: User ${badUser} cannot recieve direct messages ` +
+                  `by bot because of **privacy settings**.\n\n__Auto ` +
+                  `translation has been stopped. To fix this:__\n` +
+                  "```prolog\nServer > Privacy Settings > " +
+                  "'Allow direct messages from server members'\n```"
+               );
+            });
+         }
 
-      logger("error", errMsg);
-   });
+         logger("error", errMsg);
+      });
+   }
 
-   //
-   // Resend embeds from original message
-   // Only if content is forwared to another channel
-   //
+   sendEmbeds(data);
+   sendAttachments(data);
 
+   return setStatus(data.bot, "stopTyping", data.channel);
+};
+
+
+//
+// Resend embeds from original message
+// Only if content is forwared to another channel
+//
+
+const sendEmbeds = function(data)
+{
    if (data.forward && data.embeds && data.embeds.length > 0)
    {
       const maxEmbeds = data.config.maxEmbeds;
@@ -89,13 +102,44 @@ const sendBox = function(data)
          data.embeds = data.embeds.slice(0, maxEmbeds);
       }
 
-      for (var i = 0; i < data.embeds.length; i++)
+      for (let i = 0; i < data.embeds.length; i++)
       {
          data.channel.send(data.embeds[i].url);
       }
    }
+};
 
-   return setStatus(data.bot, "stopTyping", data.channel);
+//
+// Resend attachments
+//
+
+const sendAttachments = function(data)
+{
+   var attachments = data.attachments.array();
+
+   if (data.forward && attachments && attachments.length > 0)
+   {
+      const maxAtt = data.config.maxEmbeds;
+
+      if (attachments.length > maxAtt)
+      {
+         sendBox({
+            channel: data.channel,
+            text: `:warning:  Cannot attach more than ${maxAtt} files.`,
+            color: "warn"
+         });
+         attachments = attachments.slice(0, maxAtt);
+      }
+
+      for (let i = 0; i < attachments.length; i++)
+      {
+         const attachmentObj = new discord.Attachment(
+            attachments[i].url,
+            attachments[i].filename
+         );
+         data.channel.send(attachmentObj);
+      }
+   }
 };
 
 //
@@ -112,6 +156,7 @@ module.exports = function(data)
       text: data.text,
       footer: data.footer,
       embeds: data.message.embeds,
+      attachments: data.message.attachments,
       forward: data.forward,
       origin: null,
       bot: data.bot
