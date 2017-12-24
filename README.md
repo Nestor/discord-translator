@@ -10,6 +10,7 @@ Translation bot built using `discord.js` and `Google Translate API`.
 
 ## Features
 * Translate custom messages
+* Translate messages by reacting with flag emoji
 * Translate last message(s) in channel
 * Translate to multiple languages at once
 * Automatic translation of channels with option to forward translations to users or seperate channels.
@@ -22,6 +23,7 @@ Translation bot built using `discord.js` and `Google Translate API`.
 
 ## Commands
 * [Translate Custom Text](https://github.com/aziznatour/discord-translator/wiki/Translate-Custom-Text)
+* [Translate by Reaction](https://github.com/aziznatour/discord-translator/wiki/Translate-with-Emoji-Reaction)
 * [Translate Last Message](https://github.com/aziznatour/discord-translator/wiki/Translate-Last-Message)
 * [Translate Channel](https://github.com/aziznatour/discord-translator/wiki/Translate-Channel-(Automatic))
 * [Settings](https://github.com/aziznatour/discord-translator/wiki/Settings)
