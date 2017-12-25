@@ -1,6 +1,6 @@
 {
    "name": "discord-translator",
-   "version": "0.3.2",
+   "version": "0.3.8",
    "description": "Translation bot built using discord.js and Google Translate API.",
    "main": "src/bot.js",
    "license": "MIT",
