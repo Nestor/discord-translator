@@ -2,7 +2,7 @@
 Translation bot built using `discord.js` and `Google Translate API`.
 
 [![active servers](https://discordbots.org/api/widget/servers/360081866461806595.svg)](https://discordbots.org/bot/360081866461806595)
-[![invite](https://img.shields.io/badge/invite-Translator%20Bot-7289DA.svg)](https://discordapp.com/oauth2/authorize?client_id=360081866461806595&scope=bot&permissions=248960)
+[![invite](https://img.shields.io/badge/invite-Translator%20Bot-7289DA.svg)](https://discordapp.com/oauth2/authorize?client_id=360081866461806595&permissions=519360&scope=bot)
 [![Build Status](https://ci.0x09.de/job/aziz.TranslatorBot/badge/icon)](https://ci.0x09.de/job/aziz.TranslatorBot)
 [![npmD](https://img.shields.io/npm/dt/discord-translator.svg)](https://www.npmjs.com/package/discord-translator)
 [![npmV](https://img.shields.io/npm/v/discord-translator.svg)](https://www.npmjs.com/package/discord-translator)
@@ -18,7 +18,7 @@ Translation bot built using `discord.js` and `Google Translate API`.
 * Embeds link to google for translation improvement
 
 ## Discord Usage
-* [Invite bot](https://discordapp.com/oauth2/authorize?client_id=360081866461806595&scope=bot&permissions=248960) to your discord server
+* [Invite bot](https://discordapp.com/oauth2/authorize?client_id=360081866461806595&permissions=519360&scope=bot) to your discord server
 * Write `!translate help` for a list of commands.
 
 ## Commands
