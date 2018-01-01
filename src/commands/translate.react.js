@@ -27,6 +27,15 @@ module.exports = function(data)
 
    if (countryLangs.hasOwnProperty(emoji))
    {
+      //
+      // Stop proccessing if country has no langs / null
+      //
+
+      if (!countryLangs[emoji].langs)
+      {
+         return;
+      }
+
       setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
 
       data.translate = {
