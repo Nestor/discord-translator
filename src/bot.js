@@ -87,6 +87,7 @@ client.on("guildDelete", guild =>
 // Listen for messages
 // ====================
 
+//eslint-disable-next-line complexity
 client.on("message", message =>
 {
    //
@@ -143,9 +144,12 @@ client.on("message", message =>
    // Ignore bot commands
    //
 
-   if (/^.{0,20}[~!$%^&*_\-+:;?=>]\w+(?:\s\w*)?$/.test(message.content))
+   if (
+      /^.{0,20}[~!$%^&*_\-+:;?=>.,|\\/]\w+(?:.*)?$/.test(message.content) ||
+      message.content.endsWith("!i")
+   )
    {
-      return message.react("✖").catch(err =>
+      return message.react("🕳️").catch(err =>
       {
          return logger("error", `${err}\n\n'# Cannot react`);
       });
