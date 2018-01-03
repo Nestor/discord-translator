@@ -145,7 +145,7 @@ client.on("message", message =>
    //
 
    if (
-      /^.{0,20}[~!$%^&*_\-+:;?=>.,|\\/]\w+(?:.*)?$/.test(message.content) ||
+      /^\S{0,20}[~!$%^&*_\-+:;?=>.,|\\/]\w+(?:.*)?$/.test(message.content) ||
       message.content.endsWith("!i")
    )
    {
