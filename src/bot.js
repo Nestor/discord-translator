@@ -149,7 +149,7 @@ client.on("message", message =>
       message.content.endsWith("!i")
    )
    {
-      return message.react("🕳️").catch(err =>
+      return message.react("✖").catch(err =>
       {
          return logger("error", `${err}\n\n'# Cannot react`);
       });
