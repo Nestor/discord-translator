@@ -8,7 +8,7 @@
 const discord = require("discord.js");
 const auth = require("./core/auth");
 const client = new discord.Client();
-const botVersion = "0.3.8 Beta";
+const botVersion = "0.3.9 Beta";
 const botCreator = "Aziz Natour (@aziz#5919)";
 
 //
@@ -138,6 +138,18 @@ client.on("message", message =>
    // ==========================
    // Check for automatic tasks
    // ==========================
+
+   //
+   // Ignore bot commands
+   //
+
+   if (/^.{0,20}[~!$%^&*_\-+:;?=>]\w+(?:\s\w*)?$/.test(message.content))
+   {
+      return message.react("✖").catch(err =>
+      {
+         return logger("error", `${err}\n\n'# Cannot react`);
+      });
+   }
 
    return db.channelTasks(data);
 });
