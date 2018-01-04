@@ -30,8 +30,18 @@ const devMode = function(data)
 // Command log
 // ------------
 
+//eslint-disable-next-line complexity
 const logCmd = function(data)
 {
+   //
+   // Log only during dev mode
+   //
+
+   if (!auth.dev)
+   {
+      return;
+   }
+
    devMode("canWrite: " + data.canWrite);
    devMode(data.cmd);
 
