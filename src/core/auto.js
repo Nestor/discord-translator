@@ -13,6 +13,23 @@ module.exports = function(data)
       return logger("error", data.err);
    }
 
+   //
+   // Ignore bot commands
+   //
+
+   const ignoreRegex = /^\S{0,20}[~!$%^&*_\-+:;?=>.,|\\/]\w+(?:.*)?$/;
+
+   if (
+      ignoreRegex.test(data.message.content) ||
+      data.message.content.endsWith("!i")
+   )
+   {
+      return data.message.react("➖").catch((err) =>
+      {
+         return logger("dev", `${err}\n\n'# Cannot react`);
+      });
+   }
+
    if (data.rows.length > 0)
    {
       data.proccess = true;

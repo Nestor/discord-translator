@@ -140,21 +140,6 @@ client.on("message", message =>
    // Check for automatic tasks
    // ==========================
 
-   //
-   // Ignore bot commands
-   //
-
-   if (
-      /^\S{0,20}[~!$%^&*_\-+:;?=>.,|\\/]\w+(?:.*)?$/.test(message.content) ||
-      message.content.endsWith("!i")
-   )
-   {
-      return message.react("✖").catch(err =>
-      {
-         return logger("error", `${err}\n\n'# Cannot react`);
-      });
-   }
-
    return db.channelTasks(data);
 });
 
