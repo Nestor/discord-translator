@@ -34,14 +34,14 @@ const helpSection = function(data)
 {
    var section =
       `${data.icon}  **[${data.title}](${data.link})**\n\n`
-      //`\`${data.config.translateCmd} help ${data.help}\`\n\n`
+      //`\`${data.cmd} help ${data.help}\`\n\n`
       //"\n```cpp\n" +
       //`Command: "` +
-      //`${data.config.translateCmd} ${data.cmd} ${data.args}"\n\n` +
+      //`${data.cmd} ${data.cmd} ${data.args}"\n\n` +
       //`Example: "` +
-      //`${data.config.translateCmd} ${data.cmd} ${data.example}"\n` +
+      //`${data.cmd} ${data.cmd} ${data.example}"\n` +
       //`Help: "` +
-      //`${data.config.translateCmd} help ${data.help}"` +
+      //`${data.cmd} help ${data.help}"` +
       //"\n```\n"
    ;
 
@@ -57,6 +57,8 @@ const helpMessage = function(config, botname, param)
    //
    // Bot Info
    //
+
+   const cmd = config.translateCmdShort;
 
    const info =
    `**${botname} Bot - v.${config.version}**\n` +
@@ -78,7 +80,7 @@ const helpMessage = function(config, botname, param)
    helpSection({
       config: config,
       title: "Translate by Reacting `new`",
-      link: "https://git.io/vb7IH",
+      link: "http://nvu.io/bots/discord-translator/#wiki/react",
       icon: ":flag_white:",
       cmd: null,
       help: "react",
@@ -88,7 +90,7 @@ const helpMessage = function(config, botname, param)
    helpSection({
       config: config,
       title: "Translate Custom Text",
-      link: "https://git.io/vbSLB",
+      link: "http://nvu.io/bots/discord-translator/#wiki/custom",
       icon: ":abc:",
       cmd: "this",
       help: "custom",
@@ -98,7 +100,7 @@ const helpMessage = function(config, botname, param)
    helpSection({
       config: config,
       title: "Translate Last Message",
-      link: "https://git.io/vbSgl",
+      link: "http://nvu.io/bots/discord-translator/#wiki/last",
       icon: ":arrow_double_up:",
       cmd: "last",
       help: "last",
@@ -108,7 +110,7 @@ const helpMessage = function(config, botname, param)
    helpSection({
       config: config,
       title: "Translate Channel (Automatic)",
-      link: "https://git.io/vbSgB",
+      link: "http://nvu.io/bots/discord-translator/#wiki/auto",
       icon: ":hash:",
       cmd: "channel",
       help: "auto",
@@ -118,7 +120,7 @@ const helpMessage = function(config, botname, param)
    helpSection({
       config: config,
       title: "Stats",
-      link: "https://git.io/vbSg0",
+      link: "http://nvu.io/bots/discord-translator/#wiki/stats",
       icon: ":bar_chart:",
       cmd: "stats",
       help: "misc",
@@ -128,7 +130,7 @@ const helpMessage = function(config, botname, param)
    helpSection({
       config: config,
       title: "Settings",
-      link: "https://git.io/vbSga",
+      link: "http://nvu.io/bots/discord-translator/#wiki/settings",
       icon: ":gear:",
       cmd: "settings",
       help: "settings",
@@ -154,8 +156,8 @@ const helpMessage = function(config, botname, param)
    "```md\n" +
 
    `# Command\n` +
-   `> ${config.translateCmd} last \n` +
-   `> ${config.translateCmd} last [n] to [lang] from [lang] \n\n` +
+   `> ${cmd} last \n` +
+   `> ${cmd} last [n] to [lang] from [lang] \n\n` +
 
    `# Parameters\n` +
    `> to [lang] - defaults to server default language\n` +
@@ -165,10 +167,10 @@ const helpMessage = function(config, botname, param)
    `> [-n] - negative number means only one chain is translated\n\n` +
 
    `# Examples\n` +
-   `* ${config.translateCmd} last 2 \n` +
-   `* ${config.translateCmd} last to english \n` +
-   `* ${config.translateCmd} last to english, german, french \n` +
-   `* ${config.translateCmd} last -6 to english from german` +
+   `* ${cmd} last 2 \n` +
+   `* ${cmd} last to english \n` +
+   `* ${cmd} last to english, german, french \n` +
+   `* ${cmd} last -6 to english from german` +
    "```";
 
    //
@@ -190,8 +192,8 @@ const helpMessage = function(config, botname, param)
    "```md\n" +
 
    `# Command\n` +
-   `> ${config.translateCmd} this: [msg] \n` +
-   `> ${config.translateCmd} this to [lang] from [lang]: [msg] \n\n` +
+   `> ${cmd} this: [msg] \n` +
+   `> ${cmd} this to [lang] from [lang]: [msg] \n\n` +
 
    `# Parameters\n` +
    `> to [lang] - defaults to server default language\n` +
@@ -199,10 +201,10 @@ const helpMessage = function(config, botname, param)
    `> from [lang] - defaults to automatic detection\n\n` +
 
    `# Examples\n` +
-   `* ${config.translateCmd} this: bonjour \n` +
-   `* ${config.translateCmd} this to spanish: hello world \n` +
-   `* ${config.translateCmd} this to arabic, hebrew: I love you \n` +
-   `* ${config.translateCmd} this to de from en: how are you? \n` +
+   `* ${cmd} this: bonjour \n` +
+   `* ${cmd} this to spanish: hello world \n` +
+   `* ${cmd} this to arabic, hebrew: I love you \n` +
+   `* ${cmd} this to de from en: how are you? \n` +
    "```";
 
    //
@@ -217,9 +219,9 @@ const helpMessage = function(config, botname, param)
    "```md\n" +
 
    `# Command\n` +
-   `> ${config.translateCmd} channel \n` +
-   `> ${config.translateCmd} channel to [lang] from [lang] for [me/@/#] \n` +
-   `> ${config.translateCmd} stop for [me/@/#] \n\n` +
+   `> ${cmd} channel \n` +
+   `> ${cmd} channel to [lang] from [lang] for [me/@/#] \n` +
+   `> ${cmd} stop for [me/@/#] \n\n` +
 
    `# Parameters\n` +
    `> to [lang] - defaults to server default language\n` +
@@ -227,10 +229,10 @@ const helpMessage = function(config, botname, param)
    `> for [me/@/#] - defaults to "me", admins can use mentions \n\n` +
 
    `# Examples\n` +
-   `* ${config.translateCmd} channel to english from chinese \n` +
-   `* ${config.translateCmd} channel to en from de for #englishChannel \n` +
-   `* ${config.translateCmd} channel to de from en for @steve \n` +
-   `* ${config.translateCmd} channel to en from ru for #ch1, #ch2, #usr1 \n` +
+   `* ${cmd} channel to english from chinese \n` +
+   `* ${cmd} channel to en from de for #englishChannel \n` +
+   `* ${cmd} channel to de from en for @steve \n` +
+   `* ${cmd} channel to en from ru for #ch1, #ch2, #usr1 \n` +
    "```" +
    "\n* Translated messages that are forwarded to users include a special id " +
    "for replying. Simply copy the code and paste into DM window before your " +
@@ -247,18 +249,18 @@ const helpMessage = function(config, botname, param)
    "```md\n" +
 
    `# Command\n` +
-   `> ${config.translateCmd} stop \n` +
-   `> ${config.translateCmd} stop for [me/@/#/all] \n\n` +
+   `> ${cmd} stop \n` +
+   `> ${cmd} stop for [me/@/#/all] \n\n` +
 
    `# Parameters\n` +
    `> for [me/@/#/all] - defaults to "me" \n\n` +
 
    `# Examples\n` +
-   `* ${config.translateCmd} stop \n` +
-   `* ${config.translateCmd} stop for me \n` +
-   `* ${config.translateCmd} stop for @usr1 \n` +
-   `* ${config.translateCmd} stop for #ch1 \n` +
-   `* ${config.translateCmd} stop for all \n` +
+   `* ${cmd} stop \n` +
+   `* ${cmd} stop for me \n` +
+   `* ${cmd} stop for @usr1 \n` +
+   `* ${cmd} stop for #ch1 \n` +
+   `* ${cmd} stop for all \n` +
    "```";
 
    //
@@ -270,20 +272,20 @@ const helpMessage = function(config, botname, param)
    "```md\n" +
 
    `# Help\n` +
-   `> ${config.translateCmd} help\n` +
-   `> ${config.translateCmd} help [command]\n\n` +
+   `> ${cmd} help\n` +
+   `> ${cmd} help [command]\n\n` +
 
    `# Statistics\n` +
-   `> ${config.translateCmd} version \n` +
-   `> ${config.translateCmd} stats \n` +
-   `> ${config.translateCmd} stats global \n` +
-   `> ${config.translateCmd} stats server \n\n` +
+   `> ${cmd} version \n` +
+   `> ${cmd} stats \n` +
+   `> ${cmd} stats global \n` +
+   `> ${cmd} stats server \n\n` +
 
    `# Links\n` +
-   `> ${config.translateCmd} invite\n\n` +
+   `> ${cmd} invite\n\n` +
 
    `# Supported Languages\n` +
-   `> ${config.translateCmd} list\n` +
+   `> ${cmd} list\n` +
    "```";
 
    //
@@ -296,10 +298,10 @@ const helpMessage = function(config, botname, param)
    "```md\n" +
 
    `# Set default server language\n` +
-   `> ${config.translateCmd} settings setLang to [lang]\n\n` +
+   `> ${cmd} settings setLang to [lang]\n\n` +
 
    `# Disconnect bot from server\n` +
-   `> ${config.translateCmd} settings disconnect \n` +
+   `> ${cmd} settings disconnect \n` +
    "```";
 
    //
