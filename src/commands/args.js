@@ -10,6 +10,7 @@ const fn = require("../core/helpers");
 const cmdHelp = require("./help");
 const cmdList = require("./list");
 const cmdStats = require("./stats");
+const cmdMisc = require("./misc");
 const cmdSettings = require("./settings");
 const cmdTranslateLast = require("./translate.last");
 const cmdTranslateThis = require("./translate.this");
@@ -225,7 +226,8 @@ module.exports = function(data)
          "info": cmdHelp,
          "list": cmdList,
          "stats": cmdStats,
-         "version": cmdStats,
+         "version": cmdMisc.version,
+         "invite": cmdMisc.invite,
          "settings": cmdSettings
       };
 
