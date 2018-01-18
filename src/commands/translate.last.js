@@ -1,3 +1,4 @@
+const fn = require("../core/helpers");
 const botSend = require("../core/send");
 const translate = require("../core/translate");
 const logger = require("../core/logger");
@@ -74,7 +75,7 @@ module.exports = function(data)
       {
          if (
             !messagesArray[i].author.bot &&
-            !messagesArray[i].content.startsWith(data.config.translateCmd)
+            !messagesArray[i].content.startsWith(data.config.translateCmdShort)
          )
          {
             if (
@@ -90,7 +91,8 @@ module.exports = function(data)
                chains.push({
                   author: messagesArray[i].author,
                   msgs: [messagesArray[i].content],
-                  time: messagesArray[i].createdTimestamp
+                  time: messagesArray[i].createdTimestamp,
+                  color: fn.getRoleColor(messagesArray[i].member)
                });
                lastAuthor = messagesArray[i].author.id;
             }

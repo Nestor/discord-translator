@@ -231,7 +231,7 @@ module.exports = function(data) //eslint-disable-line complexity
             if (this.count === this.len)
             {
                data.text = this.text;
-               data.color = 0;
+               data.color = data.message.roleColor;
                data.showAuthor = true;
                getUserColor(data, botSend);
             }
@@ -257,8 +257,7 @@ module.exports = function(data) //eslint-disable-line complexity
    // Send single translation
    //
 
-   const opts =
-   {
+   const opts = {
       to: data.translate.to.valid[0].iso,
       from: from
    };
