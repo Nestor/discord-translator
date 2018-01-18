@@ -1,4 +1,3 @@
-const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const db = require("../core/db");
 const logger = require("../core/logger");
@@ -9,8 +8,6 @@ const logger = require("../core/logger");
 
 module.exports = function(data)
 {
-   setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
-
    //
    // Command allowed by admins only
    //
@@ -148,11 +145,7 @@ const getSettings = function(data)
             char: ""
          };
 
-         data.message.channel.send(data.text, {split: splitOpts});
-
-         return setStatus(
-            data.bot, "stopTyping", data.message.channel, data.canWrite
-         );
+         return data.message.channel.send(data.text, {split: splitOpts});
       }
    };
 

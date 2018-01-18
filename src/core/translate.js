@@ -1,6 +1,5 @@
 const translate = require("google-translate-api");
 const db = require("./db");
-const setStatus = require("./status");
 const botSend = require("./send");
 const fn = require("./helpers");
 
@@ -46,7 +45,6 @@ const bufferSend = function(arr, data)
    const sorted = fn.sortByKey(arr, "time");
    sorted.forEach(msg =>
    {
-      setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
       data.text = msg.text;
       data.color = msg.color;
       data.author = msg.author;
@@ -158,9 +156,7 @@ module.exports = function(data) //eslint-disable-line complexity
       data.translate.from.valid && data.translate.from.valid.length < 1
    )
    {
-      return setStatus(
-         data.bot, "stopTyping", data.message.channel, data.canWrite
-      );
+      return;
    }
 
    //
@@ -217,8 +213,6 @@ module.exports = function(data) //eslint-disable-line complexity
       // Buffer translations
       //
 
-      setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
-
       const bufferID = data.message.createdTimestamp;
 
       data.color = null;
@@ -268,11 +262,6 @@ module.exports = function(data) //eslint-disable-line complexity
       to: data.translate.to.valid[0].iso,
       from: from
    };
-
-   if (!data.forward)
-   {
-      setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
-   }
 
    const fw = data.forward;
    const ft = data.footer;

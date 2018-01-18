@@ -1,4 +1,3 @@
-const setStatus = require("../core/status");
 const langCheck = require("../core/lang.check");
 const translate = require("../core/translate");
 const logger = require("../core/logger");
@@ -35,8 +34,6 @@ module.exports = function(data)
       {
          return;
       }
-
-      setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
 
       data.translate = {
          original: data.message.content,

@@ -1,4 +1,3 @@
-const setStatus = require("./status");
 const colors = require("./colors");
 const fn = require("./helpers");
 const db = require("./db");
@@ -29,6 +28,10 @@ const sendBox = function(data)
             description: data.text,
             footer: data.footer
          }
+      }).then(() =>
+      {
+         sendEmbeds(data);
+         sendAttachments(data);
       }).catch(err =>
       {
          var errMsg = err;
@@ -72,11 +75,6 @@ const sendBox = function(data)
          logger("error", errMsg);
       });
    }
-
-   sendEmbeds(data);
-   sendAttachments(data);
-
-   return setStatus(data.bot, "stopTyping", data.channel);
 };
 
 

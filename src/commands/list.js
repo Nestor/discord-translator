@@ -1,4 +1,3 @@
-const setStatus = require("../core/status");
 const botSend = require("../core/send");
 
 // --------------------
@@ -7,8 +6,6 @@ const botSend = require("../core/send");
 
 module.exports = function(data)
 {
-   setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
-
    const langList = [
       "Afrikaans","Albanian","Amharic","Arabic","Armenian","Azerbaijani",
       "Basque","Belarusian","Bengali", "Bosnian","Bulgarian","Catalan",

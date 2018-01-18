@@ -1,4 +1,3 @@
-const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const translate = require("../core/translate");
 
@@ -8,8 +7,6 @@ const translate = require("../core/translate");
 
 module.exports = function(data)
 {
-   setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
-
    //
    // Send error for empty content
    //

@@ -16,16 +16,6 @@ module.exports = function(bot, status, channel, writable = true)
          });
       },
 
-      "startTyping": function()
-      {
-         channel.startTyping();
-      },
-
-      "stopTyping": function()
-      {
-         channel.stopTyping(true);
-      },
-
       "busy": function()
       {
          bot.setPresence({

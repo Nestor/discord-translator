@@ -1,4 +1,3 @@
-const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const auth = require("../core/auth");
 
@@ -8,8 +7,6 @@ const auth = require("../core/auth");
 
 module.exports = function(data)
 {
-   setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
-
    data.color = "info";
 
    //

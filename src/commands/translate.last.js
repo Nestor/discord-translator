@@ -1,4 +1,3 @@
-const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const translate = require("../core/translate");
 const logger = require("../core/logger");
@@ -51,12 +50,6 @@ module.exports = function(data)
       botSend(data);
       count = data.config.maxChains;
    }
-
-   //
-   // Start typing
-   //
-
-   setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
 
    //
    // Get requested collection

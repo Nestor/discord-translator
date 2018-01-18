@@ -1,4 +1,3 @@
-const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const fn = require("../core/helpers");
 const db = require("../core/db");
@@ -10,8 +9,6 @@ const logger = require("../core/logger");
 
 module.exports = function(data)
 {
-   setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
-
    //
    // Disallow this command in Direct/Private messages
    //

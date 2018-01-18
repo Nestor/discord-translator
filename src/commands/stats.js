@@ -1,5 +1,4 @@
 const langCheck = require("../core/lang.check");
-const setStatus = require("../core/status");
 const botSend = require("../core/send");
 const db = require("../core/db");
 const auth = require("../core/auth");
@@ -7,8 +6,6 @@ const logger = require("../core/logger");
 
 module.exports = function(data)
 {
-   setStatus(data.bot, "startTyping", data.message.channel, data.canWrite);
-
    //
    // Version Info
    //
