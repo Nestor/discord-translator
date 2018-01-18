@@ -1,4 +1,6 @@
 node_modules
 build
 src/core/auth.js
+src/intervals.js
+src/apis.js
 translator.db
