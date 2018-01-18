@@ -1,8 +1,8 @@
 const gulp = require('gulp');
 const eslint = require('gulp-eslint');
-const uglify = require('gulp-uglify-es').default;
 const watch = require('gulp-watch');
 const lec = require('gulp-line-ending-corrector');
+//const uglify = require('gulp-uglify-es').default;
 
 gulp.task('lint', () => {
     return gulp.src(['src/**/*.js'])
@@ -14,7 +14,7 @@ gulp.task('lint', () => {
 
 gulp.task("compress", function () {
     return gulp.src("src/**/*.js")
-        .pipe(uglify())
+        //.pipe(uglify())
         .pipe(gulp.dest("build/"));
 });
 
