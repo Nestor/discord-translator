@@ -3,17 +3,15 @@ const auth = require("./auth");
 const hook = new webhook(auth.loggerWebhook);
 const spacer = "​                                                          ​";
 
-console.log("webhook debug");
-
 // ----------------
 // Set logger name
 // ----------------
 
-var hookName = "Bot Logger";
+var hookName = "Translator.log";
 
 if (auth.dev)
 {
-   hookName = "Dev Mode Logger";
+   hookName = "Translator.log.dev";
 }
 
 // ------------------------------
