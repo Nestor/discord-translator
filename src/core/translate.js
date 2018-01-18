@@ -3,7 +3,6 @@ const colorThief = require("color-thief-jimp");
 const jimp = require("jimp");
 
 const db = require("./db");
-const resolveID = require("./resolve.id");
 const setStatus = require("./status");
 const botSend = require("./send");
 const colors = require("./colors");
@@ -20,18 +19,6 @@ const translateFix = function(string)
    return fn.replaceAll(
       string, /(<[:@#])\s?(&)?\s?(\w+:?)\s?(\w+>)/igm, "$1$2$3$4"
    );
-};
-
-// -----------------------------------------------
-// Generate Google Translate URL (for suggestion)
-// -----------------------------------------------
-
-const googleLink = function(original, from, to, client, guild)
-{
-   var resolved = resolveID.idConvert(original, client, guild);
-   var google = "https://translate.google.com/?ref=discord-translator#";
-   var link = google + `${from}/${to}/` + encodeURIComponent(resolved);
-   return `   [:heavy_check_mark:](${link})`;
 };
 
 // ----------------------------------------
@@ -75,7 +62,7 @@ const bufferSend = function(arr, data)
    });
 };
 
-const bufferChains = function(data, from, guild)
+const bufferChains = function(data, from)
 {
    var translatedChains = [];
 
@@ -89,10 +76,7 @@ const bufferChains = function(data, from, guild)
          from: from
       }).then(res =>
       {
-         const link = googleLink(
-            chainMsgs, from, to, data.client, guild
-         );
-         const output = translateFix(res.text) + link;
+         const output = translateFix(res.text);
 
          getUserColor(chain, function(gotData)
          {
@@ -198,27 +182,6 @@ module.exports = function(data) //eslint-disable-line complexity
    }
 
    //
-   // Send friendly suggestion for improvement / `Did You Know` message
-   //
-
-   if (Math.random() < 0.01)
-   {
-      const originalFt = data.footer;
-      data.footer = null;
-      data.color = "info";
-
-      data.text =
-         ":bulb:  **Did you know?**\n" +
-         "You can suggest translation improvements by " +
-         "clicking on the check mark icon (:heavy_check_mark:) in translated " +
-         "messages. You may also join the [Google Translate Community]" +
-         "(https://translate.google.com/community).";
-
-      botSend(data);
-      data.footer = originalFt;
-   }
-
-   //
    // Get guild data
    //
 
@@ -296,10 +259,7 @@ module.exports = function(data) //eslint-disable-line complexity
          }).then(res =>
          {
             const title = `\`\`\`LESS\n ${lang.name} (${lang.native}) \`\`\`\n`;
-            const link = googleLink(
-               data.translate.original, from, lang.iso, data.client, guild
-            );
-            const output = "\n" + title + translateFix(res.text) + link + "\n";
+            const output = "\n" + title + translateFix(res.text) + "\n";
             return translateBuffer[bufferID].update(output, data);
          });
       });
@@ -339,9 +299,6 @@ module.exports = function(data) //eslint-disable-line complexity
          data.footer = ft;
          data.color = 0;
          data.text = translateFix(res.text);
-         data.text += googleLink(
-            chunk, opts.from, opts.to, data.client, guild
-         );
          data.showAuthor = true;
          return getUserColor(data, botSend);
       });
