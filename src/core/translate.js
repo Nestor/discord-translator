@@ -16,9 +16,11 @@ const translateFix = function(string)
    );
 };
 
-// ----------------------------------------
+// -----------------------------------------
 // Get user color with jimp and colorThief
-// ----------------------------------------
+// -----------------------------------------
+// @Deprecated: now using role color instead
+// -----------------------------------------
 
 function getUserColor(data, callback)
 {
