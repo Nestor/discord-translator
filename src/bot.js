@@ -7,7 +7,28 @@
 
 const discord = require("discord.js");
 const auth = require("./core/auth");
-const client = new discord.Client();
+const client = new discord.Client({
+   disabledEvents: [
+      "GUILD_SYNC",
+      "GUILD_UPDATE",
+      "GUILD_MEMBER_ADD",
+      "GUILD_MEMBER_REMOVE",
+      "GUILD_MEMBER_UPDATE",
+      "GUILD_MEMBERS_CHUNK",
+      "GUILD_ROLE_CREATE",
+      "GUILD_ROLE_DELETE",
+      "GUILD_ROLE_UPDATE",
+      "GUILD_BAN_ADD",
+      "GUILD_BAN_REMOVE",
+      "USER_UPDATE",
+      "USER_NOTE_UPDATE",
+      "USER_SETTINGS_UPDATE",
+      "PRESENCE_UPDATE",
+      "VOICE_STATE_UPDATE",
+      "TYPING_START",
+      "VOICE_SERVER_UPDATE"
+   ]
+});
 const botVersion = "0.4.0 Beta";
 const botCreator = "Aziz Natour (@aziz#5919)";
 
