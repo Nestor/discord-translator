@@ -216,8 +216,7 @@ module.exports = function(data)
       // Legal Commands
       //
 
-      const cmdMap =
-      {
+      const cmdMap = {
          "this": cmdTranslateThis,
          "last": cmdTranslateLast,
          "auto": cmdTranslateAuto,
@@ -228,6 +227,9 @@ module.exports = function(data)
          "stats": cmdStats,
          "version": cmdMisc.version,
          "invite": cmdMisc.invite,
+         "shards": cmdMisc.shards,
+         "proc": cmdMisc.proc,
+         "webapi": cmdMisc.webAPI,
          "settings": cmdSettings
       };
 
