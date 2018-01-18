@@ -1,3 +1,5 @@
+const logger = require("./logger");
+
 // =================
 // Helper Functions
 // =================
@@ -108,4 +110,76 @@ exports.getRoleColor = function(member)
       return member.highestRole.color;
    }
    return null;
+};
+
+//
+// Get user
+//
+
+exports.getUser = function(client, userID, cb)
+{
+   const user = client.users.get(userID);
+
+   if (user)
+   {
+      return cb(user);
+   }
+
+   // user not in cache, fetch 'em
+
+   client.fetchUser(userID).then(cb).catch(err =>
+   {
+      return logger("error", err);
+   });
+};
+
+//
+// Get channel
+//
+
+exports.getChannel = function(client, channelID, userID, cb)
+{
+   const channel = client.channels.get(channelID);
+
+   if (channel)
+   {
+      return cb(channel);
+   }
+
+   // not in cache, create DM
+
+   if (userID)
+   {
+      module.exports.getUser(client, userID, user =>
+      {
+         user.createDM().then(cb).catch(err =>
+         {
+            return logger("error", err);
+         });
+      });
+   }
+};
+
+//
+// Get message
+//
+
+exports.getMessage = function(client, messageID, channelID, userID, cb)
+{
+   module.exports.getChannel(client, channelID, userID, channel =>
+   {
+      const message = channel.messages.get(messageID);
+
+      if (message)
+      {
+         return cb(message);
+      }
+
+      // message not in channel cache
+
+      channel.fetchMessage(messageID).then(cb).catch(err =>
+      {
+         return cb(null, err);
+      });
+   });
 };
