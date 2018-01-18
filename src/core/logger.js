@@ -3,6 +3,8 @@ const auth = require("./auth");
 const hook = new webhook(auth.loggerWebhook);
 const spacer = "​                                                          ​";
 
+console.log("webhook debug");
+
 // ----------------
 // Set logger name
 // ----------------
