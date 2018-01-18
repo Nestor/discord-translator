@@ -8,7 +8,7 @@
 const discord = require("discord.js");
 const auth = require("./core/auth");
 const client = new discord.Client();
-const botVersion = "0.4.0 Beta";
+const botVersion = "0.4.1 Beta";
 const botCreator = "Aziz Natour (@aziz#5919)";
 
 //
@@ -149,22 +149,6 @@ client.on("message", message =>
    return db.channelTasks(data);
 });
 
-// =====================
-// Listen for reactions
-// =====================
-/*
-client.on("messageReactionAdd", reaction =>
-{
-   react({
-      client: client,
-      config: config,
-      bot: bot,
-      canWrite: true,
-      message: reaction.message,
-      emoji: reaction.emoji
-   });
-});
-*/
 // ======================
 // Listen for raw events
 // ======================
@@ -190,6 +174,29 @@ client.on("error", err =>
    logger("error", err);
 });
 
+//
+// Proccess-related errors
+//
+
+process.on("uncaughtException", err =>
+{
+   logger("dev", err);
+   return logger("error", err);
+});
+
+process.on("unhandledRejection", (reason, p) =>
+{
+   const err = "Unhandled Rejection at:" + p + "reason:" + reason;
+   logger("dev", err);
+   return logger("error", err);
+});
+
+process.on("warning", warning =>
+{
+   logger("dev", warning);
+   return logger("error", warning);
+});
+
 // ===============================
 // Remove channel tasks on delete
 // ===============================
@@ -202,7 +209,6 @@ client.on("channelDelete", channel =>
       {
          return logger("error", err);
       }
-      return logger("channelDel", channel);
    });
 });
 

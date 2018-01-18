@@ -79,37 +79,7 @@ module.exports = function(data, client)
             //
 
             translate(data);
-            reactLog(data, emoji);
          }
       );
    }
-};
-
-// -------
-// Logger
-// -------
-
-const reactLog = function(data, emoji)
-{
-   var via = "via __`";
-
-   if (data.message.channel.type === "dm")
-   {
-      via += "DM`__ `>` __`@" + data.message.channel.recipient.username;
-      via += `#${data.message.channel.recipient.discriminator}\`__`;
-   }
-
-   if (data.message.channel.type === "text")
-   {
-      via += `#${data.message.channel.name}`;
-      via += "`__ `>` __`" + data.message.channel.guild.name + "`__";
-   }
-
-   const reactLog = {
-      title: "Flag Emoji - Reaction Translation",
-      color: "#65b4be",
-      msg: `Message translated to ${emoji} - ${via}`
-   };
-
-   logger("custom", reactLog);
 };
