@@ -33,6 +33,7 @@ var config = {
    owner: auth.botOwner,
    defaultLanguage: "en",
    translateCmd: "!translate",
+   translateCmdShort: "!t",
    maxMulti: 6,
    maxChains: 10,
    maxChainLen: 5,
@@ -134,6 +135,7 @@ client.on("message", message =>
 
    if (
       message.content.startsWith(config.translateCmd) ||
+      message.content.startsWith(config.translateCmdShort) ||
       message.isMentioned(bot)
    )
    {

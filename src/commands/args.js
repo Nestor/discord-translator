@@ -92,6 +92,25 @@ const getMainArg = function(output)
    }
 };
 
+// ------------------
+// Strip prefix
+// ------------------
+
+const stripPrefix = function(message, config, bot)
+{
+   let cmd = message.content;
+
+   cmd = cmd.replace(config.translateCmd, "");
+   cmd = cmd.replace(config.translateCmdShort, "");
+
+   if (cmd.startsWith(bot))
+   {
+      cmd = cmd.replace(bot, "");
+   }
+
+   return cmd;
+};
+
 // --------------------------------------
 // Analyze arguments from command string
 // --------------------------------------
@@ -99,7 +118,7 @@ const getMainArg = function(output)
 module.exports = function(data)
 {
    var output = {
-      main: data.message.content.replace(data.config.translateCmd, "").trim(),
+      main: stripPrefix(data.message, data.config, `${data.bot}`).trim(),
       params: null
    };
 
