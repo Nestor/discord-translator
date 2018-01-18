@@ -96,3 +96,16 @@ exports.chunkString = function(str, len)
 
    return _ret;
 };
+
+//
+// Get Highest Role Color
+//
+
+exports.getRoleColor = function(member)
+{
+   if (member.highestRole && member.highestRole.color)
+   {
+      return member.highestRole.color;
+   }
+   return null;
+};

@@ -1,13 +1,8 @@
 const translate = require("google-translate-api");
-const colorThief = require("color-thief-jimp");
-const jimp = require("jimp");
-
 const db = require("./db");
 const setStatus = require("./status");
 const botSend = require("./send");
-const colors = require("./colors");
 const fn = require("./helpers");
-const logger = require("./logger");
 
 // ------------------------------------------
 // Fix broken Discord tags after translation
@@ -32,16 +27,12 @@ function getUserColor(data, callback)
    const ft = data.footer;
    const usr = data.author;
 
-   jimp.read(usr.displayAvatarURL).then(function(image)
-   {
-      data.forward = fw;
-      data.text = txt;
-      data.footer = ft;
-      data.author = usr;
-      data.color = colors.rgb2dec(colorThief.getColor(image));
-      callback(data);
-   }
-   ).catch(err => logger("error", err));
+   data.forward = fw;
+   data.text = txt;
+   data.footer = ft;
+   data.author = usr;
+
+   callback(data);
 }
 
 // --------------------------
@@ -288,7 +279,7 @@ module.exports = function(data) //eslint-disable-line complexity
    // Split long messages
    //
 
-   const textArray = fn.chunkString(data.translate.original, 500);
+   const textArray = fn.chunkString(data.translate.original, 1500);
 
    textArray.forEach(chunk =>
    {
@@ -297,7 +288,7 @@ module.exports = function(data) //eslint-disable-line complexity
          updateServerStats(data.message);
          data.forward = fw;
          data.footer = ft;
-         data.color = 0;
+         data.color = data.message.roleColor;
          data.text = translateFix(res.text);
          data.showAuthor = true;
          return getUserColor(data, botSend);

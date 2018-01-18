@@ -8,7 +8,7 @@
 const discord = require("discord.js");
 const auth = require("./core/auth");
 const client = new discord.Client();
-const botVersion = "0.3.9 Beta";
+const botVersion = "0.4.0 Beta";
 const botCreator = "Aziz Natour (@aziz#5919)";
 
 //
@@ -110,6 +110,10 @@ client.on("message", message =>
 
       message.isManager =
          fn.checkPerm(message.member, message.channel, "MANAGE_CHANNELS");
+
+      // Add role color
+
+      message.roleColor = fn.getRoleColor(message.member);
    }
 
    //
