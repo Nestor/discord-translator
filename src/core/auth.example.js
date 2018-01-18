@@ -16,16 +16,30 @@ exports.token = "";
 exports.botOwner = "";
 
 //
+// Number of shards to spawn in sharding manager (large bots only)
+//
+
+exports.shards = 2;
+
+//
 // Invite URL (OAuth2)
 //
 
 exports.invite = "";
 
 //
-// Add Webhook URL for logging (optional)
+// Add Webhook info for logging (optional)
 //
 
-exports.loggerWebhook = null;
+exports.loggerWebhookID = null;
+
+exports.loggerWebhookToken = null;
+
+//
+// Allow intervals (optional)
+//
+
+exports.intervals = false;
 
 //
 // Add donation URL (optional)
