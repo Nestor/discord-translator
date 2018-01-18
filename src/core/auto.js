@@ -18,11 +18,15 @@ module.exports = function(data)
       //
       // Ignore bot commands
       //
-
-      const ignoreRegex = /^\S{0,20}[~!$%^&*_\-+:;?=>.,|\\/]\w+(?:.*)?$/;
+      // * Disabled until a standard for commands exists
+      //
+      // const ignoreRegex = /^\S{0,20}[~!$%^&*_\-+:;?=>.,|\\/]\w+(?:.*)?$/;
+      //
+      // Add !i to end of message to ignore it instead
+      //
 
       if (
-         ignoreRegex.test(data.message.content) ||
+         //ignoreRegex.test(data.message.content) ||
          data.message.content.endsWith("!i")
       )
       {
