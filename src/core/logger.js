@@ -1,132 +1,123 @@
-const webhook = require("webhook-discord");
+const discord = require("discord.js");
 const auth = require("./auth");
-const hook = new webhook(auth.loggerWebhook);
+const colors = require("./colors").get;
 const spacer = "​                                                          ​";
 
-// ----------------
-// Set logger name
-// ----------------
+const hook = new discord.WebhookClient(
+   auth.loggerWebhookID, auth.loggerWebhookToken
+);
 
-var hookName = "Translator.log";
-
-if (auth.dev)
+module.exports = function(type, data, subtype = null)
 {
-   hookName = "Translator.log.dev";
-}
+   const logTypes = {
+      dev: devConsole,
+      error: errorLog,
+      warn: warnLog,
+      custom: hookSend,
+      guildJoin: logJoin,
+      guildLeave: logLeave
+   };
 
-// ------------------------------
-// Dev Mode (Print console logs)
-// ------------------------------
+   if (logTypes.hasOwnProperty(type))
+   {
+      return logTypes[type](data, subtype);
+   }
+};
 
-const devMode = function(data)
+// -------------------
+// Log data to console
+// -------------------
+
+const devConsole = function(data)
 {
    if (auth.dev)
    {
-      console.log(data);
+      return console.log(data);
    }
 };
 
-// ------------
-// Command log
-// ------------
+// -----------
+// Hook Sender
+// -----------
 
-//eslint-disable-next-line complexity
-const logCmd = function(data)
+const hookSend = function(data)
 {
-   //
-   // Log only during dev mode
-   //
-
-   if (!auth.dev)
-   {
-      return;
-   }
-
-   devMode("canWrite: " + data.canWrite);
-   devMode(data.cmd);
-
-   var srv = "";
-   var chN = "dm";
-   var perm = "user";
-
-   if (data.message.channel.type === "text")
-   {
-      srv = `  in  \`${data.message.channel.guild.name}\``;
-      chN = `#${data.message.channel.name}`;
-
-      if (data.message.author.id === data.message.channel.guild.owner.id)
-      {
-         perm = "server owner";
+   const embed = new discord.RichEmbed({
+      title: data.title,
+      color: colors(data.color),
+      description: data.msg,
+      footer: {
+         text: data.footer
       }
-   }
-
-   if (data.message.isManager)
+   });
+   hook.send(embed).catch(err =>
    {
-      perm = "manager";
-   }
-   if (data.message.isAdmin)
-   {
-      perm = "admin";
-   }
-   if (data.message.author.id === data.config.owner)
-   {
-      perm = "bot owner";
-   }
-
-   hook.custom(
-      hookName,
-      "```py\n" +
-      `@${data.message.author.username}#${data.message.author.discriminator}` +
-      `\n${data.message.content}` +
-      "\n```" +
-      `\nvia  \`${chN}\`` + srv + spacer + spacer,
-      `Cmd by ${perm}`,
-      "#659fbe"
-   );
-};
-
-// ----------
-// Error log
-// ----------
-
-const logError = function(err)
-{
-   hook.custom(
-      hookName,
-      "```prolog\n" + err + "\n```" + spacer + spacer,
-      `Error log`,
-      "#ff4747"
-   );
+      console.error("hook.send error:\n" + err);
+   });
 };
 
 // ------------
-// Warning log
+// Error Logger
 // ------------
 
-const logWarn = function(info)
+const errorLog = function(error, subtype)
 {
-   hook.custom(
-      hookName,
-      "```prolog\n" + info + "\n```",
-      `Discord Warning`,
-      "#fff497"
-   );
+   let errorTitle = null;
+
+   const errorTypes = {
+      dm: ":skull_crossbones:  Discord - user.createDM",
+      fetch: ":no_pedestrians:  Discord - client.fetchUser",
+      send: ":postbox:  Discord - send",
+      edit: ":crayon:  Discord - message.edit",
+      react: ":anger:  Discord - message.react",
+      typing: ":keyboard:  Discord - channel.startTyping",
+      presence: ":loudspeaker:  Discord - client.setPresence",
+      db: ":outbox_tray:  Database Error",
+      uncaught: ":japanese_goblin:  Uncaught Exception",
+      unhandled: ":japanese_ogre:  Unhandled promise rejection",
+      warning: ":exclamation:  Proccess Warning",
+      api: ":boom:  External API Error",
+      shardFetch: ":pager:  Discord - shard.fetchClientValues"
+   };
+
+   if (errorTypes.hasOwnProperty(subtype))
+   {
+      errorTitle = errorTypes[subtype];
+   }
+
+   hookSend({
+      title: errorTitle,
+      color: "err",
+      msg: "```json\n" + error.toString() + "\n```"
+   });
+};
+
+// ---------------
+// Warnings Logger
+// ---------------
+
+const warnLog = function(warning)
+{
+   hookSend({
+      color: "warn",
+      msg: warning
+   });
 };
 
 // ---------------
 // Guild Join Log
-// ---------------
+// --------------
 
 const logJoin = function(guild)
 {
-   hook.custom(
-      hookName,
-      `:white_check_mark:  **${guild.name}**\n` +
-      "```md\n> " + guild.id + "\n@" + guild.owner.user.username + "#" +
-      guild.owner.user.discriminator + "\n```" + spacer + spacer,
-      "Joined Guild",
-      "#65be8d"
-   );
+   hookSend({
+      color: "ok",
+      title: "Joined Guild",
+      msg:
+         `:white_check_mark:  **${guild.name}**\n` +
+         "```md\n> " + guild.id + "\n@" + guild.owner.user.username + "#" +
+         guild.owner.user.discriminator + "\n```" + spacer + spacer
+   });
 };
 
 // ----------------
@@ -135,72 +126,12 @@ const logJoin = function(guild)
 
 const logLeave = function(guild)
 {
-   hook.custom(
-      hookName,
-      `:regional_indicator_x:  **${guild.name}**\n` +
-      "```md\n> " + guild.id + "\n@" + guild.owner.user.username + "#" +
-      guild.owner.user.discriminator + "\n```" + spacer + spacer,
-      "Left Guild",
-      "#be7865"
-   );
-};
-
-// ----------------
-// Channel Deleted
-// ----------------
-
-const channelDelete = function(channel)
-{
-   hook.custom(
-      hookName,
-      `__#${channel.name}__ in __${channel.guild.name}__ has been deleted ` +
-      "along with any auto tasks.",
-      "Channel Delete Event",
-      "#be7865"
-   );
-};
-
-// --------------
-// Custom Logger
-// --------------
-
-const logCustom = function(data)
-{
-   hook.custom(hookName, data.msg, data.title, data.color);
-};
-
-// ====================
-// Analyze log request
-// ====================
-
-module.exports = function(type, data)
-{
-   // ------------------------------------------------
-   // Stop proccessing if hook URL is invalid/not set
-   // ------------------------------------------------
-
-   if (!hook || !hook.url || hook.url === "" || hook.url === " ")
-   {
-      return;
-   }
-
-   // ---------------
-   // Logging Events
-   // ---------------
-
-   const logEvents = {
-      "dev": devMode,
-      "cmd": logCmd,
-      "error": logError,
-      "warning": logWarn,
-      "guildJoin": logJoin,
-      "guildLeave": logLeave,
-      "channelDel": channelDelete,
-      "custom": logCustom
-   };
-
-   if (logEvents.hasOwnProperty(type))
-   {
-      return logEvents[type](data);
-   }
+   hookSend({
+      color: "warn",
+      title: "Left Guild",
+      msg:
+         `:regional_indicator_x:  **${guild.name}**\n` +
+         "```md\n> " + guild.id + "\n@" + guild.owner.user.username + "#" +
+         guild.owner.user.discriminator + "\n```" + spacer + spacer
+   });
 };

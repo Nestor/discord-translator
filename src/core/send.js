@@ -23,6 +23,8 @@ const sendBox = function(data)
    {
       data.channel.send({
          embed: {
+            title: data.title,
+            fields: data.fields,
             author: data.author,
             color: colors.get(data.color),
             description: data.text,
@@ -148,6 +150,8 @@ const sendAttachments = function(data)
 module.exports = function(data)
 {
    var sendData = {
+      title: data.title,
+      fields: data.fields,
       config: data.config,
       channel: data.message.channel,
       color: data.color,
