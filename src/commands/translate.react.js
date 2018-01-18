@@ -1,5 +1,6 @@
 const langCheck = require("../core/lang.check");
 const translate = require("../core/translate");
+const fn = require("../core/helpers");
 const logger = require("../core/logger");
 const countryLangs = require("../core/country.langs");
 
@@ -7,24 +8,15 @@ const countryLangs = require("../core/country.langs");
 // translate a message through discord reaction (flag)
 // ---------------------------------------------------
 
-module.exports = function(data)
+module.exports = function(data, client)
 {
-   //
-   // Disallow messages by bots
-   //
-
-   if (data.message.author.bot || !data.emoji || !data.emoji.name)
-   {
-      return;
-   }
-
    //
    // Get country by emoji
    //
 
    const emoji = data.emoji.name;
 
-   if (countryLangs.hasOwnProperty(emoji))
+   if (emoji && countryLangs.hasOwnProperty(emoji))
    {
       //
       // Stop proccessing if country has no langs / null
@@ -35,19 +27,61 @@ module.exports = function(data)
          return;
       }
 
-      data.translate = {
-         original: data.message.content,
-         to: langCheck(countryLangs[emoji].langs),
-         from: langCheck("auto"),
-         multi: true
-      };
-
       //
-      // Start translation
+      // Get message data
       //
 
-      translate(data);
-      reactLog(data, emoji);
+      fn.getMessage(
+         client,
+         data.message_id,
+         data.channel_id,
+         data.user_id,
+         (message, err) =>
+         {
+            if (err)
+            {
+               return logger("error", err);
+            }
+
+            // ignore bots
+
+            if (message.author.bot)
+            {
+               return;
+            }
+
+            const flagExists = message.reactions.get(emoji);
+
+            // prevent flag spam
+
+            if (flagExists)
+            {
+               return;
+            }
+
+            // translate data
+
+            data.translate = {
+               original: message.content,
+               to: langCheck(countryLangs[emoji].langs),
+               from: langCheck("auto"),
+               multi: true
+            };
+
+            // message data
+
+            data.message = message;
+            data.message.roleColor = fn.getRoleColor(data.message.member);
+            data.canWrite = true;
+
+            //
+            // Start translation
+            //
+
+            translate(data);
+            reactLog(data, emoji);
+         }
+      );
    }
 };
 
