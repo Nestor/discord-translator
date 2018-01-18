@@ -100,6 +100,15 @@ exports.chunkString = function(str, len)
 };
 
 //
+// Get sum of array values (numbers)
+//
+
+exports.arraySum = function(array)
+{
+   return array.reduce((a, b) =>a + b, 0);
+};
+
+//
 // Get Highest Role Color
 //
 
