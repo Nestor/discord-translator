@@ -82,7 +82,7 @@ exports.listen = function(client)
 
          if (auth.intervals)
          {
-            intervals(client);
+            intervals(client, config);
          }
 
          //

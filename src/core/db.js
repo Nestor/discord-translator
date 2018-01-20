@@ -209,6 +209,24 @@ exports.getCount = function(table, row, val, cb)
    });
 };
 
+// ------------------
+// Get Servers Count
+// ------------------
+
+exports.getServersCount = function(cb)
+{
+   return db.serialize(function()
+   {
+      db.get(
+         `select count(id) as count from servers`,
+         function(err, row)
+         {
+            cb(err, row);
+         }
+      );
+   });
+};
+
 // ---------
 // Add Task
 // ---------

@@ -11,6 +11,7 @@ const cmdHelp = require("./help");
 const cmdList = require("./list");
 const cmdStats = require("./stats");
 const cmdMisc = require("./misc");
+const cmdExt = require("./extended");
 const cmdSettings = require("./settings");
 const cmdTranslateLast = require("./translate.last");
 const cmdTranslateThis = require("./translate.this");
@@ -229,7 +230,7 @@ module.exports = function(data)
          "invite": cmdMisc.invite,
          "shards": cmdMisc.shards,
          "proc": cmdMisc.proc,
-         "webapi": cmdMisc.webAPI,
+         "ext": cmdExt,
          "settings": cmdSettings
       };
 

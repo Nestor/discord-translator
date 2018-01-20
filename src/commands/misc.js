@@ -7,7 +7,6 @@ const logger = require("../core/logger");
 const stripIndent = require("common-tags").stripIndent;
 const oneLine = require("common-tags").oneLine;
 const secConverter = require("seconds-converter");
-const externalAPIs = require("../apis");
 
 // =============
 // Version Info
@@ -42,19 +41,6 @@ exports.invite = function(data)
          "Requires VIEW, SEND, REACT, EMBED, ATTACH and MENTION permissions.\n"
    };
    return botSend(data);
-};
-
-// =======================
-// Send Custom API Request
-// =======================
-
-exports.webAPI = function(data)
-{
-   if (!data.message.author.id === data.config.owner)
-   {
-      return;
-   }
-   externalAPIs.updateSite(data);
 };
 
 // =======================
