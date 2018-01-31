@@ -114,7 +114,7 @@ exports.arraySum = function(array)
 
 exports.getRoleColor = function(member)
 {
-   if (member.highestRole && member.highestRole.color)
+   if (member && member.highestRole && member.highestRole.color)
    {
       return member.highestRole.color;
    }
@@ -138,6 +138,7 @@ exports.getUser = function(client, userID, cb)
 
    client.fetchUser(userID).then(cb).catch(err =>
    {
+      cb(false);
       return logger("error", err);
    });
 };
@@ -163,6 +164,7 @@ exports.getChannel = function(client, channelID, userID, cb)
       {
          user.createDM().then(cb).catch(err =>
          {
+            cb(false);
             return logger("error", err);
          });
       });

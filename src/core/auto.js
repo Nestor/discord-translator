@@ -1,6 +1,7 @@
 const translate = require("./translate");
 const logger = require("./logger");
 const botSend = require("./send");
+const fn = require("./helpers");
 
 // -----------------
 // Get data from db
@@ -140,12 +141,20 @@ const startTranslation = function(data, i, row)
          icon_url: data.message.guild.iconURL
       };
 
-      data.client.users.get(row.dest.slice(1)).createDM().then(dm =>
+      const userID = row.dest.slice(1);
+
+      fn.getUser(data.client, userID, user =>
       {
-         data.footer = footerExtra;
-         data.forward = dm.id;
-         sendTranslation(data);
-      }).catch(err => logger("error", err));
+         if (user && user.createDM)
+         {
+            user.createDM().then(dm =>
+            {
+               data.footer = footerExtra;
+               data.forward = dm.id;
+               sendTranslation(data);
+            }).catch(err => logger("error", err));
+         }
+      });
    }
 
    //

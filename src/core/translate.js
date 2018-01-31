@@ -1,5 +1,5 @@
 const translate = require("google-translate-api");
-//const db = require("./db");
+const db = require("./db");
 const botSend = require("./send");
 const fn = require("./helpers");
 
@@ -103,7 +103,6 @@ const invalidLangChecker = function(obj, callback)
 // Update server stats
 // --------------------
 
-/*
 const updateServerStats = function(message)
 {
    var id = "bot";
@@ -115,7 +114,6 @@ const updateServerStats = function(message)
 
    db.increase("servers", "id", id, "count");
 };
-*/
 
 // ----------------
 // Run translation
@@ -277,7 +275,7 @@ module.exports = function(data) //eslint-disable-line complexity
    {
       translate(chunk, opts).then(res =>
       {
-         //updateServerStats(data.message);
+         updateServerStats(data.message);
          data.forward = fw;
          data.footer = ft;
          data.color = data.message.roleColor;

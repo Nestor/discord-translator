@@ -131,22 +131,25 @@ module.exports = function(data)
 
          if (dest.startsWith("<@"))
          {
-            const user = data.client.users.get(dest.slice(2,-1));
+            const userID = dest.slice(2,-1);
 
-            if (user && !user.bot)
+            fn.getUser(data.client, userID, user =>
             {
-               user.createDM().then(dm =>
+               if (user && !user.bot && user.createDM)
                {
-                  taskBuffer.update(dm.id);
-               }).catch(err => logger("error", err));
+                  user.createDM().then(dm =>
+                  {
+                     taskBuffer.update(dm.id);
+                  }).catch(err => logger("error", err));
 
-               taskBuffer.update("@" + user.id);
-            }
-            else
-            {
-               data.task.invalid.push(dest);
-               taskBuffer.reduce();
-            }
+                  taskBuffer.update("@" + user.id);
+               }
+               else
+               {
+                  data.task.invalid.push(dest);
+                  taskBuffer.reduce();
+               }
+            });
          }
 
          // resolve mentioned channel(s)
