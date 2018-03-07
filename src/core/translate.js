@@ -10,9 +10,7 @@ const fn = require("./helpers");
 
 const translateFix = function(string)
 {
-   return fn.replaceAll(
-      string, /(<[:@#])\s?(&)?\s?(\w+:?)\s?(\w+>)/igm, "$1$2$3$4"
-   );
+   return string.replace(/(<[@#!$%&*])!\s*/gim, "$1");
 };
 
 // -----------------------------------------
