@@ -1,6 +1,6 @@
 {
    "name": "louie",
-   "version": "0.4.1",
+   "version": "0.5.1",
    "description": "Translation bot built using discord.js and Google Translate API.",
    "main": "src/bot.js",
    "license": "MIT",

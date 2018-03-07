@@ -7,8 +7,8 @@ const db = require("./core/db");
 const setStatus = require("./core/status");
 const react = require("./commands/translate.react");
 
-const botVersion = "0.4.2 Beta";
-const botCreator = "Aziz Natour (@aziz#5919)";
+const botVersion = "0.5.1";
+const botCreator = "Bobby (@NotMyself#7386)";
 
 exports.listen = function(client)
 {
