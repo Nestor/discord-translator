@@ -66,7 +66,7 @@ const helpMessage = function(config, botname, param)
 
    var donation = "";
 
-   if (auth.donation.length > 5)
+   if (auth.donation && auth.donation.length > 5)
    {
       donation =
          "Like this bot? [Support the developer!](" + auth.donation + ")";
