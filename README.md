@@ -27,7 +27,7 @@ Translation bot built using `discord.js` and `Google Translate API`.
 
 ## Info for Developers
 * [Running bot](https://github.com/NotMyself/Louie/wiki/Running-Bot)
-* [Code contribution](https://github.com/nvuio/discord-translator/wiki/Contribute)
+* [Code contribution](https://github.com/NotMyself/Louie/wiki/Contribute)
 
 ## Credits & License
 
