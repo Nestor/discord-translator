@@ -8,9 +8,16 @@ const fn = require("./helpers");
 // (Emojis, Mentions, Channels)
 // ------------------------------------------
 
+
 const translateFix = function(string)
 {
-   return string.replace(/(<[@#!$%&*])!\s*/gim, "$1");
+   const normal = /(<[@#!$%&*])\s*/gim;
+   const nick = /(<[@#!$%&*])!\s*/gim;
+   const role = /(<[@#!$%&*])&\s*/gim;
+
+   return string.replace(normal, "$1")
+      .replace(nick, "$1")
+      .replace(role, "$1");
 };
 
 // -----------------------------------------
