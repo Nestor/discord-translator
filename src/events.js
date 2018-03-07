@@ -3,7 +3,6 @@ const oneLine = require("common-tags").oneLine;
 const auth = require("./core/auth");
 const logger = require("./core/logger");
 const messageHandler = require("./message");
-const intervals = require("./intervals");
 const db = require("./core/db");
 const setStatus = require("./core/status");
 const react = require("./commands/translate.react");
@@ -76,15 +75,6 @@ exports.listen = function(client)
 
       if (shard.id === shard.count - 1)
       {
-         //
-         // Custom intervals
-         //
-
-         if (auth.intervals)
-         {
-            intervals(client, config);
-         }
-
          //
          // Log connection event
          //
