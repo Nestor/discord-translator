@@ -80,7 +80,7 @@ const helpMessage = function(config, botname, param)
    helpSection({
       config: config,
       title: "Translate by Reacting `new`",
-      link: "http://nvu.io/bots/discord-translator/#wiki/react",
+      link: "https://github.com/NotMyself/Louie/wiki/Translate-with-Emoji-Reaction",
       icon: ":flag_white:",
       cmd: null,
       help: "react",
@@ -90,7 +90,7 @@ const helpMessage = function(config, botname, param)
    helpSection({
       config: config,
       title: "Translate Custom Text",
-      link: "http://nvu.io/bots/discord-translator/#wiki/custom",
+      link: "https://github.com/NotMyself/Louie/wiki/Translate-Custom-Text",
       icon: ":abc:",
       cmd: "this",
       help: "custom",
@@ -100,7 +100,7 @@ const helpMessage = function(config, botname, param)
    helpSection({
       config: config,
       title: "Translate Last Message",
-      link: "http://nvu.io/bots/discord-translator/#wiki/last",
+      link: "https://github.com/NotMyself/Louie/wiki/Translate-Last-Message",
       icon: ":arrow_double_up:",
       cmd: "last",
       help: "last",
@@ -110,7 +110,7 @@ const helpMessage = function(config, botname, param)
    helpSection({
       config: config,
       title: "Translate Channel (Automatic)",
-      link: "http://nvu.io/bots/discord-translator/#wiki/auto",
+      link: "https://github.com/NotMyself/Louie/wiki/Translate-Channel-(Automatic)",
       icon: ":hash:",
       cmd: "channel",
       help: "auto",
@@ -120,7 +120,7 @@ const helpMessage = function(config, botname, param)
    helpSection({
       config: config,
       title: "Stats",
-      link: "http://nvu.io/bots/discord-translator/#wiki/stats",
+      link: "https://github.com/NotMyself/Louie/wiki/Get-Statistics",
       icon: ":bar_chart:",
       cmd: "stats",
       help: "misc",
@@ -130,7 +130,7 @@ const helpMessage = function(config, botname, param)
    helpSection({
       config: config,
       title: "Settings",
-      link: "http://nvu.io/bots/discord-translator/#wiki/settings",
+      link: "https://github.com/NotMyself/Louie/wiki/Settings",
       icon: ":gear:",
       cmd: "settings",
       help: "settings",
@@ -140,7 +140,7 @@ const helpMessage = function(config, botname, param)
    helpSection({
       config: config,
       title: "Report Bugs / Request Features",
-      link: config.botServer,
+      link: "https://github.com/NotMyself/Louie/issues",
       icon: ":raising_hand::skin-tone-3:"
    }) +
    donation;
