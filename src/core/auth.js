@@ -5,7 +5,7 @@
 // https://discordapp.com/developers/applications/me
 //
 
-//https://discordapp.com/api/oauth2/authorize?client_id=420983820855148561&scope=bot&permissions=1
+
 
 exports.token = process.env.DISCORD_TOKEN;
 
