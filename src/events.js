@@ -172,8 +172,8 @@ exports.listen = function(client)
 
    process.on("unhandledRejection", (reason, p) =>
    {
-      const err = "Unhandled Rejection at:" + p + "reason:" + reason;
-      logger("dev", JSON.stringify(err));
+      const err = "Unhandled Rejection at:" + JSON.stringify(p) + "reason:" + reason;
+      logger("dev", err);
       return logger("error", err, "unhandled");
    });
 
