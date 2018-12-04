@@ -190,7 +190,7 @@ const getSettings = function(data)
 
          activeGuilds.forEach(guild =>
          {
-            db.addServer(guild.id, data.config.defaultLanguage);
+            db.addServer(guild.id, data.config.defaultLanguage, db.Servers);
          });
       }
    };
