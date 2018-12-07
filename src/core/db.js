@@ -1,9 +1,20 @@
+const autoTranslate = require("./auto");
 const Sequelize = require('sequelize');
+const logger = require("./logger");
+
 const db = new Sequelize(process.env.DATABASE_URL, {
+  //logging: console.log,
   logging: null,
 });
-const autoTranslate = require("./auto");
-const logger = require("./logger");
+
+db
+  .authenticate()
+  .then(() => {
+    logger("dev",'Successfully connected to database');
+  })
+  .catch(err => {
+    logger("error", err);
+  });
 
 const Servers = db.define('servers', {
   id: {
@@ -22,7 +33,7 @@ const Servers = db.define('servers', {
 	},
   active: {
 		type: Sequelize.BOOLEAN,
-		defaultValue: 1,
+		defaultValue: true,
 	},
 });
 
@@ -33,7 +44,7 @@ const Tasks = db.define('tasks', {
   server: Sequelize.STRING(32),
   active: {
 		type: Sequelize.BOOLEAN,
-		defaultValue: 1,
+		defaultValue: true,
 	},
   lang_to: {
     type: Sequelize.STRING(8),
@@ -53,35 +64,19 @@ const Tasks = db.define('tasks', {
     ]
 });
 
-// module.exports = {
-//   Servers,
-//   Tasks
-// }
-
 // -------------------
 // Init/create tables
 // -------------------
 
 exports.initializeDatabase = function() {
-  Servers.sync();
-  Tasks.sync();
+
+  Servers.sync({ logging: console.log });
+  Tasks.sync({ logging: console.log });
 
   // Add global server row
   Servers.upsert({ id: "bot", lang: "en" });
+
 }
-
-// ---------------
-// Result Checker
-// ---------------
-
-// const results = function(err, res)
-// {
-//    if (err)
-//    {
-//       return logger("error", err);
-//    }
-//    return res;
-// };
 
 // -----------------------
 // Add Server to Database
@@ -90,22 +85,12 @@ exports.initializeDatabase = function() {
 exports.addServer = function(id, lang)
 {
 
-// try {
-    // equivalent to: INSERT INTO tags (name, descrption, username) values (?, ?, ?);
     return Servers.create({
         id: id,
         lang: lang
     });
-//     return logger("addServer", `Server ${new_server.id} added.`);
-// }
-// catch (e) {
-//     if (e.name === 'SequelizeUniqueConstraintError') {
-//         return logger("error", `Server ${new_server.id} already exists.`);
-//     }
-//     return logger("error", 'Something went wrong with adding a server.');
-// }
 
-};
+}
 
 // ------------------
 // Deactivate Server
@@ -114,21 +99,13 @@ exports.addServer = function(id, lang)
 exports.removeServer = function(id)
 {
 
-  return Servers.update({ active: 0 }, { where: { id: id } }).complete( 
+  return Servers.update({ active: false }, { where: { id: id } }).then( 
     function (err, result) {
       logger("error", err);
   });
-  // if (serverRows < 1) {
-  //   return logger("error", `Could not find a server with id: ${id} in the servers table.`);
-  // }
-  // const taskRows = await Tasks.update({ active: 0 }, { where: { server: id } });
-  // if (taskRows < 1) {
-  //   return logger("error", `Could not find server ${id} in the tasks table.`);
-  // }
 
-  // return logger("removeServer", `Server ${id} was deactivated.`);
+}
 
-};
 // -------------------
 // Update Server Lang
 // -------------------
@@ -136,16 +113,12 @@ exports.removeServer = function(id)
 exports.updateServerLang = function(id, lang, cb)
 {
 
-  return Servers.update({ lang: lang }, { where: { id: id } }).complete( 
+  return Servers.update({ lang: lang }, { where: { id: id } }).then( 
     function (err, result) {
       logger("error", err);
   });
-  // if (serverRows < 1) {
-  //   return logger("error", `Could not find a server with id: ${id} in the servers table.`);
-  // }
-  // return logger("updateServerLang", `Server ${id} language was changed to ${lang}.`);
 
-};
+}
 
 // ------------------
 // Get Channel Tasks
@@ -160,14 +133,20 @@ exports.channelTasks = function(data)
       id = "@" + data.message.author.id;
    }
 
-  return Tasks.findAll({ where: { origin: id, active: 1 } }, {raw:true}).complete(
-    function (err, result) {
-      data.err = err;
+  try {
+    const taskList = Tasks.findAll({ where: { origin: id, active: true }}).then(
+    function (result) {
       data.rows = result;
-      autoTranslate(data);
-  });
+      return autoTranslate(data);
+    });
+  }
+  catch (e) {
+    logger("error", e);
+    data.err = e;
+    return autoTranslate(data);
+  }
 
-};
+}
 
 // --------------------------------
 // Check if dest is found in tasks
@@ -177,18 +156,18 @@ exports.checkTask = function(origin, dest, cb)
 {
 
    if (dest === "all") {
-        return Tasks.findAll({ where: { origin: origin } }, {raw:true}).complete(
+        return Tasks.findAll({ where: { origin: origin } }, {raw:true}).then(
           function (err, result) {
             cb(err, result);
           });
     }
 
-    return Tasks.findAll({ where: { origin: origin, dest: dest } }, {raw:true}).complete(
+    return Tasks.findAll({ where: { origin: origin, dest: dest } }, {raw:true}).then(
       function (err, result) {
         cb(err, result);
       });
 
-};
+}
 
 // --------------------
 // Remove Channel Task
@@ -198,19 +177,13 @@ exports.removeTask = function(origin, dest, cb)
 {
    if (dest === "all")
    {
-     // const deletedCount =
-       return Tasks.destroy({ where: { [Op.or]: [{ origin: origin },{ dest: origin }] } }).complete(
+       return Tasks.destroy({ where: { [Op.or]: [{ origin: origin },{ dest: origin }] } }).then(
          function (err, result) {
            cb(err);
          });;
-
-       // if (!deletedCount) return logger("error", `Unable to stop all tasks for ${origin}`);
-       //
-       // return logger("removeTask", `Stopped all tasks for ${origin}`);
-
    }
 
-   return Tasks.destroy({ where: { [Op.or]: [{ origin: origin, dest: dest },{ origin: dest, dest: origin }] } }).complete(
+   return Tasks.destroy({ where: { [Op.or]: [{ origin: origin, dest: dest },{ origin: dest, dest: origin }] } }).then(
      function (err, result) {
        cb(err);
      });;
@@ -247,49 +220,43 @@ exports.getServersCount = function(cb)
 // Add Task
 // ---------
 
-const taskSQL = function(task, dest, flip = false)
-{
-
-  var ids = [task.origin, dest];
-  var langs = [task.to, task.from];
-
-   if (task.origin === dest)
-   {
-      langs = [langs[0], langs[1]];
-   }
-
-   if (flip && task.origin !== dest)
-   {
-      ids.reverse();
-      langs.reverse();
-   }
-
-
-   Tasks.upsert({
-     orign: ids[0],
-     dest: ids[1],
-     reply: task.reply + task.origin.slice(-3),
-     server: task.server,
-     active: 1,
-     lang_to: langs[0],
-     lang_from: langs[1],
-   });
-
-};
-
 exports.addTask = function(task)
 {
 
+  // Tasks.upsert({
+  //   orign: task.origin,
+  //   dest: task.dest,
+  //   reply: task.reply, // + task.origin.slice(-3),
+  //   server: task.server,
+  //   active: true,
+  //   lang_to: task.to,
+  //   lang_from: task.from,
+  // }).then(() => {
+  //   console.log('Task added successfully.');
+  // })
+  // .catch(err => {
+  //   console.error('Unable to add task to the database:', err);
+  // });
+
+
       task.dest.forEach(dest =>
       {
-         taskSQL(task, dest), function(err)
-         {
-            results(err, this);
-         }
-         taskSQL(task, dest, true), function(err)
-         {
-            results(err, this);
-         }
+
+        Tasks.upsert({
+          origin: task.origin,
+          dest: dest,
+          reply: task.reply, // + task.origin.slice(-3),
+          server: task.server,
+          active: true,
+          lang_to: task.to,
+          lang_from: task.from,
+        }).then(() => {
+          logger("dev", 'Task added successfully.');
+        })
+        .catch(err => {
+          logger("error", err);
+        });
+
       });
 
 };
@@ -311,13 +278,13 @@ exports.getStats = function(cb)
 {
 
   return db.query(`select * from (select sum(count) as "totalCount",` +
-  `count(id)-1 as "totalServers" from servers),` +
-  `(select count(id)-1 as "activeSrv" from servers where active = 1),` +
-  `(select lang as "botLang" from servers where id = "bot"),` +
+  `count(id)-1 as "totalServers" from servers) as table1,` +
+  `(select count(id)-1 as "activeSrv" from servers where active = TRUE) as table2,` +
+  `(select lang as "botLang" from servers where id = "bot") as table3,` +
   `(select count(distinct origin) as "activeTasks"` +
-  `from tasks where active = 1),` +
+  `from tasks where active = TRUE) as table4,` +
   `(select count(distinct origin) as "activeUserTasks"` +
-  `from tasks where active = 1 and origin like "@%");`, { type: sequelize.QueryTypes.SELECT}).complete(
+  `from tasks where active = TRUE and origin like "@%") as table5;`, { type: sequelize.QueryTypes.SELECT}).then(
       function(err, result) {
         cb(err, result);
       }
@@ -333,16 +300,15 @@ exports.getServerInfo = function(id, cb)
 {
 
   return db.query( `select * from (select count as "count",` +
-   `lang as "lang" from servers where id = ?),` +
+   `lang as "lang" from servers where id = ?) as table1,` +
    `(select count(distinct origin) as "activeTasks"` +
-   `from tasks where server = ?),` +
+   `from tasks where server = ?) as table2,` +
    `(select count(distinct origin) as "activeUserTasks"` +
-   `from tasks where origin like "@%" and server = ?);`, { replacements: [ id, id, id], type: sequelize.QueryTypes.SELECT}).complete(
-      function(err, result) {
-        cb(err, result);
-      }
-    );
-
+   `from tasks where origin like '@%' and server = ?) as table3;`, { replacements: [ id, id, id], type: db.QueryTypes.SELECT}).then( 
+    function (err, result) {
+      cb(err, result);
+  });
+   
 };
 
 // ---------
