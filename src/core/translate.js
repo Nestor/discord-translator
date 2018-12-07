@@ -117,7 +117,7 @@ const updateServerStats = function(message)
       id = message.channel.guild.id;
    }
 
-   db.increase("servers", "id", id, "count");
+   db.increaseServers(id);
 };
 
 // ----------------

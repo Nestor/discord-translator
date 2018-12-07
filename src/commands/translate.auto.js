@@ -83,7 +83,7 @@ module.exports = function(data)
    // Error if channel exceeds maximum allowed tasks
    //
 
-   db.getCount("tasks", "origin", data.task.origin, function(err, res)
+   db.getTasksCount(data.task.origin, function(err, res)
    {
       if (err)
       {
