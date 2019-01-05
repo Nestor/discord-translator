@@ -67,7 +67,7 @@ module.exports = function(data)
             `\`\`\`**\n:earth_africa:  Default server language:  ` +
             `**\`${serverLang.name} (${serverLang.native})\`` +
             `**\n\n:bar_chart:  Translated messages:  ` +
-            `**\`${data.cmd.server.count}\`**\n\n` +
+            `**\`${data.cmd.server[0].count}\`**\n\n` +
             `:repeat:  Automatic translation:  ` +
             `**\`${activeServerTasks}\`**  channels and  ` +
             `**\`${data.cmd.server[0].activeUserTasks}\`**  users`;
