@@ -71,7 +71,7 @@ console.log(data.cmd.server);
 console.log(serverLang);
 
          const activeServerTasks =
-            data.cmd.server.activeTasks - data.cmd.server.activeUserTasks;
+            data.cmd.server[0].activeTasks - data.cmd.server[0].activeUserTasks;
 console.log(activeServerTasks);
 
    console.log('stats() - 3.2');
@@ -83,7 +83,7 @@ console.log(activeServerTasks);
             `**\`${data.cmd.server.count}\`**\n\n` +
             `:repeat:  Automatic translation:  ` +
             `**\`${activeServerTasks}\`**  channels and  ` +
-            `**\`${data.cmd.server.activeUserTasks}\`**  users`;
+            `**\`${data.cmd.server[0].activeUserTasks}\`**  users`;
       }
 
    console.log('stats() - 4');
