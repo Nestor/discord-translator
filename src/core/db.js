@@ -287,8 +287,8 @@ exports.getStats = function(cb)
   `from tasks where active = TRUE) as table4, ` +
   `(select count(distinct origin) as "activeUserTasks" ` +
   `from tasks where active = TRUE and origin like '@%') as table5;`, { type: Sequelize.QueryTypes.SELECT}).then(
-      function(err, result) {
-        cb(err, result);
+      function(result) {
+        cb(null, result);
       }
     );
 
