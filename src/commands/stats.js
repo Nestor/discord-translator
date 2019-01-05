@@ -67,7 +67,7 @@ console.log(activeTasks);
    console.log('stats() - 3.1');
 //console.log(data);
 console.log(data.cmd.server);
-         const serverLang = langCheck(data.cmd.server[0].lang.valid[0];
+         const serverLang = langCheck(data.cmd.server[0].lang).valid[0];
 console.log(serverLang);
 
          const activeServerTasks =
