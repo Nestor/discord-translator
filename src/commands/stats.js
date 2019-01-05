@@ -9,7 +9,6 @@ module.exports = function(data)
    //
    // Version Info
    //
-   console.log('stats() - 1');
 
    var version = `**\`${data.config.version}\`**`;
 
@@ -25,7 +24,6 @@ module.exports = function(data)
       return botSend(data);
    }
 
-   console.log('stats() - 2');
    //
    // Get Stats from Database
    //
@@ -38,14 +36,9 @@ module.exports = function(data)
          return logger("error", err);
       }
 
-console.log(stats[0]);
-   console.log('stats() - 3');
-console.log(stats[0].botLang);
       const botLang = langCheck(stats[0].botLang).valid[0];
-console.log(botLang);
 
       const activeTasks = stats[0].activeTasks - stats[0].activeUserTasks;
-console.log(activeTasks);
 
       data.color = "info";
 
@@ -64,17 +57,11 @@ console.log(activeTasks);
 
       if (data.message.channel.type === "text" && data.cmd.server)
       {
-   console.log('stats() - 3.1');
-//console.log(data);
-console.log(data.cmd.server);
          const serverLang = langCheck(data.cmd.server[0].lang).valid[0];
-console.log(serverLang);
 
          const activeServerTasks =
             data.cmd.server[0].activeTasks - data.cmd.server[0].activeUserTasks;
-console.log(activeServerTasks);
 
-   console.log('stats() - 3.2');
          serverStats =
             `**\`\`\`${data.message.channel.guild.name} - Server Info` +
             `\`\`\`**\n:earth_africa:  Default server language:  ` +
@@ -86,12 +73,10 @@ console.log(activeServerTasks);
             `**\`${data.cmd.server[0].activeUserTasks}\`**  users`;
       }
 
-   console.log('stats() - 4');
       if (data.cmd.params && data.cmd.params.toLowerCase().includes("server"))
       {
          data.text = serverStats;
 
-   console.log('stats() - 5');
          //
          // Calling via DM
          //
@@ -102,7 +87,6 @@ console.log(activeServerTasks);
             data.text = "You must call server stats from a server channel.";
          }
 
-   console.log('stats() - 6');
          //
          // Unregistered server
          //
@@ -123,7 +107,6 @@ console.log(activeServerTasks);
          return true;
       }
 
-   console.log('stats() - 7');
       if (data.cmd.params && data.cmd.params.toLowerCase().includes("global"))
       {
          data.text = globalStats;
@@ -131,7 +114,6 @@ console.log(activeServerTasks);
          return botSend(data);
       }
 
-   console.log('stats() - 8');
       data.text = globalStats + "\n\n" + serverStats;
       botSend(data);
       return botSend(data);
