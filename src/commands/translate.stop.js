@@ -177,6 +177,6 @@ const dbError = function(err, data)
       ":warning:  Could not retrieve information from database. Try again " +
       "later or report this issue to an admin if problem continues. (" + err + ")";
 
-   botSend(data);
+   botSend(JSON.stringify(data));
    return console.log("error", JSON.stringify(err));
 };

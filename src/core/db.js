@@ -3,8 +3,8 @@ const Sequelize = require('sequelize');
 const logger = require("./logger");
 
 const db = new Sequelize(process.env.DATABASE_URL, {
-  //logging: console.log,
-  logging: null,
+  logging: console.log,
+  //logging: null,
 });
 
 db
