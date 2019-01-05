@@ -103,16 +103,19 @@ module.exports = function(data)
             );
          }
 
-         return botSend(data);
+         botSend(data);
+         return true;
       }
 
       if (data.cmd.params && data.cmd.params.toLowerCase().includes("global"))
       {
          data.text = globalStats;
+         botSend(data);
          return botSend(data);
       }
 
       data.text = globalStats + "\n\n" + serverStats;
+      botSend(data);
       return botSend(data);
    });
 };
