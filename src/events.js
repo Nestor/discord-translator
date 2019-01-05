@@ -20,6 +20,9 @@ exports.listen = function(client)
 
    client.on("ready", () =>
    {
+
+      db.initializeDatabase();
+
       //
       // Default Settings
       //
@@ -216,6 +219,6 @@ exports.listen = function(client)
    client.on("guildCreate", guild =>
    {
       logger("guildJoin", guild);
-      db.addServer(guild.id, config.defaultLanguage);
+      db.addServer(guild.id, config.defaultLanguage, db.Servers);
    });
 };
