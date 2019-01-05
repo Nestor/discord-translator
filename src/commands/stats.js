@@ -41,10 +41,10 @@ module.exports = function(data)
 console.log(stats[0]);
    console.log('stats() - 3');
 console.log(stats[0].botLang);
-      const botLang = langCheck(stats.botLang);
+      const botLang = langCheck(stats[0].botLang);
 console.log(botLang);
 
-      const activeTasks = stats.activeTasks - stats.activeUserTasks;
+      const activeTasks = stats[0].activeTasks - stats[0].activeUserTasks;
 console.log(activeTasks);
 
       data.color = "info";
@@ -55,12 +55,12 @@ console.log(activeTasks);
          `**\`\`\`@${data.bot.username} - Global Stats\`\`\`**\n` +
          `:earth_africa:  Default bot language:  ` +
          `**\`${botLang.name} (${botLang.native})\`` +
-         `**\n\n:bar_chart:  Translated **\`${stats.totalCount}\`** messages ` +
-         `across **\`${stats.totalServers}\`** servers\n\n` +
+         `**\n\n:bar_chart:  Translated **\`${stats[0].totalCount}\`** messages ` +
+         `across **\`${stats[0].totalServers}\`** servers\n\n` +
          `:robot:  Version:  ${version}\n\n` +
          `:repeat:  Automatic translation:  ` +
          `**\`${activeTasks}\`**  channels and  ` +
-         `**\`${stats.activeUserTasks}\`**  users`;
+         `**\`${stats[0].activeUserTasks}\`**  users`;
 
       if (data.message.channel.type === "text" && data.cmd.server)
       {
