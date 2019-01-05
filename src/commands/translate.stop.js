@@ -9,7 +9,7 @@ const logger = require("../core/logger");
 module.exports = function(data)
 {
 
-   console.loglogger("exports() - 1");
+   console.log("exports() - 1");
    //
    // Disallow this command in Direct/Private messages
    //
@@ -23,7 +23,7 @@ module.exports = function(data)
       return botSend(data);
    }
 
-   console.loglogger("exports() - 2");
+   console.log("exports() - 2");
    //
    // Disallow multiple destinations
    //
@@ -35,7 +35,7 @@ module.exports = function(data)
       return botSend(data);
    }
 
-   console.loglogger("exports() - 3");
+   console.log("exports() - 3");
    //
    // Disallow non-managers to stop for others
    //
@@ -54,13 +54,13 @@ module.exports = function(data)
    // Prepare task data
    //
 
-   console.loglogger("exports() - 4");
+   console.log("exports() - 4");
    const origin = data.message.channel.id;
    const dest = destID(data.cmd.for[0], data.message.author.id);
    const destDisplay = destResolver(data.cmd.for[0], data.message.author.id);
-   console.loglogger("origion = " + origin);
-   console.loglogger("dest = " + dest);
-   console.loglogger("destDisplay = " + destDisplay);
+   console.log("origion = " + origin);
+   console.log("dest = " + dest);
+   console.log("destDisplay = " + destDisplay);
 
    //
    // Check if task actually exists
@@ -68,7 +68,7 @@ module.exports = function(data)
 
    db.checkTask(origin, dest, function(err, res)
    {
-      console.loglogger("checkTask()");
+      console.log("checkTask()");
       if (err)
       {
          console.log("checkTask() err - " + err);
@@ -177,5 +177,5 @@ const dbError = function(err, data)
       "later or report this issue to an admin if problem continues. (" + error + ")";
 
    botSend(data);
-   return console.loglogger("error", err);
+   return console.log("error", err);
 };
