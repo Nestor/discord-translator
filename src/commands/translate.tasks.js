@@ -61,7 +61,7 @@ module.exports = function(data)
    // Check if task actually exists
    //
 
-   db.checkTask(origin, dest, function(err, res)
+   db.getTasks(origin, dest, function(err, res)
    {
       if (err)
       {
@@ -105,9 +105,6 @@ const shoutTasks = function(res, data, origin, dest, destDisplay)
 {
    console.log(data);
 
-   data.color = "ok";
-   data.text = "remoteTask()"
-   botSend(data);
    if (err)
    {
       return dbError(err, data);

@@ -147,6 +147,27 @@ exports.channelTasks = function(data)
   }
 
 }
+// --------------------------------
+// Get tasks for channel or user
+// --------------------------------
+
+exports.getTasks = function(origin, dest, cb)
+{
+
+   if (dest === "me") {
+        return Tasks.findAll({ where: { origin: origin, dest: dest } }, {raw:true}).then(
+          function (result, err) {
+            cb(err, result);
+          });
+    }
+
+    return Tasks.findAll({ where: { origin: origin } }, {raw:true}).then(
+      function (result, err) {
+        cb(err, result);
+      });
+
+}
+
 
 // --------------------------------
 // Check if dest is found in tasks
