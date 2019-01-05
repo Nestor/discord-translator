@@ -8,6 +8,8 @@ const logger = require("../core/logger");
 
 module.exports = function(data)
 {
+
+   logger("exports() - 1");
    //
    // Disallow this command in Direct/Private messages
    //
@@ -21,6 +23,7 @@ module.exports = function(data)
       return botSend(data);
    }
 
+   logger("exports() - 2");
    //
    // Disallow multiple destinations
    //
@@ -32,6 +35,7 @@ module.exports = function(data)
       return botSend(data);
    }
 
+   logger("exports() - 3");
    //
    // Disallow non-managers to stop for others
    //
@@ -50,9 +54,13 @@ module.exports = function(data)
    // Prepare task data
    //
 
+   logger("exports() - 4");
    const origin = data.message.channel.id;
    const dest = destID(data.cmd.for[0], data.message.author.id);
    const destDisplay = destResolver(data.cmd.for[0], data.message.author.id);
+   logger("origion = " + origin);
+   logger("dest = " + dest);
+   logger("destDisplay = " + destDisplay);
 
    //
    // Check if task actually exists
@@ -60,11 +68,10 @@ module.exports = function(data)
 
    db.checkTask(origin, dest, function(err, res)
    {
-      data.color = "ok";
-      data.text = "checkTask()";
-      botSend(data);
+      logger("checkTask()");
       if (err)
       {
+         logger("checkTask() err - " + err);
          return dbError(err, data);
       }
 
