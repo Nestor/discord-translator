@@ -178,5 +178,5 @@ const dbError = function(err, data)
       "later or report this issue to an admin if problem continues. (" + err + ")";
 
    botSend(data);
-   return console.log("error", err);
+   return console.log("error", JSON.stringify(err));
 };
