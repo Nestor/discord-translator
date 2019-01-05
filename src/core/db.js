@@ -2,7 +2,6 @@ const autoTranslate = require("./auto");
 const Sequelize = require('sequelize');
 const logger = require("./logger");
 const Op = Sequelize.Op;
-
 const db = new Sequelize(process.env.DATABASE_URL, {
   logging: console.log,
   //logging: null,
@@ -287,7 +286,7 @@ exports.getStats = function(cb)
   `(select count(distinct origin) as "activeTasks"` +
   `from tasks where active = TRUE) as table4,` +
   `(select count(distinct origin) as "activeUserTasks"` +
-  `from tasks where active = TRUE and origin like "@%") as table5;`, { type: sequelize.QueryTypes.SELECT}).then(
+  `from tasks where active = TRUE and origin like "@%") as table5;`, { type: Sequelize.QueryTypes.SELECT}).then(
       function(err, result) {
         cb(err, result);
       }
