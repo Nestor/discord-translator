@@ -40,8 +40,10 @@ module.exports = function(data)
 
    console.log('stats() - 3');
       const botLang = langCheck(stats.botLang);
+console.log(botLang);
 
       const activeTasks = stats.activeTasks - stats.activeUserTasks;
+console.log(activeTasks);
 
       data.color = "info";
 
@@ -60,11 +62,13 @@ module.exports = function(data)
 
       if (data.message.channel.type === "text" && data.cmd.server)
       {
+   console.log('stats() - 3.1');
          const serverLang = langCheck(data.cmd.server.lang);
 
          const activeServerTasks =
             data.cmd.server.activeTasks - data.cmd.server.activeUserTasks;
 
+   console.log('stats() - 3.2');
          serverStats =
             `**\`\`\`${data.message.channel.guild.name} - Server Info` +
             `\`\`\`**\n:earth_africa:  Default server language:  ` +
