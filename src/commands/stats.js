@@ -41,7 +41,7 @@ module.exports = function(data)
 console.log(stats[0]);
    console.log('stats() - 3');
 console.log(stats[0].botLang);
-      const botLang = langCheck(stats[0].botLang);
+      const botLang = langCheck(stats[0].botLang).valid[0];
 console.log(botLang);
 
       const activeTasks = stats[0].activeTasks - stats[0].activeUserTasks;
@@ -67,7 +67,7 @@ console.log(activeTasks);
    console.log('stats() - 3.1');
 //console.log(data);
 console.log(data.cmd.server);
-         const serverLang = langCheck(data.cmd.server.lang);
+         const serverLang = langCheck(data.cmd.server[0].lang)valid[0];
 console.log(serverLang);
 
          const activeServerTasks =
