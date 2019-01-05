@@ -279,14 +279,14 @@ exports.increaseServers = function(id)
 exports.getStats = function(cb)
 {
 
-  return db.query(`select * from (select sum(count) as "totalCount",` +
-  `count(id)-1 as "totalServers" from servers) as table1,` +
-  `(select count(id)-1 as "activeSrv" from servers where active = TRUE) as table2,` +
-  `(select lang as "botLang" from servers where id = "bot") as table3,` +
-  `(select count(distinct origin) as "activeTasks"` +
-  `from tasks where active = TRUE) as table4,` +
-  `(select count(distinct origin) as "activeUserTasks"` +
-  `from tasks where active = TRUE and origin like "@%") as table5;`, { type: Sequelize.QueryTypes.SELECT}).then(
+  return db.query(`select * from (select sum(count) as "totalCount", ` +
+  `count(id)-1 as "totalServers" from servers) as table1, ` +
+  `(select count(id)-1 as "activeSrv" from servers where active = TRUE) as table2, ` +
+  `(select lang as "botLang" from servers where id = 'bot') as table3, ` +
+  `(select count(distinct origin) as "activeTasks" ` +
+  `from tasks where active = TRUE) as table4, ` +
+  `(select count(distinct origin) as "activeUserTasks" ` +
+  `from tasks where active = TRUE and origin like '@%') as table5;`, { type: Sequelize.QueryTypes.SELECT}).then(
       function(err, result) {
         cb(err, result);
       }
