@@ -1,6 +1,7 @@
 const autoTranslate = require("./auto");
 const Sequelize = require('sequelize');
 const logger = require("./logger");
+const Op = Sequelize.Op;
 
 const db = new Sequelize(process.env.DATABASE_URL, {
   logging: console.log,
@@ -175,8 +176,10 @@ exports.checkTask = function(origin, dest, cb)
 
 exports.removeTask = function(origin, dest, cb)
 {
+   console.log("removeTask()");
    if (dest === "all")
    {
+       console.log("removeTask() - all");
        return Tasks.destroy({ where: { [Op.or]: [{ origin: origin },{ dest: origin }] } }).then(
          function (err, result) {
            cb(err);
