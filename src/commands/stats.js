@@ -39,7 +39,8 @@ module.exports = function(data)
       }
 
    console.log('stats() - 3');
-      const botLang = langCheck(stats.botLang).valid[0];
+      //const botLang = langCheck(stats.botLang).valid[0];
+      const botLang = stats.botLang;
 
       const activeTasks = stats.activeTasks - stats.activeUserTasks;
 
