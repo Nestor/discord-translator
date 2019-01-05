@@ -60,6 +60,8 @@ module.exports = function(data)
 
    db.checkTask(origin, dest, function(err, res)
    {
+      data.color = "ok";
+      data.text = "checkTask()"
       if (err)
       {
          return dbError(err, data);
@@ -102,6 +104,9 @@ const removeTask = function(res, data, origin, dest, destDisplay)
 {
    db.removeTask(origin, dest, function(err)
    {
+      data.color = "ok";
+      data.text = "remoteTask()"
+      botSend(data);
       if (err)
       {
          return dbError(err, data);
