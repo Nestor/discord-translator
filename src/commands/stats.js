@@ -65,7 +65,8 @@ console.log(activeTasks);
       if (data.message.channel.type === "text" && data.cmd.server)
       {
    console.log('stats() - 3.1');
-console.log(data);
+//console.log(data);
+console.log(data.cmd.server);
          const serverLang = langCheck(data.cmd.server.lang);
 console.log(serverLang);
 
