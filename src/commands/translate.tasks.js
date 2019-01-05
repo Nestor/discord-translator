@@ -103,7 +103,8 @@ module.exports = function(data)
 
 const shoutTasks = function(res, data, origin, dest, destDisplay)
 {
-   console.log(data);
+   //console.log(data);
+   console.log(res);
 
    if (err)
    {
