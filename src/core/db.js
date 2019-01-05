@@ -157,13 +157,13 @@ exports.checkTask = function(origin, dest, cb)
 
    if (dest === "all") {
         return Tasks.findAll({ where: { origin: origin } }, {raw:true}).then(
-          function (err, result) {
+          function (result, err) {
             cb(err, result);
           });
     }
 
     return Tasks.findAll({ where: { origin: origin, dest: dest } }, {raw:true}).then(
-      function (err, result) {
+      function (result, err) {
         cb(err, result);
       });
 
