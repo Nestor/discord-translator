@@ -38,7 +38,9 @@ module.exports = function(data)
          return logger("error", err);
       }
 
+console.log(stats);
    console.log('stats() - 3');
+console.log(stats.botLang);
       const botLang = langCheck(stats.botLang);
 console.log(botLang);
 
