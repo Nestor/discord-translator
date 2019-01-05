@@ -69,9 +69,10 @@ module.exports = function(data)
    db.checkTask(origin, dest, function(err, res)
    {
       console.log("checkTask()");
+      console.log("checkTask() err - " + err);
+      console.log("checkTask() res - " + res);
       if (err)
       {
-         console.log("checkTask() err - " + err);
          return dbError(err, data);
       }
 
@@ -174,7 +175,7 @@ const dbError = function(err, data)
    data.color = "error";
    data.text =
       ":warning:  Could not retrieve information from database. Try again " +
-      "later or report this issue to an admin if problem continues. (" + error + ")";
+      "later or report this issue to an admin if problem continues. (" + err + ")";
 
    botSend(data);
    return console.log("error", err);
