@@ -287,7 +287,7 @@ exports.getStats = function(cb)
   `from tasks where active = TRUE) as table4, ` +
   `(select count(distinct origin) as "activeUserTasks" ` +
   `from tasks where active = TRUE and origin like '@%') as table5;`, { type: Sequelize.QueryTypes.SELECT}).then(
-      function(result) {
+      function(result{
         cb(null, result);
       }
     );
@@ -307,7 +307,7 @@ exports.getServerInfo = function(id, cb)
    `from tasks where server = ?) as table2,` +
    `(select count(distinct origin) as "activeUserTasks"` +
    `from tasks where origin like '@%' and server = ?) as table3;`, { replacements: [ id, id, id], type: db.QueryTypes.SELECT}).then( 
-    function (err, result) {
+    function (null, result) {
       cb(err, result);
   });
    
