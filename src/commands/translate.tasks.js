@@ -135,8 +135,8 @@ console.log("shutTasks() - 2");
 	const lang_from = langCheck(task.lang_from).valid[0].name;
 	const lang_to = langCheck(task.lang_to).valid[0].name;
 	console.log("\n\n\n");
-   	data.text = `:arrow_right:  : Translating ${lang_from} messages from **${origin}** ` +
-		   `to ${lang_to} messages to **${dest}**`
+   	data.text = `:arrow_right:  : Translating **${lang_from}** messages from **<${origin}>** ` +
+		   `to **${lang_to}** messages to **<${dest}>**`
 	botSend(data);
    }
 
