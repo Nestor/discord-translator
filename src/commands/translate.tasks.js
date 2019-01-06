@@ -130,11 +130,9 @@ console.log("shutTasks() - 2");
 	console.log(task.lang_to);
 	console.log(task.lang_from);
 	console.log("\n\n\n");
-	   /*
-   	data.text = `:negative_squared_cross_mark:  : Translating ${res[i].tasks.dataValues.lang_from} messages from **${res[i].tasks.dataValues.origin}** ` +
-		   `to ${res[i].tasks.dataValues.lang_to} messages to **${res[i].tasks.dataValues.dest}**`
+   	data.text = `:negative_squared_cross_mark:  : Translating ${res[i].lang_from} messages from **${res[i].origin}** ` +
+		   `to ${res[i].lang_to} messages to **${res[i].dest}**`
 	botSend(data);
-	*/
    }
 
 console.log("shutTasks() - 3");
