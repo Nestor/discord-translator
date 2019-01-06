@@ -122,11 +122,13 @@ console.log("shutTasks() - 1");
 console.log("shutTasks() - 2");
    for(var i = 0, len = res.length; i < len; i++) {
 	console.log("\n\ntask #" + i);
-	console.log(res[i]);
+	console.log(res[i].tasks);
 	console.log("\n\n\n");
-   	data.text = `:negative_squared_cross_mark:  : Translating ${res[i].tasks.dataValues.lang_from} messages from channel ${res[i].tasks.dataValues.origin} ` +
-		   `to ${res[i].tasks.dataValues.lang_to} messages on channel ${res[i].tasks.dataValues.dest}`
+	   /*
+   	data.text = `:negative_squared_cross_mark:  : Translating ${res[i].tasks.dataValues.lang_from} messages from **${res[i].tasks.dataValues.origin}** ` +
+		   `to ${res[i].tasks.dataValues.lang_to} messages to **${res[i].tasks.dataValues.dest}**`
 	botSend(data);
+	*/
    }
 
 console.log("shutTasks() - 3");
