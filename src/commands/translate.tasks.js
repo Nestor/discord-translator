@@ -1,3 +1,4 @@
+const langCheck = require("../core/lang.check");
 const botSend = require("../core/send");
 const db = require("../core/db");
 const logger = require("../core/logger");
