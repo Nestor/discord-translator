@@ -105,6 +105,7 @@ const shoutTasks = function(res, data, origin, dest, destDisplay)
 {
    //console.log(data);
    //console.log(res);
+console.log("shutTasks() - 1");
 
    data.color = "ok";
    data.text = ":negative_squared_cross_mark:  Translation tasks for this channel:"
@@ -118,11 +119,12 @@ const shoutTasks = function(res, data, origin, dest, destDisplay)
       data.text += ` (${res.length})`;
    }
    */
-
+console.log("shutTasks() - 2");
    res.foreach((task, index) => {
 	   console.log(task);
    });
 
+console.log("shutTasks() - 3");
    data.text = ":negative_squared_cross_mark:  That's all I have!"
    return botSend(data);
 };
