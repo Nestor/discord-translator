@@ -76,8 +76,8 @@ module.exports = function(data)
       {
          data.color = "error";
          data.text =
-            ":warning:  This channel is __**not**__ being translated for " +
-            `**${destDisplay}**.`;
+            ":warning:  __**No tasks**__ for channel " +
+            `**${origin}**.`;
 
          if (dest === "all")
          {
@@ -106,22 +106,24 @@ const shoutTasks = function(res, data, origin, dest, destDisplay)
    //console.log(data);
    console.log(res);
 
-   if (err)
-   {
-      return dbError(err, data);
-   }
-
    data.color = "ok";
-   data.text =
-      ":negative_squared_cross_mark:  Auto translation of this " +
-      "channel has been stopped for **" + destDisplay + "**";
+   data.text = ":negative_squared_cross_mark:  Translation tasks for this channel:"
+   return botSend(data);
 
+      //"channel has been stopped for **" + destDisplay + "**"
+
+	/*
    if (dest === "all")
    {
       data.text += ` (${res.length})`;
    }
+   */
 
-   data.text += ".";
+   res.foreach((task, index) => {
+	   console.log(task);
+   });
+
+   data.text = ":negative_squared_cross_mark:  That's all I have!"
    return botSend(data);
 };
 
