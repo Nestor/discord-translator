@@ -104,11 +104,11 @@ module.exports = function(data)
 const shoutTasks = function(res, data, origin, dest, destDisplay)
 {
    //console.log(data);
-   console.log(res);
+   //console.log(res);
 
    data.color = "ok";
    data.text = ":negative_squared_cross_mark:  Translation tasks for this channel:"
-   return botSend(data);
+   botSend(data);
 
       //"channel has been stopped for **" + destDisplay + "**"
 
