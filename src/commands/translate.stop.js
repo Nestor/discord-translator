@@ -103,9 +103,7 @@ const removeTask = function(res, data, origin, dest, destDisplay)
 {
    db.removeTask(origin, dest, function(err)
    {
-      data.color = "ok";
-      data.text = "remoteTask()"
-      botSend(data);
+console.log("remoteTask()");
       if (err)
       {
          return dbError(err, data);

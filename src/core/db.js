@@ -202,13 +202,13 @@ exports.removeTask = function(origin, dest, cb)
        console.log("removeTask() - all");
        return Tasks.destroy({ where: { [Op.or]: [{ origin: origin },{ dest: origin }] } }).then(
          function (err, result) {
-           cb(err);
+           cb(null, result);
          });;
    }
 
    return Tasks.destroy({ where: { [Op.or]: [{ origin: origin, dest: dest },{ origin: dest, dest: origin }] } }).then(
      function (err, result) {
-       cb(err);
+       cb(null, result);
      });;
 
 };
