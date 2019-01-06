@@ -129,10 +129,10 @@ console.log("shutTasks() - 2");
 	console.log(task.origin);
 	console.log(task.lang_to);
 	console.log(task.lang_from);
-	const dest = destResolver($task.dest);
-	const origin = destResolver($task.origin);
-	const lang_from = langCheck($task.lang_from).valid[0].name;
-	const lang_to = langCheck($task.lang_to).valid[0].name;
+	const dest = destResolver(task.dest);
+	const origin = destResolver(task.origin);
+	const lang_from = langCheck(task.lang_from).valid[0].name;
+	const lang_to = langCheck(task.lang_to).valid[0].name;
 	console.log("\n\n\n");
    	data.text = `:arrow_right:  : Translating ${lang_from} messages from **${origin}** ` +
 		   `to ${lang_to} messages to **${dest}**`
