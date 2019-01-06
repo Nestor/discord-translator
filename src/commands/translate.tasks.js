@@ -120,8 +120,8 @@ console.log("shutTasks() - 1");
    }
    */
 console.log("shutTasks() - 2");
-   res.foreach((task, index) => {
-	   console.log(task);
+   for(var i = 0, len = res.length(); i < len; i++) {
+	   console.log(res[i]);
    });
 
 console.log("shutTasks() - 3");
