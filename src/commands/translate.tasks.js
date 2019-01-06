@@ -122,6 +122,10 @@ const shoutTasks = function(res, data, origin, dest, destDisplay)
    */
    for(var i = 0, len = res.length; i < len; i++) {
 	const task = res[i];
+	const dest = destResolver(task.dest);
+	const origin = destResolver(task.origin);	
+	const lang_from = langCheck(task.lang_from).valid[0].name;	
+	const lang_to = langCheck(task.lang_to).valid[0].name;	
    	data.text = `:arrow_right:   Translating **${lang_from}** messages from **<${origin}>** ` +
 		   `and sending **${lang_to}** messages to **<${dest}>**`
 	botSend(data);
