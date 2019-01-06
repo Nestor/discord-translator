@@ -75,10 +75,11 @@ module.exports = function(data)
 
       if (res.length < 1 || !res)
       {
+	 origin = destResolver(origin);
          data.color = "error";
          data.text =
-            ":warning:  __**No tasks**__ for channel " +
-            `**${origin}**.`;
+            ":warning:  __**No tasks**__ for " +
+            `**<${origin}>**.`;
 
          if (dest === "all")
          {
@@ -105,8 +106,7 @@ module.exports = function(data)
 const shoutTasks = function(res, data, origin, dest, destDisplay)
 {
    //console.log(data);
-   console.log(res);
-console.log("shutTasks() - 1");
+   //console.log(res);
 
    data.color = "ok";
    data.text = ":negative_squared_cross_mark:  Translation tasks for this channel:"
@@ -120,27 +120,13 @@ console.log("shutTasks() - 1");
       data.text += ` (${res.length})`;
    }
    */
-console.log("shutTasks() - 2");
    for(var i = 0, len = res.length; i < len; i++) {
-	console.log("\n\ntask #" + i);
 	const task = res[i];
-	console.log(task);
-	console.log("\n");
-	console.log(task.dest);
-	console.log(task.origin);
-	console.log(task.lang_to);
-	console.log(task.lang_from);
-	const dest = destResolver(task.dest);
-	const origin = destResolver(task.origin);
-	const lang_from = langCheck(task.lang_from).valid[0].name;
-	const lang_to = langCheck(task.lang_to).valid[0].name;
-	console.log("\n\n\n");
-   	data.text = `:arrow_right:  : Translating **${lang_from}** messages from **<${origin}>** ` +
+   	data.text = `:arrow_right:   Translating **${lang_from}** messages from **<${origin}>** ` +
 		   `and sending **${lang_to}** messages to **<${dest}>**`
 	botSend(data);
    }
 
-console.log("shutTasks() - 3");
    data.text = ":negative_squared_cross_mark:  That's all I have!"
    return botSend(data);
 };
