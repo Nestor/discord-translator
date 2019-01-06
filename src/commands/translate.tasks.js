@@ -122,7 +122,7 @@ console.log("shutTasks() - 1");
 console.log("shutTasks() - 2");
    for(var i = 0, len = res.length(); i < len; i++) {
 	   console.log(res[i]);
-   });
+   }
 
 console.log("shutTasks() - 3");
    data.text = ":negative_squared_cross_mark:  That's all I have!"
