@@ -125,7 +125,10 @@ console.log("shutTasks() - 2");
 	const task = res[i];
 	console.log(task);
 	console.log("\n");
-	console.log(task.dataValues);
+	console.log(task.dest);
+	console.log(task.origin);
+	console.log(task.lang_to);
+	console.log(task.lang_from);
 	console.log("\n\n\n");
 	   /*
    	data.text = `:negative_squared_cross_mark:  : Translating ${res[i].tasks.dataValues.lang_from} messages from **${res[i].tasks.dataValues.origin}** ` +
