@@ -136,7 +136,7 @@ console.log("shutTasks() - 2");
 	const lang_to = langCheck(task.lang_to).valid[0].name;
 	console.log("\n\n\n");
    	data.text = `:arrow_right:  : Translating **${lang_from}** messages from **<${origin}>** ` +
-		   `to **${lang_to}** messages to **<${dest}>**`
+		   `and sending **${lang_to}** messages to **<${dest}>**`
 	botSend(data);
    }
 
@@ -166,11 +166,11 @@ const destID = function(dest, author)
    return dest;
 };
 
-const destResolver = function(dest, author)
+const destResolver = function(dest)
 {
-   if (dest === "me")
+   if (!dest.startsWith("@"))
    {
-      return "<@" + author + ">";
+      return "#" + dest;
    }
    return dest;
 };
