@@ -104,7 +104,7 @@ module.exports = function(data)
 const shoutTasks = function(res, data, origin, dest, destDisplay)
 {
    //console.log(data);
-   //console.log(res);
+   console.log(res);
 console.log("shutTasks() - 1");
 
    data.color = "ok";
@@ -120,7 +120,7 @@ console.log("shutTasks() - 1");
    }
    */
 console.log("shutTasks() - 2");
-   for(var i = 0, len = res.length(); i < len; i++) {
+   for(var i = 0, len = res.length; i < len; i++) {
 	   console.log(res[i]);
    }
 
