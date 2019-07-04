@@ -11,12 +11,12 @@ const cmdHelp = require("./help");
 const cmdList = require("./list");
 const cmdStats = require("./stats");
 const cmdMisc = require("./misc");
-const cmdExt = require("./extended");
 const cmdSettings = require("./settings");
 const cmdTranslateLast = require("./translate.last");
 const cmdTranslateThis = require("./translate.this");
 const cmdTranslateAuto = require("./translate.auto");
 const cmdTranslateStop = require("./translate.stop");
+const cmdTranslateTasks = require("./translate.tasks");
 
 // ---------------------------------------
 // Extract a parameter's value with regex
@@ -222,6 +222,7 @@ module.exports = function(data)
          "last": cmdTranslateLast,
          "auto": cmdTranslateAuto,
          "stop": cmdTranslateStop,
+         "tasks": cmdTranslateTasks,
          "help": cmdHelp,
          "info": cmdHelp,
          "list": cmdList,
@@ -230,7 +231,6 @@ module.exports = function(data)
          "invite": cmdMisc.invite,
          "shards": cmdMisc.shards,
          "proc": cmdMisc.proc,
-         "ext": cmdExt,
          "settings": cmdSettings
       };
 

@@ -3,13 +3,12 @@ const oneLine = require("common-tags").oneLine;
 const auth = require("./core/auth");
 const logger = require("./core/logger");
 const messageHandler = require("./message");
-const intervals = require("./intervals");
 const db = require("./core/db");
 const setStatus = require("./core/status");
 const react = require("./commands/translate.react");
 
-const botVersion = "0.4.2 Beta";
-const botCreator = "Aziz Natour (@aziz#5919)";
+const botVersion = "0.5.3";
+const botCreator = "Bobby (@NotMyself#7386)";
 
 exports.listen = function(client)
 {
@@ -21,6 +20,9 @@ exports.listen = function(client)
 
    client.on("ready", () =>
    {
+
+      db.initializeDatabase();
+
       //
       // Default Settings
       //
@@ -77,15 +79,6 @@ exports.listen = function(client)
       if (shard.id === shard.count - 1)
       {
          //
-         // Custom intervals
-         //
-
-         if (auth.intervals)
-         {
-            intervals(client, config);
-         }
-
-         //
          // Log connection event
          //
 
@@ -112,6 +105,7 @@ exports.listen = function(client)
 
    client.on("message", message =>
    {
+     console.log(`${message.guild.name} - ${message.guild.id}`);
       messageHandler(config, message);
    });
 
@@ -181,7 +175,7 @@ exports.listen = function(client)
 
    process.on("unhandledRejection", (reason, p) =>
    {
-      const err = "Unhandled Rejection at:" + p + "reason:" + reason;
+      const err = "Unhandled Rejection at:" + JSON.stringify(p) + "reason:" + reason;
       logger("dev", err);
       return logger("error", err, "unhandled");
    });
@@ -225,6 +219,6 @@ exports.listen = function(client)
    client.on("guildCreate", guild =>
    {
       logger("guildJoin", guild);
-      db.addServer(guild.id, config.defaultLanguage);
+      db.addServer(guild.id, config.defaultLanguage, db.Servers);
    });
 };

@@ -2,6 +2,7 @@
 // Main Libraries
 //
 
+require("dotenv").config();
 const discord = require("discord.js");
 const client = new discord.Client();
 const auth = require("./core/auth");
